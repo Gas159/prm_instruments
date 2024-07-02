@@ -1,0 +1,2 @@
+poetry add fastapi 'uvicorn[standard]' 'pydantic[email]' pydantic-settings
+Version: 1.5.1
