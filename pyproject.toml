@@ -4,15 +4,15 @@ version = "0.1.0"
 description = ""
 authors = ["gas <pankot222@gmail.com>"]
 readme = "README.md"
-package-mode = false
+#package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
 fastapi = "^0.111.0"
-uvicorn = {extras = ["standart"], version = "^0.30.1"}
+uvicorn = {extras = ["standard"], version = "^0.30.1"}
 pydantic = {extras = ["email"], version = "^2.8.0"}
-pydantic-settings = "^2.3.4"
-
+pydantic-settings = "^2.2.1"
+orjson = "3.10.5"
 
 [build-system]
 requires = ["poetry-core"]
