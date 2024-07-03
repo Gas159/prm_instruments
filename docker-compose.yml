@@ -1,0 +1,23 @@
+services:
+  pg:
+    image: postgres
+    environment:
+      POSTGRES_USER: gas
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: shop
+    ports:
+      - "5431:5431"
+
+  adminer:
+    image: adminer
+    ports:
+      - "8081:8081"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.org
+      PGADMIN_DEFAULT_PASSWORD: 123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"

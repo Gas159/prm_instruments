@@ -4,14 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d4160101-d78e-4c9c-91c1-ba1136efabe0" name="Changes" comment="add help">
-      <change afterPath="$PROJECT_DIR$/.idea/FastAPI_1.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="d4160101-d78e-4c9c-91c1-ba1136efabe0" name="Changes" comment="install asyncpg">
+      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/FastAPI_1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/FastAPI_1.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/help.txt" beforeDir="false" afterPath="$PROJECT_DIR$/help.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,11 +43,47 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "settings.editor.selected.configurable": "build.tools"
+    "settings.editor.selected.configurable": "promo.database"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/fastapi-application/others" />
+      <recent name="$PROJECT_DIR$/fastapi-application" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="FastAPI_1" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/fastapi-application" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/fastapi-application/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -99,7 +132,79 @@
       <option name="project" value="LOCAL" />
       <updated>1719942276113</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="add project files">
+      <option name="closed" value="true" />
+      <created>1720031326787</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1720031326787</updated>
+    </task>
+    <task id="LOCAL-00006" summary="add project files">
+      <option name="closed" value="true" />
+      <created>1720031331746</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1720031331746</updated>
+    </task>
+    <task id="LOCAL-00007" summary="created main app">
+      <option name="closed" value="true" />
+      <created>1720031820465</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1720031820465</updated>
+    </task>
+    <task id="LOCAL-00008" summary="created main settings">
+      <option name="closed" value="true" />
+      <created>1720032922262</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1720032922262</updated>
+    </task>
+    <task id="LOCAL-00009" summary="created api router">
+      <option name="closed" value="true" />
+      <created>1720032942401</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1720032942401</updated>
+    </task>
+    <task id="LOCAL-00010" summary="use run settings">
+      <option name="closed" value="true" />
+      <created>1720032999391</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1720032999391</updated>
+    </task>
+    <task id="LOCAL-00011" summary="add sqla + asyncio">
+      <option name="closed" value="true" />
+      <created>1720033398438</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1720033398438</updated>
+    </task>
+    <task id="LOCAL-00012" summary="upd help">
+      <option name="closed" value="true" />
+      <created>1720033420691</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1720033420691</updated>
+    </task>
+    <task id="LOCAL-00013" summary="install asyncpg">
+      <option name="closed" value="true" />
+      <created>1720033567472</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1720033567472</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -117,6 +222,14 @@
     <MESSAGE value="initial commit: create .gitignore" />
     <MESSAGE value="add pyproject.toml and poetry.lock" />
     <MESSAGE value="add help" />
-    <option name="LAST_COMMIT_MESSAGE" value="add help" />
+    <MESSAGE value="add project files" />
+    <MESSAGE value="created main app" />
+    <MESSAGE value="created main settings" />
+    <MESSAGE value="created api router" />
+    <MESSAGE value="use run settings" />
+    <MESSAGE value="add sqla + asyncio" />
+    <MESSAGE value="upd help" />
+    <MESSAGE value="install asyncpg" />
+    <option name="LAST_COMMIT_MESSAGE" value="install asyncpg" />
   </component>
 </project>
