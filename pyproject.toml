@@ -14,6 +14,8 @@ pydantic = {extras = ["email"], version = "^2.8.0"}
 pydantic-settings = "^2.2.1"
 orjson = "3.10.5"
 sqlalchemy = {extras = ["asyncio"], version = "^2.0.31"}
+asyncpg = "^0.29.0"
+
 
 [build-system]
 requires = ["poetry-core"]
