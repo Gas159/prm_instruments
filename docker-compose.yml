@@ -4,7 +4,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: gas
-      POSTGRES_PASSWORD: 123
+      POSTGRES_PASSWORD: gas
       POSTGRES_DB: shop
     ports:
       - "5432:5432"
@@ -12,13 +12,13 @@ services:
   adminer:
     image: adminer
     ports:
-      - "8080:8080"
+      - "5050:5050"
 
   pgadmin:
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.org
-      PGADMIN_DEFAULT_PASSWORD: 123
+      PGADMIN_DEFAULT_PASSWORD: gas
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
       - "5050:80"

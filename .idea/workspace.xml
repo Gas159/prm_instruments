@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d4160101-d78e-4c9c-91c1-ba1136efabe0" name="Changes" comment="add docker-compose.yml">
+    <list default="true" id="d4160101-d78e-4c9c-91c1-ba1136efabe0" name="Changes" comment="upd docker-compose.yml">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
@@ -222,7 +222,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720035464574</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="upd docker-compose.yml">
+      <option name="closed" value="true" />
+      <created>1720038036558</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1720038036558</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -249,6 +257,7 @@
     <MESSAGE value="upd help" />
     <MESSAGE value="install asyncpg" />
     <MESSAGE value="add docker-compose.yml" />
-    <option name="LAST_COMMIT_MESSAGE" value="add docker-compose.yml" />
+    <MESSAGE value="upd docker-compose.yml" />
+    <option name="LAST_COMMIT_MESSAGE" value="upd docker-compose.yml" />
   </component>
 </project>

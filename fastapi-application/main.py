@@ -9,7 +9,7 @@ app.include_router(
 	prefix=settings.api.prefix,
 )
 
-# @app.get("/")
+# @app.get("/")1
 # async def root():
 # 	return {"message": "Hello World"}
 
