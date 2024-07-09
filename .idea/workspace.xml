@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d4160101-d78e-4c9c-91c1-ba1136efabe0" name="Changes" comment="upd" />
+    <list default="true" id="d4160101-d78e-4c9c-91c1-ba1136efabe0" name="Changes" comment="upd docker-compose.yml" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -235,7 +235,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720148665179</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="upd docker-compose.yml">
+      <option name="closed" value="true" />
+      <created>1720183608005</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1720183608005</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -262,8 +270,8 @@
     <MESSAGE value="upd help" />
     <MESSAGE value="install asyncpg" />
     <MESSAGE value="add docker-compose.yml" />
-    <MESSAGE value="upd docker-compose.yml" />
     <MESSAGE value="upd" />
-    <option name="LAST_COMMIT_MESSAGE" value="upd" />
+    <MESSAGE value="upd docker-compose.yml" />
+    <option name="LAST_COMMIT_MESSAGE" value="upd docker-compose.yml" />
   </component>
 </project>
