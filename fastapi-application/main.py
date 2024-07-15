@@ -9,9 +9,9 @@ app.include_router(
 	prefix=settings.api.prefix,
 )
 
-# @app.get("/")1
-# async def root():
-# 	return {"message": "Hello World"}
+@app.get("/")
+async def root():
+	return {"message": "Hello World"}
 
 if __name__ == "__main__":
 	uvicorn.run(
