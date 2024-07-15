@@ -5,18 +5,19 @@ from pydantic import PostgresDsn
 
 class RunConfig(BaseModel):
 	host: str = '0.0.0.0'
-	port: int = 8001
+	port: int = 8000
 
 
 class ApiPrefix(BaseModel):
 	prefix: str = '/api'
 
 
+# url: str = 'postgresql+asyncpg://gas:123@localhost:5432/shop'
 class DatabaseConfig(BaseModel):
 	url: PostgresDsn
-	echo: bool = False,
-	echo_pool: bool = False,
-	pool_size: int = 50,
+	echo: bool = False
+	echo_pool: bool = False
+	pool_size: int = 50
 	max_overflow: int = 10
 
 
