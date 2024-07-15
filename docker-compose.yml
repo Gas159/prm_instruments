@@ -1,11 +1,14 @@
 services:
   pg:
+    container_name: pg_fastapi
     image: postgres
     restart: always
     environment:
       POSTGRES_USER: gas
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: shop
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
@@ -15,10 +18,11 @@ services:
       - "5053:8081"
 
   pgadmin:
+    container_name: pg_admin
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.org
-      PGADMIN_DEFAULT_PASSWORD: gas
+      PGADMIN_DEFAULT_PASSWORD: 123
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
       - "5054:80"
