@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: gas
       POSTGRES_PASSWORD: 123
-      POSTGRES_DB: shop
+      POSTGRES_DB: car_service
 #    volumes:
 #      - pgdata:/var/lib/postgresql/data
     ports:
