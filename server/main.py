@@ -25,7 +25,7 @@ main_app.include_router(
 
 @main_app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"data": "Hello World"}
 
 
 if __name__ == "__main__":
