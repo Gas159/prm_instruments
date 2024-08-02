@@ -8,6 +8,7 @@ Links:
 ## Installation
 ```
 $ git clone https://github.com/Gas159/Car-Service.git
+```
 
 Для винды:
 установить python 3.12
