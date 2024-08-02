@@ -13,20 +13,23 @@ Links:
 в терминале установить менеджер зависимостей
 
 ```
-pip install poetry 
-
+$pip install poetry 
+```
 ```
 $ git clone https://github.com/Gas159/Car-Service.git
 ```
 перейти в папку с проектом:
+```
 $ cd Car_Service
 ```
 
 #далее все выполнять в виртульном окружении
+
 $make shell - создать вирт окр если нету.
 ```
 
 # установить все зависимости
+
 $make install 
 ```
 
