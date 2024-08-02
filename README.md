@@ -6,11 +6,13 @@ Links:
 
 
 ## Installation
-```
+
 
 установить python 3.12
 
 в терминале установить менеджер зависимостей
+
+```
 pip install poetry 
 
 ```
