@@ -12,6 +12,7 @@ Links:
 
 в терминале установить менеджер зависимостей
 pip install poetry 
+
 ```
 $ git clone https://github.com/Gas159/Car-Service.git
 ```
