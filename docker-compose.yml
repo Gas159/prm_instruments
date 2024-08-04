@@ -1,4 +1,8 @@
 services:
+  python:
+
+
+
   pg:
     container_name: pg_fastapi
     image: postgres
