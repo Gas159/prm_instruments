@@ -31,8 +31,8 @@ class Settings(BaseSettings):
 	)
 	run: RunConfig = RunConfig()
 	api: ApiPrefix = ApiPrefix()
-	db: DatabaseConfig
-
+	# db: DatabaseConfig
+	db: DatabaseConfig.url
 
 settings = Settings()
 print(settings.db.url)
