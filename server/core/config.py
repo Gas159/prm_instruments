@@ -15,7 +15,7 @@ class ApiPrefix(BaseModel):
 # url: str = 'postgresql+asyncpg://gas:123@localhost:5432/shop'
 class DatabaseConfig(BaseModel):
 	url: PostgresDsn
-	# url: str = 'postgresql+asyncpg://gas:123@localhost:5432/shop'
+	#url: str = 'postgresql+asyncpg://gas:123@localhost:5432/shop'
 	echo: bool = False
 	echo_pool: bool = False
 	pool_size: int = 50
@@ -24,15 +24,16 @@ class DatabaseConfig(BaseModel):
 
 class Settings(BaseSettings):
 	model_config = SettingsConfigDict(
-		env_file='.env',
+		env_file=('.env', '.env.template'),
 		case_sensitive=False,
 		env_nested_delimiter="__",
 		env_prefix='FASTAPI__'
 	)
 	run: RunConfig = RunConfig()
 	api: ApiPrefix = ApiPrefix()
+	#db: DatabaseConfig = DatabaseConfig()
 	db: DatabaseConfig
-	# db: DatabaseConfig.url
+
 
 settings = Settings()
 print(settings.db.url)
