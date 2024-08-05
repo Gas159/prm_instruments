@@ -5,7 +5,7 @@ from pydantic import PostgresDsn
 
 class RunConfig(BaseModel):
 	host: str = '0.0.0.0'
-	port: int = 8001
+	port: int = 8002
 
 
 class ApiPrefix(BaseModel):
