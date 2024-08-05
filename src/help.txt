@@ -3,5 +3,16 @@ Version: 1.5.1
 poetry add 'sqlalchemy[asyncio]' #async orm
 poetry add asyncpg #postgres
 
+poetry add alembic
+alembic init -t async alembic
+alembic revision --autogenerate
+alembic upgrade head
+
+poetry add --group dev black
+black --diff --color ./
+
+poetry add --group dev pytest
+pytest
+
 d build . --tag fastapi
 d run -p 8000:8000 fastapi

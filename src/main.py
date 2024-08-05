@@ -7,11 +7,16 @@ import uvicorn
 from api import router as api_router
 from config import settings
 from database import db_helper
+from models import Base
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # startup
+    # async with db_helper.engine.begin() as conn:
+        # await conn.run_sync(Base.metadata.drop_all)
+        # await conn.run_sync(Base.metadata.create_all)
+            # print("create engine")
     yield
     # shutdown
     print("dispose engine")
