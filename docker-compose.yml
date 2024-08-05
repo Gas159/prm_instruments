@@ -5,8 +5,8 @@ services:
     build: .
     ports:
       - "8001:8000"
-    depends_on:
-      - pg
+#    depends_on:
+#      - pg
 
 
   pg:
