@@ -14,8 +14,8 @@ class ApiPrefix(BaseModel):
 
 # url: str = 'postgresql+asyncpg://gas:123@localhost:5432/shop'
 class DatabaseConfig(BaseModel):
-	# url: PostgresDsn
-	url: str = 'postgresql+asyncpg://gas:123@localhost:5432/shop'
+	url: PostgresDsn
+	# url: str = 'postgresql+asyncpg://gas:123@localhost:5432/shop'
 	echo: bool = False
 	echo_pool: bool = False
 	pool_size: int = 50
@@ -31,8 +31,8 @@ class Settings(BaseSettings):
 	)
 	run: RunConfig = RunConfig()
 	api: ApiPrefix = ApiPrefix()
-	# db: DatabaseConfig
-	db: DatabaseConfig.url
+	db: DatabaseConfig
+	# db: DatabaseConfig.url
 
 settings = Settings()
 print(settings.db.url)
