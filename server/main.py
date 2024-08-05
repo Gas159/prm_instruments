@@ -20,6 +20,7 @@ main_app = FastAPI(lifespan=lifespan)
 main_app.include_router(
     api_router,
     prefix=settings.api.prefix,
+    # mainApp.mount("/app", app)  # your app routes will now be /app/{your-route-here}
 )
 
 

@@ -1,6 +1,12 @@
 services:
-  python:
 
+  python:
+    container_name: python_fastapi
+    build: .
+    ports:
+      - "8001:8000"
+    depends_on:
+      - pg
 
 
   pg:
@@ -11,8 +17,8 @@ services:
       POSTGRES_USER: gas
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: car_service
-#    volumes:
-#      - pgdata:/var/lib/postgresql/data
+    #    volumes:
+    #      - pgdata:/var/lib/postgresql/data
     ports:
       - "5433:5432"
 

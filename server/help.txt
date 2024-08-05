@@ -2,3 +2,6 @@ poetry add fastapi 'uvicorn[standard]' 'pydantic[email]' pydantic-settings
 Version: 1.5.1
 poetry add 'sqlalchemy[asyncio]' #async orm
 poetry add asyncpg #postgres
+
+d build . --tag fastapi
+d run -p 8000:8000 fastapi
