@@ -5,8 +5,10 @@ poetry add asyncpg #postgres
 
 poetry add alembic
 alembic init -t async alembic
-alembic revision --autogenerate
+alembic revision --autogenerate -m 'create user table'
 alembic upgrade head
+alembic downgrade -1 or alembic downgrade base
+
 
 poetry add --group dev black
 black --diff --color ./
