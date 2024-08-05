@@ -1,9 +1,11 @@
+#docker comand
 build:
 		docker build . --tag my1
-
 run:
 		docker run -d --name fastapi -p 8001:8000 my
 
+
+#poetry
 tree:
 		poetry show --tree
 
