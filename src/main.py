@@ -2,9 +2,9 @@ from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 import uvicorn
+from fastapi.responses import ORJSONResponse
 
-
-from api import router as api_router
+from api.v1 import router as api_v1_router
 from config import settings
 from database import db_helper
 from models import Base
@@ -23,9 +23,13 @@ async def lifespan(app: FastAPI):
     await db_helper.dispose()
 
 
-main_app = FastAPI(lifespan=lifespan)
+main_app = FastAPI(
+    lifespan=lifespan,
+    # improve speed work with db
+    default_response_class=ORJSONResponse,
+)
 main_app.include_router(
-    api_router,
+    api_v1_router,
     prefix=settings.api.prefix,
     # mainApp.mount("/app", app)  # your app routes will now be /app/{your-route-here}
 )
