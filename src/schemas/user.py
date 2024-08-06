@@ -5,6 +5,7 @@ from pydantic import ConfigDict
 class User(BaseModel):
     username: str
     second_name: str
+    email: str | None
     foo: str
     bar: str
 
@@ -18,5 +19,5 @@ class UserRead(User):
     id: int
 
 
-class UserGetOne(UserRead):
-    pass
+# class UserGetOne(UserRead):
+#     pass
