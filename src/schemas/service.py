@@ -9,15 +9,14 @@ class Service(BaseModel):
     # 	orm_mode = True
 
 
-class GetOneService(Service):
+class ServiceRead(Service):
     model_config = ConfigDict(from_attributes=True)
     id: int
 
 
-
-class GetAllService(GetOneService):
-    pass
-
-
 class CreateService(Service):
     pass
+
+
+# class GetAllService(ServiceRead):
+#     pass

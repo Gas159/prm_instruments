@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import db_helper
 from models.service import Service
-from schemas.service import GetOneService, CreateService
+from schemas.service import CreateService,ServiceRead
 from crud import services as services_crud
 
 router = APIRouter(
@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 
-@router.get("", response_model=list[GetOneService])
+@router.get("/get_all", response_model=list[ServiceRead])
 async def get_all_services(
     # session: AsyncSession = Depends(db_helper.session_getter),
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
@@ -24,7 +24,7 @@ async def get_all_services(
     return services
 
 
-@router.get("/{service_id}", response_model=GetOneService)
+@router.get("/{service_id}", response_model=ServiceRead)
 async def get_one_service(
     service_id: int,
     # session: AsyncSession = Depends(db_helper.session_getter),
@@ -34,7 +34,7 @@ async def get_one_service(
     return service
 
 
-@router.post("", response_model=GetOneService)
+@router.post("/add", response_model=ServiceRead)
 async def create_service(
     service_create: CreateService,
     # session: AsyncSession = Depends(db_helper.session_getter),
@@ -44,3 +44,11 @@ async def create_service(
         session=session, service_create=service_create
     )
     return service
+
+@router.delete("/delete/{service_id}")
+async def delete_service(service_id: int):
+    if service_id in fake_db:
+        fake_db.remove(service_id)
+        return {"message": "Service deleted successfully"}
+    else:
+        return {"error": "Service not found"}
