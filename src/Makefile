@@ -17,3 +17,6 @@ install_depends:
 		python -m pip install -r requirements.txt
 		poetry install
 
+# alembic
+revision:
+		alembic revision --autogenerate
