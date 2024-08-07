@@ -36,7 +36,7 @@ async def get_one_service(
 
 @router.post("/add", response_model=ServiceRead)
 async def create_service(
-    service_create: CreateService,
+    service_create: Annotated[CreateService,Depends()],
     # session: AsyncSession = Depends(db_helper.session_getter),
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> Service:
