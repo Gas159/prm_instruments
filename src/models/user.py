@@ -11,8 +11,8 @@ class User(IntPkMixin, Base):
 
     username: Mapped[str] = mapped_column(unique=True)
     second_name: Mapped[str]
-    foo: Mapped[str]
-    bar: Mapped[str]
     email: Mapped[str | None]
+    # foo: Mapped[str]
+    # bar: Mapped[str]
 
-    __table_args__ = (UniqueConstraint("foo", "bar"),)
+    # __table_args__ = (UniqueConstraint("foo", "bar"),)

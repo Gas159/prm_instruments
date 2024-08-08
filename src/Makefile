@@ -5,10 +5,15 @@ build:
 # 		docker run -d --name fastapi -p 8001:8000 my
 
 run:
-		gunicorn main:main_app --workers 3 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001
+		gunicorn main:main_app --workers 3 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001 --reload
+tmux:
+		tmux attach -t fast
 
 
 #poetry
+shell:
+		poetry shell
+
 tree:
 		poetry show --tree
 

@@ -6,8 +6,8 @@ class User(BaseModel):
     username: str
     second_name: str
     email: str | None
-    foo: str
-    bar: str
+    # foo: str
+    # bar: str
 
 
 class UserCreate(User):
