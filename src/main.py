@@ -66,3 +66,5 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:main_app", host=settings.run.host, port=settings.run.port, reload=True
     )
+    # import uvicorn.workers.UvicornWorker
+    # uvicorn.run(   gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001 --reload )

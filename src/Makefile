@@ -1,8 +1,11 @@
 #docker comand
 build:
 		docker build . --tag my1
+# run:
+# 		docker run -d --name fastapi -p 8001:8000 my
+
 run:
-		docker run -d --name fastapi -p 8001:8000 my
+		gunicorn main:main_app --workers 3 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001
 
 
 #poetry
@@ -20,3 +23,4 @@ install_depends:
 # alembic
 revision:
 		alembic revision --autogenerate
+

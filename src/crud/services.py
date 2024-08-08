@@ -35,3 +35,14 @@ async def create_service(
     await session.commit()
     # await session.refresh(service)
     return service
+
+async def get_service(
+        session: AsyncSession,
+        service_id: int
+) -> Service:
+    stmt = select(Service).where(Service.id == service_id)
+    print(stmt,'111111111111111111')
+    res = stmt
+    await session.delete(stmt)
+    # await session.commit()
+    # return res

@@ -3,6 +3,13 @@ Version: 1.5.1
 poetry add 'sqlalchemy[asyncio]' #async orm
 poetry add asyncpg #postgres
 
+poetry add "uvicorn[standard]" gunicorn
+gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001 --reload
+
+poetry add --group dev pytest
+
+
+
 poetry add alembic
 alembic init -t async alembic
 alembic revision --autogenerate -m 'create user table'
