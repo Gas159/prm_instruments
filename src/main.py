@@ -7,12 +7,14 @@ from fastapi.responses import ORJSONResponse
 from api.v1 import router as api_v1_router
 from config import settings
 from database import db_helper
-from models import Base
+
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # startup
+
+    # from models import Base
     # async with db_helper.engine.begin() as conn:
     #     await conn.run_sync(Base.metadata.drop_all)
         # await conn.run_sync(Base.metadata.create_all)
@@ -57,14 +59,13 @@ main_app.add_middleware(
 )
 
 
-@main_app.get("/")
-async def root():
-    return {"data": "Hello World"}
+# @main_app.get("/")
+# async def root():
+#     return {"data": "Hello World"}
 
 
 if __name__ == "__main__":
     uvicorn.run(
         "main:main_app", host=settings.run.host, port=settings.run.port, reload=True
     )
-    # import uvicorn.workers.UvicornWorker
-    # uvicorn.run(   gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001 --reload )
+

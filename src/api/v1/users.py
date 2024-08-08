@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud import users as users_crud
 from database import db_helper
-from schemas.user import UserRead, UserCreate, User
+from schemas.user import UserCreate, User
 
 router = APIRouter(
     # prefix=settings.api.v1.users,
@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 
-@router.get("/{user_id}", response_model=UserRead)
+@router.get("/{user_id}", response_model=User)
 async def get_user(
     user_id: int,
     # session: AsyncSession = Depends(db_helper.session_getter),
@@ -24,7 +24,7 @@ async def get_user(
     return user
 
 
-@router.get("", response_model=list[UserRead])
+@router.get("", response_model=list[User])
 async def get_all_users(
     # session: AsyncSession = Depends(db_helper.session_getter),
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
@@ -33,7 +33,7 @@ async def get_all_users(
     return users
 
 
-@router.post("", response_model=UserRead)
+@router.post("", response_model=User)
 async def create_user(
     user_create: Annotated[UserCreate, Depends()],
     # session: AsyncSession = Depends(db_helper.session_getter),

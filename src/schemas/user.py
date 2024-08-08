@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from pydantic import ConfigDict
 
 
-class User(BaseModel):
+class UserBase(BaseModel):
     username: str
     second_name: str
     email: str | None
@@ -10,13 +10,13 @@ class User(BaseModel):
     # bar: str
 
 
-class UserCreate(User):
-    pass
-
-
-class UserRead(User):
+class User(UserBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
+
+
+class UserCreate(UserBase):
+    pass
 
 
 # class UserGetOne(UserRead):

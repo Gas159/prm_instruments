@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import db_helper
 from models.service import Service
-from schemas.service import CreateService, ServiceRead
+from schemas.service import CreateService, Service
 from crud import services as services_crud
 
 router = APIRouter(
@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 
-@router.get("/get_all", response_model=list[ServiceRead])
+@router.get("", response_model=list[Service])
 async def get_all_services(
     # session: AsyncSession = Depends(db_helper.session_getter),
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
@@ -24,7 +24,7 @@ async def get_all_services(
     return services
 
 
-@router.get("/{service_id}", response_model=ServiceRead)
+@router.get("/{service_id}", response_model=Service)
 async def get_one_service(
     service_id: int,
     # session: AsyncSession = Depends(db_helper.session_getter),
@@ -34,7 +34,7 @@ async def get_one_service(
     return service
 
 
-@router.post("/add", response_model=ServiceRead)
+@router.post("/", response_model=Service)
 async def create_service(
     service_create: Annotated[CreateService, Depends()],
     # session: AsyncSession = Depends(db_helper.session_getter),
@@ -46,7 +46,7 @@ async def create_service(
     return service
 
 
-@router.delete("/delete/{service_id}")
+@router.delete("/{service_id}")
 async def delete_service(service_id: int):
 
     return {"message": "Service deleted successfully"}

@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 
 
-class Service(BaseModel):
+class ServiceBase(BaseModel):
     name: str
     description: str
 
@@ -9,14 +9,14 @@ class Service(BaseModel):
     # 	orm_mode = True
 
 
-class ServiceRead(Service):
+class Service(ServiceBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
 
 
-class CreateService(Service):
+class CreateService(ServiceBase):
     pass
 
 
-# class GetAllService(ServiceRead):
+# class GetAllService(ServiceBaseRead):
 #     pass

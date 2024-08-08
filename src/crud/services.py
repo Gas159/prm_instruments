@@ -8,10 +8,7 @@ from models.service import Service
 from schemas.service import CreateService
 
 
-async def get_service(
-        session: AsyncSession,
-        service_id: int
-) -> Service:
+async def get_service(session: AsyncSession, service_id: int) -> Service:
     stmt = select(Service).where(Service.id == service_id)
     res = await session.scalars(stmt)
     return res.first()
@@ -36,12 +33,10 @@ async def create_service(
     # await session.refresh(service)
     return service
 
-async def get_service(
-        session: AsyncSession,
-        service_id: int
-) -> Service:
+
+async def get_service(session: AsyncSession, service_id: int) -> Service:
     stmt = select(Service).where(Service.id == service_id)
-    print(stmt,'111111111111111111')
+    print(stmt, "111111111111111111")
     res = stmt
     await session.delete(stmt)
     # await session.commit()
