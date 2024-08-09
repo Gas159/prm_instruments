@@ -59,9 +59,9 @@ main_app.add_middleware(
 )
 
 
-# @main_app.get("/")
-# async def root():
-#     return {"data": "Hello World"}
+@main_app.get("/")
+async def root():
+    return {"data": "i18n"}
 
 
 if __name__ == "__main__":

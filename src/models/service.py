@@ -8,7 +8,8 @@ from models.mixins.int_id_pk import IntPkMixin
 class Service(IntPkMixin, Base):
     # __tablename__ = "services"
 
-    name: Mapped[str] = mapped_column(unique=True)
+    name: Mapped[str]
+    # name: Mapped[str] = mapped_column(unique=True)
     description: Mapped[str]
     # price: Mapped[float]
     # duration: Mapped[int]

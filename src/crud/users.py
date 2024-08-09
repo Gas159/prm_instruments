@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,8 +13,13 @@ async def get_user(
     user_id: int,
 ) -> User:
     stmt = select(User).where(User.id == user_id)
-    res = await session.scalars(stmt)
-    return res.first()
+    service_tuple = await session.scalars(stmt)
+    user = service_tuple.first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    # res = await session.scalars(stmt)
+    # return res.first()
+    return user
 
 
 async def get_all_users(
