@@ -5,6 +5,8 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import ValidationException
 import uvicorn
 from fastapi.responses import ORJSONResponse
+from fastapi_pagination import add_pagination
+
 # from pydantic import ValidationError
 # from starlette.requests import Request
 # from starlette.responses import JSONResponse
@@ -39,7 +41,7 @@ main_app.include_router(
     prefix=settings.api.prefix,
     # mainApp.mount("/app", app)  # your app routes will now be /app/{your-route-here}
 )
-
+add_pagination(main_app)
 origins = [
     # "http://localhost:3000",
     # "https://car-service-18635.web.app",

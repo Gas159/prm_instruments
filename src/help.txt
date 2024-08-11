@@ -8,6 +8,7 @@ gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bin
 
 poetry add --group dev pytest
 
+poetry add fastapi-pagination
 
 
 poetry add alembic

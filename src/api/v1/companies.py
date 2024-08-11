@@ -1,17 +1,17 @@
 from typing import Annotated, Sequence
-
-from fastapi import APIRouter, Depends
-
-
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from database import db_helper
-
-
-from models.company import CompanyModel
+from models import CompanyModel
 from schemas.company import SCompany, SCompanyCreate, SCompanyUpdate
-
 from crud import companies as companies_crud
+
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate
+
 
 router = APIRouter(
     # prefix=settings.api.v1.users,
@@ -30,13 +30,22 @@ async def get_one_company(
     return company
 
 
-@router.get("", response_model=list[SCompany])
+@router.get("", response_model=Page[SCompany])
 async def get_all_services(
     # session: AsyncSession = Depends(db_helper.session_getter),
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-) -> Sequence[SCompany]:
-    companies = await companies_crud.get_all_companies(session=session)
-    return companies
+) -> Page[SCompany]:
+    stmt = (
+        select(CompanyModel)
+        .options(selectinload(CompanyModel.services))
+        .order_by(CompanyModel.id)
+    )
+    # result = await session.execute(stmt)
+    # companies = result.scalars().all()
+    return paginate(query=stmt)
+
+    # companies = await companies_crud.get_all_companies(session=session)
+    # return companies
 
 
 @router.post("/", response_model=SCompanyCreate)

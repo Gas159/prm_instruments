@@ -2,6 +2,7 @@ from typing import Sequence
 
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
+from fastapi_pagination import paginate, Page
 from sqlalchemy import select
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -29,14 +30,15 @@ async def get_company(
 
 async def get_all_companies(
     session: AsyncSession,
-) -> Sequence[SCompany]:
+) -> Page[SCompany]:  # Sequence[SCompany]:
     stmt = (
         select(CompanyModel)
         .options(selectinload(CompanyModel.services))
         .order_by(CompanyModel.id)
     )
-    companies = await session.scalars(stmt)
-    return jsonable_encoder(companies.all())
+    company = await session.scalars(stmt)
+    return paginate(company.all())
+    # return jsonable_encoder(companies.all())
 
 
 async def create_company(
