@@ -8,10 +8,16 @@ from models import ServiceModel
 from schemas.service import ServiceBase, ServiceUpdate
 
 
-async def get_service(session: AsyncSession, service_id: int) -> ServiceModel:
+async def get_service(
+    session: AsyncSession,
+    service_id: int,
+) -> ServiceModel:
     stmt = select(ServiceModel).where(ServiceModel.id == service_id)
-    res = await session.scalars(stmt)
-    return res.first()
+    service = await session.scalar(stmt)
+    # service = service_tuple.first()
+    if service is None:
+        raise HTTPException(status_code=404, detail="Service not found")
+    return service
 
 
 async def get_all_services(
@@ -43,6 +49,7 @@ async def update_service(
     service = await session.scalar(stmt)
     if service is None:
         raise HTTPException(status_code=404, detail="Service not found")
+
     for key, value in service_update.model_dump(exclude_unset=True).items():
         if value is None:
             continue

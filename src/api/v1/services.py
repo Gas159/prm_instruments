@@ -23,7 +23,7 @@ async def get_one_service(
     service_id: int,
     # session: AsyncSession = Depends(db_helper.session_getter),
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-) -> ServiceModel:
+) -> Service:
     service = await services_crud.get_service(session=session, service_id=service_id)
     return service
 
@@ -49,7 +49,7 @@ async def create_service(
 
 
 @router.put("/{service_id}", response_model=Service)
-async def update_item(
+async def update_company(
     service_id: int,
     service_update: Annotated[ServiceUpdate, Depends()],
     session: AsyncSession = Depends(db_helper.session_getter),

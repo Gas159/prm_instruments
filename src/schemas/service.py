@@ -4,18 +4,21 @@ from pydantic import BaseModel, ConfigDict
 class ServiceBase(BaseModel):
     name: str
     description: str
+    company_id: int | None
+    comment: str | None = None
+    rate: int | None = None
     # msg: str | None = None
-
+    model_config = ConfigDict(from_attributes=True)
     # class Config:
-    # 	orm_mode = True
+    #     orm_mode = True
 
 
 class Service(ServiceBase):
-    model_config = ConfigDict(from_attributes=True)
     id: int
+    model_config = ConfigDict(from_attributes=True)
 
 
-class CreateService(ServiceBase):
+class CreateService(Service):
     # msg: str = "Service created successfully"
     pass
 
