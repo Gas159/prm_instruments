@@ -1,11 +1,14 @@
-from typing import Sequence
-
+# from typing import Sequence
+# from fastapi.encoders import jsonable_encoder
 from fastapi import HTTPException
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from models import ServiceModel
-from schemas.service import ServiceBase, ServiceUpdate
+from schemas.service import ServiceBase, ServiceUpdate, Service
 
 
 async def get_service(
@@ -14,7 +17,6 @@ async def get_service(
 ) -> ServiceModel:
     stmt = select(ServiceModel).where(ServiceModel.id == service_id)
     service = await session.scalar(stmt)
-    # service = service_tuple.first()
     if service is None:
         raise HTTPException(status_code=404, detail="Service not found")
     return service
@@ -22,11 +24,13 @@ async def get_service(
 
 async def get_all_services(
     session: AsyncSession,
-) -> Sequence[ServiceModel]:
-    stmt = select(ServiceModel).order_by(ServiceModel.id)
-    # ServiceModels = await session.scalars(select(ServiceModel).order_by(ServiceModel.id))
-    services = await session.scalars(stmt)
-    return services.all()
+) -> Page[Service]:
+    stmt = (
+        select(ServiceModel)
+        .options(joinedload(ServiceModel.company))
+        .order_by(ServiceModel.id)
+    )
+    return await paginate(query=stmt, conn=session)
 
 
 async def create_service(

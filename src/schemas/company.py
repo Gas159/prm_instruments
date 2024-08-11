@@ -1,10 +1,9 @@
 from pydantic import BaseModel, ConfigDict
-
-
 from schemas.service import Service
 
 
 class SCompanyBase(BaseModel):
+    id: int | None = None
     name: str
     description: str
     coordinates: str | None = None
@@ -13,8 +12,13 @@ class SCompanyBase(BaseModel):
 
 
 class SCompany(SCompanyBase):
+    # id: int
     services: list[Service] = []
-    id: int
+
+    # class Config:
+    #     fields = {
+    #         'id': {'alias': 'id'},
+    #     }
 
 
 class SCompanyCreate(SCompanyBase):

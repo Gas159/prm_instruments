@@ -1,12 +1,8 @@
-from typing import Annotated, Sequence
-
+from typing import Annotated
 from fastapi import APIRouter, Depends
-
-
+from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from database import db_helper
-
 from models import ServiceModel
 from schemas.service import Service, ServiceBase, ServiceUpdate
 from crud import services as services_crud
@@ -23,16 +19,15 @@ async def get_one_service(
     service_id: int,
     # session: AsyncSession = Depends(db_helper.session_getter),
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-) -> Service:
+) -> ServiceModel:
     service = await services_crud.get_service(session=session, service_id=service_id)
     return service
 
 
-@router.get("", response_model=list[Service])
+@router.get("", response_model=Page[Service])
 async def get_all_services(
-    # session: AsyncSession = Depends(db_helper.session_getter),
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-) -> Sequence[ServiceModel]:
+) -> Page[Service]:
     services = await services_crud.get_all_services(session=session)
     return services
 
