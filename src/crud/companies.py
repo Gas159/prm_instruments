@@ -38,7 +38,7 @@ async def get_all_companies(
         .order_by(CompanyModel.id)
     )
     return await paginate(query=stmt, conn=session)
-    # result = await session.execute(stmt)
+    # result = await session.execute(stmt)1
     # companies = result.scalars().all()
 
 
