@@ -1,9 +1,9 @@
 __all__ = (
     "Base",
     "User",
-    "Service",
+    "ServiceModel",
 )
 
 from .base import Base
 from .user import User
-from .service import Service
+from .service import ServiceModel

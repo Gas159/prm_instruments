@@ -7,6 +7,7 @@ from crud import users as users_crud
 from database import db_helper
 from schemas.user import UserCreate, User
 
+
 router = APIRouter(
     # prefix=settings.api.v1.users,
     tags=["users"],

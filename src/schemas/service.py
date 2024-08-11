@@ -6,7 +6,6 @@ class ServiceBase(BaseModel):
     description: str
     # msg: str | None = None
 
-
     # class Config:
     # 	orm_mode = True
 
@@ -25,5 +24,7 @@ class DeleteService(Service):
     # msg: str = "Service deleted successfully"
     pass
 
-# class GetAllService(ServiceBaseRead):
-#     pass
+
+class ServiceUpdate(ServiceBase):
+    name: str | None = None
+    description: str | None = None

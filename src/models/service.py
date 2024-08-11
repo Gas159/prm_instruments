@@ -5,12 +5,12 @@ from models import Base
 from models.mixins.int_id_pk import IntPkMixin
 
 
-class Service(IntPkMixin, Base):
+class ServiceModel(IntPkMixin, Base):
     # __tablename__ = "services"
 
     name: Mapped[str]
-    # name: Mapped[str] = mapped_column(unique=True)
     description: Mapped[str]
+    # name: Mapped[str] = mapped_column(unique=True)
     # price: Mapped[float]
     # duration: Mapped[int]
     # user_id: Mapped[int]

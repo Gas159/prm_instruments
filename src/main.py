@@ -1,13 +1,17 @@
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import ValidationException
 import uvicorn
 from fastapi.responses import ORJSONResponse
+# from pydantic import ValidationError
+# from starlette.requests import Request
+# from starlette.responses import JSONResponse
 
 from api.v1 import router as api_v1_router
 from config import settings
 from database import db_helper
-
 
 
 @asynccontextmanager
@@ -17,8 +21,8 @@ async def lifespan(app: FastAPI):
     # from models import Base
     # async with db_helper.engine.begin() as conn:
     #     await conn.run_sync(Base.metadata.drop_all)
-        # await conn.run_sync(Base.metadata.create_all)
-            # print("create engine")
+    # await conn.run_sync(Base.metadata.create_all)
+    # print("create engine")
     yield
     # shutdown
     print("dispose engine")
@@ -44,6 +48,16 @@ origins = [
     "*",
 ]
 
+
+@main_app.exception_handler(ValidationException)
+async def validation_exception_handler(request: Request, exc: ValidationException):
+    return ORJSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()}
+    )
+
+
+
 main_app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -68,4 +82,3 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:main_app", host=settings.run.host, port=settings.run.port, reload=True
     )
-
