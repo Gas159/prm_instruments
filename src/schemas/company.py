@@ -7,29 +7,24 @@ from schemas.service import Service
 class SCompanyBase(BaseModel):
     name: str
     description: str
-    coordinates: list | None
-    services: list[Service] = []
+    coordinates: str | None = None
 
-    # msg: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 
-
-
 class SCompany(SCompanyBase):
-    # model_config = ConfigDict(from_attributes=True)
+    services: list[Service] = []
     id: int
 
 
 class SCompanyCreate(SCompanyBase):
     # msg: str = "Service created successfully"
-    services: int
+    # services: int
     pass
 
 
 class SCompanyDelete(SCompanyBase):
     # msg: str = "Service deleted successfully"
-    services: list[Service] = []
     pass
 
 

@@ -12,7 +12,8 @@ class CompanyModel(IntPkMixin, Base):
 
     name: Mapped[str]
     description: Mapped[str]
-    coordinates: Mapped[list] = mapped_column(JSON, default=[0, 0], nullable=True)
+    # coordinates: Mapped[list] = mapped_column(JSON, default=[0, 0], nullable=True)
+    coordinates: Mapped[str] = mapped_column(default="0,0", nullable=True)
 
     services: Mapped[list["Service"]] = relationship(
         "ServiceModel", back_populates="company", cascade="all, delete-orphan"

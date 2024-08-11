@@ -48,6 +48,7 @@ async def create_company(
     await session.commit()
     # await session.refresh(company)
     return jsonable_encoder(company)
+    # return company
 
 
 async def update_company(
