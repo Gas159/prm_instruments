@@ -39,7 +39,7 @@ async def get_all_services(
     # return await paginate(session, stmt)
 
 
-@router.post("/", response_model=SCompanyCreate)
+@router.post("", response_model=SCompanyCreate)
 async def create_service(
     company_create: Annotated[SCompanyCreate, Depends()],
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
@@ -50,7 +50,7 @@ async def create_service(
     return service
 
 
-@router.put("/{companies_id}", response_model=SCompany)
+@router.put("/{company_id}", response_model=SCompany)
 async def update_company(
     company_id: int,
     company_update: Annotated[SCompanyUpdate, Depends()],
@@ -63,7 +63,7 @@ async def update_company(
     return company
 
 
-@router.delete("/{companies_id}", response_model=SCompany)
+@router.delete("/{company_id}", response_model=SCompany)
 async def delete_company(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     company_id: int,

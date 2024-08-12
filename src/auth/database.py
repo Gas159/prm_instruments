@@ -1,14 +1,25 @@
 import datetime
-
-from sqlalchemy import UniqueConstraint, String, ForeignKey, Boolean, DateTime, func
+from fastapi import Depends
+from fastapi_users.db import SQLAlchemyUserDatabase
+from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
+from sqlalchemy import String, Boolean, DateTime, func
 from sqlalchemy.dialects.postgresql import TIMESTAMP
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import mapped_column, Mapped, DeclarativeBase
 
-from models import Base
-from models.mixins.int_id_pk import IntPkMixin
+from database import db_helper
+
+# from models import Base
 
 
-class User(IntPkMixin, Base):
+class Base(DeclarativeBase):
+    pass
+
+
+class User(SQLAlchemyBaseUserTable[int], Base):
+    # __table_args__ = {"extend_existing": True}
+    # id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(unique=True)
     second_name: Mapped[str]
     email: Mapped[str] = mapped_column(
@@ -28,9 +39,6 @@ class User(IntPkMixin, Base):
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
-    # id: Mapped[int] = mapped_column(primary_key=True)
-    # username: Mapped[str] = mapped_column(unique=True)
-    # foo: Mapped[str]
-    # bar: Mapped[str]
 
-    # __table_args__ = (UniqueConstraint("foo", "bar"),)
+async def get_user_db(session: AsyncSession = Depends(db_helper.session_getter)):
+    yield SQLAlchemyUserDatabase(session, User)

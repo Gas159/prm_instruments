@@ -1,6 +1,7 @@
 # from typing import Sequence
 # from fastapi.encoders import jsonable_encoder
 from fastapi import HTTPException
+from fastapi.encoders import jsonable_encoder
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
@@ -8,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from models import ServiceModel
-from schemas.service import ServiceBase, ServiceUpdate, Service
+from schemas.service import ServiceBase, ServiceUpdate, Service, CreateService
 
 
 async def get_service(
@@ -35,13 +36,13 @@ async def get_all_services(
 
 async def create_service(
     session: AsyncSession,
-    service_create: ServiceBase,  # schema: CreateService
-) -> ServiceModel:
+    service_create: CreateService,  # schema: CreateService
+) -> ServiceBase:
     service = ServiceModel(**service_create.model_dump())
     session.add(service)
     await session.commit()
     # await session.refresh(service)
-    return service
+    return jsonable_encoder(service)
 
 
 async def update_service(

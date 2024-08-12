@@ -8,14 +8,14 @@ from schemas.service import Service
 
 
 class CompanyModel(IntPkMixin, Base):
-    __tablename__ = "companies"
+    # __tablename__ = "companies"
 
     name: Mapped[str]
     description: Mapped[str]
     # coordinates: Mapped[list] = mapped_column(JSON, default=[0, 0], nullable=True)
     coordinates: Mapped[str] = mapped_column(default="0,0", nullable=True)
 
-    services: Mapped[list["Service"]] = relationship(
+    services: Mapped[List["Service"]] = relationship(
         "ServiceModel", back_populates="company", cascade="all, delete-orphan"
     )
     # name: Mapped[str] = mapped_column(unique=True)

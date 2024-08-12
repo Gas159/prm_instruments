@@ -6,10 +6,10 @@ poetry add asyncpg #postgres
 poetry add "uvicorn[standard]" gunicorn
 gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001 --reload
 
-poetry add --group dev pytest
 
 poetry add fastapi-pagination
 
+pip install 'fastapi-users[sqlalchemy]'
 
 poetry add alembic
 alembic init -t async alembic
@@ -26,3 +26,7 @@ pytest
 
 d build . --tag fastapi
 d run -p 8000:8000 fastapi
+
+
+limit=5&offset=0
+page=1&size=10

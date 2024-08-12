@@ -12,7 +12,6 @@ class SCompanyBase(BaseModel):
 
 
 class SCompany(SCompanyBase):
-    # id: int
     services: list[Service] = []
 
     # class Config:
@@ -21,10 +20,12 @@ class SCompany(SCompanyBase):
     #     }
 
 
-class SCompanyCreate(SCompanyBase):
-    # msg: str = "Service created successfully"
-    # services: int
-    pass
+class SCompanyCreate(BaseModel):
+    name: str
+    description: str
+    coordinates: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SCompanyDelete(SCompanyBase):

@@ -4,7 +4,7 @@ from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import db_helper
 from models import ServiceModel
-from schemas.service import Service, ServiceBase, ServiceUpdate
+from schemas.service import Service, ServiceBase, ServiceUpdate, CreateService
 from crud import services as services_crud
 
 router = APIRouter(
@@ -32,11 +32,11 @@ async def get_all_services(
     return services
 
 
-@router.post("/", response_model=Service)
+@router.post("", response_model=ServiceBase)
 async def create_service(
-    service_create: Annotated[ServiceBase, Depends()],
+    service_create: Annotated[CreateService, Depends()],
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-) -> ServiceModel:
+) -> ServiceBase:
     service = await services_crud.create_service(
         session=session, service_create=service_create
     )

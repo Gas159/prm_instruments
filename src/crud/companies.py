@@ -2,7 +2,7 @@
 
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
-from fastapi_pagination import Page
+from fastapi_pagination import Page, LimitOffsetPage
 from sqlalchemy import select
 from fastapi_pagination.ext.sqlalchemy import paginate
 
@@ -38,7 +38,7 @@ async def get_all_companies(
         .order_by(CompanyModel.id)
     )
     return await paginate(query=stmt, conn=session)
-    # result = await session.execute(stmt)1
+    # result = await session.execute(stmt)11
     # companies = result.scalars().all()
 
 
