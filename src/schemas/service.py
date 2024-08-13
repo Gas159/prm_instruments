@@ -6,8 +6,8 @@ class ServiceBase(BaseModel):
     name: str
     description: str
     company_id: int | None
-    comment: str | None = None
-    rate: int | None = None
+    # comment: str | None = None
+    # rate: int | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -20,8 +20,8 @@ class CreateService(BaseModel):
     name: str
     description: str
     company_id: int | None
-    comment: str | None = None
-    rate: int | None = None
+    # comment: str | None = None
+    # rate: int | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
