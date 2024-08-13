@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Request
 
-from fastapi.exceptions import ValidationException
+from fastapi.exceptions import ValidationException, RequestValidationError, HTTPException
 import uvicorn
 from fastapi.responses import ORJSONResponse
 from fastapi_pagination import add_pagination
@@ -16,7 +16,6 @@ from auth.manager import get_user_manager
 from auth.schemas import UserRead, UserCreate
 from config import settings
 from database import db_helper
-
 
 
 @asynccontextmanager
@@ -70,6 +69,14 @@ add_pagination(main_app)
 @main_app.exception_handler(ValidationException)
 async def validation_exception_handler(request: Request, exc: ValidationException):
     return ORJSONResponse(status_code=422, content={"detail": exc.errors()})
+
+@main_app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return ORJSONResponse(status_code=422, content={"detail": exc.errors(), "body": exc.body})
+
+# @main_app.exception_handler(HTTPException)
+# async def validation_exception_handler(request: Request, exc: HTTPException):
+#     return ORJSONResponse(status_code=422, content={"detail": exc.errors(), "body": exc.body})
 
 
 origins = [
