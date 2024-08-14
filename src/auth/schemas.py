@@ -1,12 +1,11 @@
 from datetime import datetime
-from typing import Optional
 
 from fastapi_users import schemas
-from pydantic import EmailStr, ConfigDict, BaseModel
+from pydantic import EmailStr, ConfigDict, Field
 
 
 class UserRead(schemas.BaseUser[int]):
-# class UserRead(BaseModel):
+    # class UserRead(BaseModel):
     id: int
     # id: models.ID
     username: str
@@ -21,15 +20,15 @@ class UserRead(schemas.BaseUser[int]):
 
 
 class UserCreate(schemas.BaseUserCreate):
-# class UserCreate(BaseModel):
-    username: str
+    # class UserCreate(BaseModel):
+    username: str = Field(default="username", max_length=32)
     second_name: str
     email: EmailStr
     password: str
     # role_id: int
-    is_active: Optional[bool] = True
-    is_superuser: Optional[bool] = False
-    is_verified: Optional[bool] = False
+    # is_active: Optional[bool] = True
+    # is_superuser: Optional[bool] = False
+    # is_verified: Optional[bool] = False
 
 
 class UserUpdate(schemas.BaseUserUpdate):

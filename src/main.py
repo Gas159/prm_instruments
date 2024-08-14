@@ -1,9 +1,13 @@
 from contextlib import asynccontextmanager
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, Request
 
-from fastapi.exceptions import ValidationException, RequestValidationError, HTTPException
 import uvicorn
+from fastapi import FastAPI, Request
+from fastapi.exceptions import (
+    ValidationException,
+    RequestValidationError,
+    HTTPException,
+)
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 from fastapi_pagination import add_pagination
 from fastapi_users import FastAPIUsers
@@ -11,7 +15,6 @@ from fastapi_users import FastAPIUsers
 from api.v1 import router as api_v1_router
 from auth.auth import auth_backend
 from auth.database import User
-
 from auth.manager import get_user_manager
 from auth.schemas import UserRead, UserCreate
 from config import settings
@@ -70,13 +73,25 @@ add_pagination(main_app)
 async def validation_exception_handler(request: Request, exc: ValidationException):
     return ORJSONResponse(status_code=422, content={"detail": exc.errors()})
 
+
 @main_app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    return ORJSONResponse(status_code=422, content={"detail": exc.errors(), "body": exc.body})
+    return ORJSONResponse(
+        status_code=422, content={"detail": exc.errors(), "body": exc.body}
+    )
+
 
 # @main_app.exception_handler(HTTPException)
 # async def validation_exception_handler(request: Request, exc: HTTPException):
 #     return ORJSONResponse(status_code=422, content={"detail": exc.errors(), "body": exc.body})
+
+
+@main_app.exception_handler(500)
+async def internal_server_error(request: Request, exc: Exception):
+    # logger.error(f"Internal Server Error: {exc}")
+    return ORJSONResponse(
+        status_code=500, content={"error": "Internal server error!","detail": str(exc)}
+    )
 
 
 origins = [
@@ -110,5 +125,6 @@ async def root():
 
 if __name__ == "__main__":
     uvicorn.run(
-        "main:main_app", host=settings.run.host, port=settings.run.port, reload=True
+        "main:main_app", host=settings.run.host, port=settings.run.port, reload=True, workers=3
     )
+    # uvicorn main:main_app --host 0.0.0.0 --port 8001 --ssl-keyfile /etc/letsencrypt/live/gas159.ru/privkey.pem --ssl-certfile /etc/letsencrypt/live/gas159.ru/fullchain.pem

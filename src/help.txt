@@ -4,7 +4,7 @@ poetry add 'sqlalchemy[asyncio]' #async orm
 poetry add asyncpg #postgres
 
 poetry add "uvicorn[standard]" gunicorn
-gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001 --reload
+gunicorn main:app --workers 3 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001 --reload
 
 
 poetry add fastapi-pagination

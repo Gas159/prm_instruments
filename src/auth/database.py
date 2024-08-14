@@ -1,13 +1,12 @@
-import datetime
 from fastapi import Depends
 from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy import String, Boolean, DateTime, func
-from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import mapped_column, Mapped, DeclarativeBase
 
 from database import db_helper
+
 
 # from models import Base
 
@@ -20,7 +19,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     # __table_args__ = {"extend_existing": True}
     # id: Mapped[int] = mapped_column(primary_key=True)
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(unique=True)
+    username: Mapped[str]  # = mapped_column(unique=True)
     second_name: Mapped[str]
     email: Mapped[str] = mapped_column(
         String(length=320), unique=True, index=True, nullable=False
