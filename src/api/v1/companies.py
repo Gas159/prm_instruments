@@ -24,7 +24,7 @@ async def get_one_company(
 
 
 @router.get("", response_model=Page[SCompany])
-async def get_all_services(
+async def get_all_companies(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> Page[SCompany]:
     companies = await companies_crud.get_all_companies(session=session)
@@ -40,7 +40,7 @@ async def get_all_services(
 
 
 @router.post("", response_model=SCompanyCreate)
-async def create_service(
+async def create_company(
     company_create: Annotated[SCompanyCreate, Depends()],
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> SCompanyCreate:

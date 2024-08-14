@@ -34,11 +34,11 @@ async def get_all_users(
     return users
 
 
-@router.post("", response_model=User)
-async def create_user(
-    user_create: Annotated[UserCreate, Depends()],
-    # session: AsyncSession = Depends(db_helper.session_getter),
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-) -> User:
-    user = await users_crud.create_user(session=session, user_create=user_create)
-    return user
+# @router.post("", response_model=User)
+# async def create_user(
+#     user_create: Annotated[UserCreate, Depends()],
+#     # session: AsyncSession = Depends(db_helper.session_getter),
+#     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+# ) -> User:
+#     user = await users_crud.create_user(session=session, user_create=user_create)
+#     return user

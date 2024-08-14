@@ -44,7 +44,7 @@ async def create_service(
 
 
 @router.put("/{service_id}", response_model=Service)
-async def update_company(
+async def update_service(
     service_id: int,
     service_update: Annotated[ServiceUpdate, Depends()],
     session: AsyncSession = Depends(db_helper.session_getter),
