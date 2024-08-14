@@ -9,7 +9,7 @@ from models.mixins.int_id_pk import IntPkMixin
 
 
 class User(IntPkMixin, Base):
-    username: Mapped[str] = mapped_column(unique=True)
+    username: Mapped[str]  # = mapped_column(unique=True)
     second_name: Mapped[str]
     email: Mapped[str] = mapped_column(
         String(length=320), unique=True, index=True, nullable=False
