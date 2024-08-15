@@ -29,18 +29,3 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         status_code=422,
         content={"detail": exc.errors(), "request": str(request.url), "body": exc.body},
     )
-
-
-# @main_app.exception_handler(RequestValidationError)
-# async def validation_exception_handler(request: Request, exc: RequestValidationError):
-#     return ORJSONResponse(
-#         status_code=422, content={"detail": exc.errors(), "body": exc.body}
-#     )
-#
-#
-# @main_app.exception_handler(500)
-# async def internal_server_error(request: Request, exc: Exception):
-#     # logger.error(f"Internal Server Error: {exc}")
-#     return ORJSONResponse(
-#         status_code=500, content={"error": "Internal server error!", "detail": str(exc)}
-#     )

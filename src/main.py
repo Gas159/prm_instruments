@@ -11,8 +11,7 @@ from exceptions import validation_exception_handler, internal_server_error
 
 main_app = FastAPI(
     lifespan=lifespan,
-    # improve speed work with db
-    default_response_class=ORJSONResponse,
+    default_response_class=ORJSONResponse,  # improve speed work with db
 )
 
 main_app.add_exception_handler(500, internal_server_error)
@@ -21,12 +20,10 @@ main_app.add_exception_handler(422, validation_exception_handler)
 main_app.include_router(
     api_v1_router,
     prefix=settings.api.prefix,
-    # mainApp.mount("/app", app)  # your app routes will now be /app/{your-route-here}
 )
 main_app.include_router(
     api_v1_router_v1,
     prefix=settings.api.prefix,
-    # mainApp.mount("/app", app)  # your app routes will now be /app/{your-route-here}
 )
 
 
