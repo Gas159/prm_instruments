@@ -1,6 +1,6 @@
 from pydantic import BaseModel
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import PostgresDsn
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class RunConfig(BaseModel):
@@ -13,6 +13,8 @@ class ApiV1Prefix(BaseModel):
     users: str = "/user"
     services: str = "/service"
     companies: str = "/company"
+    auth: str = "/auth"
+    auth_jwt: str = "/auth/jwt"
 
 
 class ApiPrefix(BaseModel):

@@ -1,14 +1,6 @@
-from fastapi import Depends
-from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
-from sqlalchemy import String, Boolean, DateTime, func
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import mapped_column, Mapped, DeclarativeBase
-
-from database import db_helper
-
-
-# from models import Base
+from sqlalchemy import String, DateTime, func, Boolean
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
 class Base(DeclarativeBase):
@@ -37,7 +29,3 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-
-
-async def get_user_db(session: AsyncSession = Depends(db_helper.session_getter)):
-    yield SQLAlchemyUserDatabase(session, User)

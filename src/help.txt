@@ -5,7 +5,7 @@ poetry add asyncpg #postgres
 
 poetry add "uvicorn[standard]" gunicorn
 gunicorn main:app --workers 3 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8001 --reload
-
+uvicorn main:main_app --host 0.0.0.0 --port 8001 --ssl-keyfile /etc/letsencrypt/live/gas159.ru/privkey.pem --ssl-certfile /etc/letsencrypt/live/gas159.ru/fullchain.pem --reload  --workers=3
 
 poetry add fastapi-pagination
 
@@ -23,6 +23,8 @@ black --diff --color ./
 
 poetry add --group dev pytest
 pytest
+
+poetry add aio-pika, aioredis
 
 d build . --tag fastapi
 d run -p 8000:8000 fastapi

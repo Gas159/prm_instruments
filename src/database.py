@@ -1,22 +1,31 @@
-import datetime
+from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from fastapi import Depends
-from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase, SQLAlchemyBaseUserTable
-from sqlalchemy import String, Boolean
-from sqlalchemy.dialects.postgresql import TIMESTAMP
-
+from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     AsyncEngine,
     async_sessionmaker,
     AsyncSession,
 )
-from sqlalchemy.orm import mapped_column, Mapped
-
 
 from config import settings
-from models import Base
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # startup
+
+    # from models import Base
+    # async with db_helper.engine.begin() as conn:
+    #     await conn.run_sync(Base.metadata.drop_all)
+    # await conn.run_sync(Base.metadata.create_all)
+    # print("create engine")
+    yield
+    # shutdown
+    print("dispose engine")
+    await db_helper.dispose()
+
 
 class DatabaseHelper:
     def __init__(
