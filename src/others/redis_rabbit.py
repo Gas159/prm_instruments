@@ -15,8 +15,7 @@ async def redis_and_rabbitmq():
 
     # Use RabbitMQ to send a message
     await channel.default_exchange.publish(
-        aio_pika.Message(body="Hello, RabbitMQ!".encode()),
-        routing_key="my_queue"
+        aio_pika.Message(body="Hello, RabbitMQ!".encode()), routing_key="my_queue"
     )
 
     # Consume the message from RabbitMQ
@@ -28,4 +27,3 @@ async def redis_and_rabbitmq():
     print(value)  # Output: Hello, Redis!
 
     await connection.close()
-
