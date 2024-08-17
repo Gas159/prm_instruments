@@ -3,11 +3,12 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi_pagination import add_pagination
 
+from services import router as router_v1_service
+from companies import router as router_v1_company
+from users import router as router_v1_user
 
-from
-from api_v1 import router as api_v1_router
 from config import settings
-from database import lifespan
+from project_services.llifespan import lifespan
 from exceptions import validation_exception_handler, internal_server_error
 
 main_app = FastAPI(
@@ -19,14 +20,18 @@ main_app.add_exception_handler(500, internal_server_error)
 main_app.add_exception_handler(422, validation_exception_handler)
 
 main_app.include_router(
-    api_v1_router,
+    router_v1_service,
     prefix=settings.api.prefix,
 )
 main_app.include_router(
-    api_v1_router_v1,
+    router_v1_company,
     prefix=settings.api.prefix,
 )
 
+main_app.include_router(
+    router_v1_user,
+    prefix=settings.api.prefix,
+)
 
 add_pagination(main_app)
 

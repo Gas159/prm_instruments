@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
-from models import ServiceModel
+from services.models import ServiceModel
 from services.schemas import ServiceBase, ServiceUpdate, Service, CreateService
 
 

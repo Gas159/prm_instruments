@@ -1,7 +1,5 @@
-from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     AsyncEngine,
@@ -10,21 +8,6 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from config import settings
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # startup
-
-    # from models import Base
-    # async with db_helper.engine.begin() as conn:
-    #     await conn.run_sync(Base.metadata.drop_all)
-    # await conn.run_sync(Base.metadata.create_all)
-    # print("create engine")
-    yield
-    # shutdown
-    print("dispose engine")
-    await db_helper.dispose()
 
 
 class DatabaseHelper:

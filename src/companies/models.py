@@ -1,8 +1,7 @@
 from typing import List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from models import Base
-from utils.mixins.int_id_pk import IntPkMixin
+from project_services.base import Base
+from project_services.mixins.int_id_pk import IntPkMixin
 from services.schemas import Service
 
 

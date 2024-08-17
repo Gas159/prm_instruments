@@ -3,6 +3,7 @@ from typing import Annotated, Sequence
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from config import settings
 from users import cruds as users_crud
 from database import db_helper
 from users.schemas import User
@@ -10,8 +11,8 @@ from users.schemas import User
 
 router = APIRouter(
     # prefix=settings.api.v1.users,
-    tags=["users"],
-    responses={404: {"description": "Not found"}},
+    # tags=["users"],
+    # responses={404: {"description": "Not found"}},
 )
 
 
