@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from schemas.service import Service
+from services.schemas import Service
 
 
 class SCompanyBase(BaseModel):

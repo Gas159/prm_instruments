@@ -1,16 +1,18 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from config import settings
 from database import db_helper
-from schemas.company import SCompany, SCompanyCreate, SCompanyUpdate
-from crud import companies as companies_crud
+from companies.schemas import SCompany, SCompanyCreate, SCompanyUpdate
+from companies import cruds as companies_crud
 from fastapi_pagination import Page
 
 
 router = APIRouter(
-    # prefix=settings.api.v1.users,
-    # tags=["companies"],
-    # responses={404: {"description": "Not found"}},
+    prefix=settings.api.v1.users,
+    tags=["Companies"],
+    responses={404: {"description": "Not found"}},
 )
 
 

@@ -3,8 +3,9 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi_pagination import add_pagination
 
-from api import router as api_v1_router_v1
-from api.v1 import router as api_v1_router
+
+from
+from api_v1 import router as api_v1_router
 from config import settings
 from database import lifespan
 from exceptions import validation_exception_handler, internal_server_error

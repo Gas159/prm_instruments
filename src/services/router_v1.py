@@ -2,14 +2,16 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from config import settings
 from database import db_helper
 from models import ServiceModel
-from schemas.service import Service, ServiceBase, ServiceUpdate, CreateService
-from crud import services as services_crud
+from services.schemas import Service, ServiceBase, ServiceUpdate, CreateService
+from services import cruds as services_crud
 
 router = APIRouter(
-    # prefix=settings.api.v1.users,
-    tags=["services"],
+    prefix=settings.api.v1.users,
+    tags=["Services"],
     responses={404: {"description": "Not found"}},
 )
 

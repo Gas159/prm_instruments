@@ -1,11 +1,8 @@
-import datetime
-
-from sqlalchemy import UniqueConstraint, String, ForeignKey, Boolean, DateTime, func
-from sqlalchemy.dialects.postgresql import TIMESTAMP
+from sqlalchemy import String, Boolean, DateTime, func
 from sqlalchemy.orm import mapped_column, Mapped
 
 from models import Base
-from models.mixins.int_id_pk import IntPkMixin
+from utils.mixins.int_id_pk import IntPkMixin
 
 
 class User(IntPkMixin, Base):

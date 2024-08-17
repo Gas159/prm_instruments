@@ -1,10 +1,9 @@
-from sqlalchemy import UniqueConstraint, JSON
 from typing import List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from models import Base
-from models.mixins.int_id_pk import IntPkMixin
-from schemas.service import Service
+from utils.mixins.int_id_pk import IntPkMixin
+from services.schemas import Service
 
 
 class CompanyModel(IntPkMixin, Base):

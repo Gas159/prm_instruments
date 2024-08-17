@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from models import ServiceModel
-from schemas.service import ServiceBase, ServiceUpdate, Service, CreateService
+from services.schemas import ServiceBase, ServiceUpdate, Service, CreateService
 
 
 async def get_service(

@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 from fastapi_users import FastAPIUsers
 
-from api.v1.auth.auth import auth_backend
-from api.v1.auth.manager import get_user_manager
-from api.v1.auth.models import User
-from api.v1.auth.schemas import UserRead, UserCreate
+from auth.auth import auth_backend
+from api_v1 import get_user_manager
+from api_v1 import User
+from api_v1 import UserRead, UserCreate
 from config import settings
 
 fastapi_users = FastAPIUsers[User, int](

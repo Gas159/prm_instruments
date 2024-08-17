@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 
 from config import settings
-from api.v1.users import router as users_router
-from api.v1.services import router as services_router
-from api.v1.companies import router as companies_router
+from users.router_v1 import router as users_router
+from services.router_v1 import router as services_router
+from companies.router_v1 import router as companies_router
 
 router = APIRouter(
     prefix=settings.api.v1.prefix,

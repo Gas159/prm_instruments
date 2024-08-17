@@ -3,9 +3,9 @@ from typing import Annotated, Sequence
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from crud import users as users_crud
+from users import cruds as users_crud
 from database import db_helper
-from schemas.user import UserCreate, User
+from users.schemas import User
 
 
 router = APIRouter(

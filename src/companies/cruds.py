@@ -2,15 +2,15 @@
 
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
-from fastapi_pagination import Page, LimitOffsetPage
+from fastapi_pagination import Page
 from sqlalchemy import select
 from fastapi_pagination.ext.sqlalchemy import paginate
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from models.company import CompanyModel
-from schemas.company import SCompanyCreate, SCompanyUpdate, SCompany
+from companies.models import CompanyModel
+from companies.schemas import SCompanyCreate, SCompanyUpdate, SCompany
 
 
 async def get_company(

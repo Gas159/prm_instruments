@@ -1,8 +1,8 @@
-from sqlalchemy import UniqueConstraint, ForeignKey
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from models import Base
-from models.mixins.int_id_pk import IntPkMixin
+from utils.mixins.int_id_pk import IntPkMixin
 
 
 class ServiceModel(IntPkMixin, Base):
