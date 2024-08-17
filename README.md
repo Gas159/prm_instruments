@@ -11,36 +11,58 @@
 [Backend api](https://gas159.ru/docs#/)
 
 ### Стек (backend)
-FastApi, SQLalchemyORM, Redis, postgres, docker-compose, alembic, pydantic, i118n.
-## Installation
+FastApi, SQLalchemyORM, Redis, postgres, docker-compose, alembic, pydantic.
 
+[//]: # (## Installation)
 
-установить python 3.12e
+[//]: # (установить python 3.12e)
 
-в терминале установить менеджер зависимостей poetrey
+[//]: # ()
+[//]: # (в терминале установить менеджер зависимостей poetrey)
 
-```
-$ pip install poetry 
-```
-```
-$ git clone https://github.com/Gas159/Car-Service.git
-```
-перейти в папку с проектом:
-```
-$ cd Car_Service
-```
+[//]: # ()
+[//]: # (```)
 
-далее все выполнять в виртульном окружении. make shell создаст его если нету.
-```
-$ make shell 
-```
+[//]: # ($ pip install poetry )
 
-установить все зависимости
-```
-$ make install 
-```
+[//]: # (```)
 
-запустить файл server/main.py
+[//]: # (```)
 
-открыть бразер по адресу:
-http://0.0.0.0:8000/ 
+[//]: # ($ git clone https://github.com/Gas159/Car-Service.git)
+
+[//]: # (```)
+
+[//]: # (перейти в папку с проектом:)
+
+[//]: # (```)
+
+[//]: # ($ cd Car_Service)
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (далее все выполнять в виртульном окружении. make shell создаст его если нету.)
+
+[//]: # (```)
+
+[//]: # ($ make shell )
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (установить все зависимости)
+
+[//]: # (```)
+
+[//]: # ($ make install )
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (запустить файл server/main.py)
+
+[//]: # ()
+[//]: # (открыть бразер по адресу:)
+
+[//]: # (http://0.0.0.0:8000/ )
