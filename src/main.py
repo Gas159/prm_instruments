@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi_pagination import add_pagination
 
+from auth import router as router_v1_auth
 from services import router as router_v1_service
 from companies import router as router_v1_company
 from users import router as router_v1_user
@@ -19,19 +20,14 @@ main_app = FastAPI(
 main_app.add_exception_handler(500, internal_server_error)
 main_app.add_exception_handler(422, validation_exception_handler)
 
-main_app.include_router(
-    router_v1_service,
-    prefix=settings.api.prefix,
-)
-main_app.include_router(
-    router_v1_company,
-    prefix=settings.api.prefix,
-)
-
-main_app.include_router(
+for router in [
+    router_v1_auth,
     router_v1_user,
-    prefix=settings.api.prefix,
-)
+    router_v1_service,
+    router_v1_company,
+]:
+    main_app.include_router(router, prefix=settings.api.prefix)
+
 
 add_pagination(main_app)
 

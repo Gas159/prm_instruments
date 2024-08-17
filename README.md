@@ -1,16 +1,23 @@
-Car-Service
+# Car-Service
+Сервис предоставляет агрегированные данные по услугам компаний в сфере автомобильных услуг, включая техническое обслуживание, ремонт, страхование и другие. Пользователи могут:
 
-Links:
--https://docs.sqlalchemy.org/en/20/core/engines.html# 
+- записываться на услуги онлайн
+- оставлять заявки на услуги
+- искать компании и услуги на карте
+- оставлять отзывы и оценки компаний и услуг
 
+[Frontend](https://car-service-18635.web.app/)
 
+[Backend api](https://gas159.ru/docs#/)
 
+### Стек (backend)
+FastApi, SQLalchemyORM, Redis, postgres, docker-compose, alembic, pydantic, i118n.
 ## Installation
 
 
-установить python 3.12
+установить python 3.12e
 
-в терминале установить менеджер зависимостей poetry
+в терминале установить менеджер зависимостей poetrey
 
 ```
 $ pip install poetry 
