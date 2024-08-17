@@ -1,8 +1,8 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from project_services.base import Base
-from project_services.mixins.int_id_pk import IntPkMixin
+from z_project_services.base import Base
+from z_project_services.mixins.int_id_pk import IntPkMixin
 
 
 class ServiceModel(IntPkMixin, Base):

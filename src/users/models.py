@@ -1,11 +1,11 @@
 from sqlalchemy import String, Boolean, DateTime, func
 from sqlalchemy.orm import mapped_column, Mapped
 
-from project_services.base import Base
-from project_services.mixins.int_id_pk import IntPkMixin
+from z_project_services.base import Base
+from z_project_services.mixins.int_id_pk import IntPkMixin
 
 
-class User(IntPkMixin, Base):
+class UserModel(IntPkMixin, Base):
     username: Mapped[str]  # = mapped_column(unique=True)
     second_name: Mapped[str]
     email: Mapped[str] = mapped_column(

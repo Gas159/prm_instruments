@@ -9,7 +9,7 @@ from companies import router as router_v1_company
 from users import router as router_v1_user
 
 from config import settings
-from project_services.llifespan import lifespan
+from z_project_services.llifespan import lifespan
 from exceptions import validation_exception_handler, internal_server_error
 
 main_app = FastAPI(
