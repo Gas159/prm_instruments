@@ -4,15 +4,15 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from users.models import User
+from users.models import UserModel
 from users.schemas import UserCreate
 
 
 async def get_user(
     session: AsyncSession,
     user_id: int,
-) -> User:
-    stmt = select(User).where(User.id == user_id)
+) -> UserModel:
+    stmt = select(UserModel).where(UserModel.id == user_id)
     service_tuple = await session.scalars(stmt)
     user = service_tuple.first()
     if user is None:
@@ -24,8 +24,8 @@ async def get_user(
 
 async def get_all_users(
     session: AsyncSession,
-) -> Sequence[User]:
-    stmt = select(User).order_by(User.id)
+) -> Sequence[UserModel  ]:
+    stmt = select(UserModel).order_by(UserModel.id)
     res = await session.scalars(stmt)
     return res.all()
 
@@ -33,8 +33,8 @@ async def get_all_users(
 async def create_user(
     session: AsyncSession,
     user_create: UserCreate,
-) -> User:
-    user = User(**user_create.model_dump())
+) -> UserModel:
+    user = UserModel(**user_create.model_dump())
     session.add(user)
     await session.commit()
     # await session.refresh(user)
