@@ -24,7 +24,13 @@ black --diff --color ./
 poetry add --group dev pytest
 pytest
 
-poetry add aio-pika, aioredis
+poetry add aio-pika
+poetry add aioredis
+# sudo apt update
+# sudo apt install redis-server
+ sudo nano /etc/redis/redis.conf
+ supervised = systemd
+#  $redis-cli ; ping
 
 d build . --tag fastapi
 d run -p 8000:8000 fastapi
