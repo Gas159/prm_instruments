@@ -21,6 +21,7 @@ fastapi-pagination = "^0.12.26"
 fastapi-users = {extras = ["sqlalchemy"], version = "^13.0.0"}
 aioredis = "^2.0.1"
 aio-pika = "^9.4.3"
+packaging = "^24.1"
 
 
 [tool.poetry.group.dev.dependencies]
