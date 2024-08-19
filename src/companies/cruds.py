@@ -1,11 +1,11 @@
 import json
-
-import aioredis
+from z_project_services.redis_tools import redis
+from redis.asyncio import Redis
 
 
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
-from fastapi_pagination import Page
+from fastapi_pagination import Page, Params
 
 from sqlalchemy import select
 from fastapi_pagination.ext.sqlalchemy import paginate
@@ -34,18 +34,15 @@ async def get_company(
 
 
 async def get_all_companies(
-    session: AsyncSession,
+    session: AsyncSession, params: Params
 ) -> Page[SCompany]:  # Sequence[SCompany]:
-    redis = aioredis.from_url("redis://localhost")
     redis_key = "all_companies"
     cached_data = await redis.get(redis_key)
 
     if cached_data:
-        # Если данные есть в кэше, десериализуйте их и верните
         companies = [SCompany(**company) for company in json.loads(cached_data)]
-        return Page.create(companies, params=None)  # Подставьте правильные параметры
+        return Page.create(companies, total=len(companies), params=params)
 
-    # Если данных в кэше нет, выполните запрос к базе данных
     stmt = (
         select(CompanyModel)
         .options(selectinload(CompanyModel.services))
@@ -55,8 +52,7 @@ async def get_all_companies(
 
     # Сериализация и сохранение результата в Redis
     serialized_result = json.dumps([company.dict() for company in result.items])
-    await redis.set(redis_key, serialized_result, ex=3600)  # Данные будут храниться в кэше 1 час
-
+    await redis.set(redis_key, serialized_result, ex=10)
     return result
 
 

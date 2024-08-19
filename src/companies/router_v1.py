@@ -4,8 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database import db_helper
 from companies.schemas import SCompany, SCompanyCreate, SCompanyUpdate
 from companies import cruds as companies_crud
-from fastapi_pagination import Page
-
+from fastapi_pagination import Page, Params
 
 router = APIRouter()
 
@@ -22,8 +21,9 @@ async def get_one_company(
 @router.get("", response_model=Page[SCompany])
 async def get_all_companies(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    params: Annotated[Params, Depends()],
 ) -> Page[SCompany]:
-    companies = await companies_crud.get_all_companies(session=session)
+    companies = await companies_crud.get_all_companies(session=session, params=params)
     return companies
     # stmt = (
     #     select(CompanyModel).options(selectinload(CompanyModel.services))
