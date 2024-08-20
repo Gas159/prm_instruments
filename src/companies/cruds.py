@@ -1,26 +1,36 @@
 import json
-from z_project_services.redis_tools import redis
-from redis.asyncio import Redis
-
 
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi_pagination import Page, Params
-
-from sqlalchemy import select
 from fastapi_pagination.ext.sqlalchemy import paginate
-
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from companies.models import CompanyModel
 from companies.schemas import SCompanyCreate, SCompanyUpdate, SCompany
+from z_project_services.redis_tools import redis
+
+
+def model_to_dict(model):
+    return {
+        column.name: getattr(model, column.name) for column in model.__table__.columns
+    }
 
 
 async def get_company(
     session: AsyncSession,
     company_id: int,
 ) -> SCompany:
+    redis_key = "company_" + str(company_id)
+    cached_data = await redis.get(redis_key)
+
+    if cached_data:
+        print(f"Loaded data from Redis: ")
+        company_data = json.loads(cached_data.decode("utf-8"))
+        return SCompany(**company_data)
+
     stmt = (
         select(CompanyModel)
         .options(selectinload(CompanyModel.services))
@@ -30,7 +40,15 @@ async def get_company(
     # company = company_tuple.first()
     if company is None:
         raise HTTPException(status_code=404, detail="company not found")
-    return jsonable_encoder(company)
+
+    company_dict = model_to_dict(company)
+    # Сериализация и сохранение результата в Redis
+    serialized_data = json.dumps(company_dict)
+    await redis.set(redis_key, serialized_data, ex=10)
+    print(f"Saved data to Redis: ")
+
+    return SCompany(**company_dict)
+    # return jsonable_encoder(company)
 
 
 async def get_all_companies(
@@ -40,6 +58,7 @@ async def get_all_companies(
     cached_data = await redis.get(redis_key)
 
     if cached_data:
+        print(f"Loaded data from Redis: ")
         companies = [SCompany(**company) for company in json.loads(cached_data)]
         return Page.create(companies, total=len(companies), params=params)
 
@@ -53,6 +72,7 @@ async def get_all_companies(
     # Сериализация и сохранение результата в Redis
     serialized_result = json.dumps([company.dict() for company in result.items])
     await redis.set(redis_key, serialized_result, ex=10)
+    print(f"Saved data to Redis: ")
     return result
 
 
