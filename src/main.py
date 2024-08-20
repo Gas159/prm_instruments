@@ -9,8 +9,8 @@ from config import settings
 from exceptions import validation_exception_handler, internal_server_error
 from services import router as router_v1_service
 from users import router as router_v1_user
-from z_project_services.cors import add_cors_middleware
-from z_project_services.llifespan import lifespan
+from y_project_services.cors import add_cors_middleware
+from y_project_services.llifespan import lifespan
 
 main_app = FastAPI(
     lifespan=lifespan,
