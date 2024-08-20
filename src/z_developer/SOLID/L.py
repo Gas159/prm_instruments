@@ -33,9 +33,6 @@ class Eagle(BadBird):
         bird.swim()
 
 
-#
-# bird = Eagle(name="Eagle")
-# bird.process_bird()
 
 
 # good example
