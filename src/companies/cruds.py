@@ -63,9 +63,9 @@ async def get_all_companies(
 
     if cached_data:
         print(f"Loaded data from Redis: ")
-        for i in json.loads(cached_data):
-            print(i)
-        print(params)
+        # for i in json.loads(cached_data):
+        #     print(i)
+        # print(params)
         cached_data = json.loads(cached_data)
         companies = [SCompany(**company) for company in cached_data['companies']]
 
@@ -82,9 +82,9 @@ async def get_all_companies(
     serialized_result = json.dumps(
         {'companies': [company.dict() for company in result.items], 'total': result.total}
     )
-    print(result.total)
-    print(result.pages)
-    print(result.page)
+    # print(result.total)
+    # print(result.pages)
+    # print(result.page)
 
     await redis.set(redis_key, serialized_result, ex=10)
     print(f"Saved data to Redis1: ")
