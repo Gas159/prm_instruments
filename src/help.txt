@@ -40,3 +40,8 @@ limit=5&offset=0
 page=1&size=1011
 
 pip3 freeze > requirements.txt
+
+
+убрать v1/api
+сделать таблицу с языками
+перевод динамический

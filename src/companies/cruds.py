@@ -55,12 +55,21 @@ async def get_all_companies(
     session: AsyncSession, params: Params
 ) -> Page[SCompany]:  # Sequence[SCompany]:
     redis_key = "all_companies"
+    redis_total_key = 'total'
+    # redis_pages_key = 'pages'
     cached_data = await redis.get(redis_key)
+    cached_total = await redis.get(redis_total_key)
+    # cached_pages = await redis.get(redis_pages_key)
+
 
     if cached_data:
         print(f"Loaded data from Redis: ")
+        for i in json.loads(cached_data):
+            print(i)
+        print(params)
         companies = [SCompany(**company) for company in json.loads(cached_data)]
-        return Page.create(companies, total=len(companies), params=params)
+
+        return Page.create(companies, total=int(cached_total), params=params)
 
     stmt = (
         select(CompanyModel)
@@ -71,7 +80,11 @@ async def get_all_companies(
 
     # Сериализация и сохранение результата в Redis
     serialized_result = json.dumps([company.dict() for company in result.items])
+    print(result.total)
+    print(result.pages)
     await redis.set(redis_key, serialized_result, ex=10)
+    await redis.set(redis_total_key, result.total, ex=10)
+    # await redis.set(redis_pages_key, result.pages, ex=10)
     print(f"Saved data to Redis: ")
     return result
 
