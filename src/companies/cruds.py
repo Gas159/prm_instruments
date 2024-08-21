@@ -87,7 +87,7 @@ async def get_all_companies(
     print(result.page)
 
     await redis.set(redis_key, serialized_result, ex=10)
-    print(f"Saved data to Redis: ")
+    print(f"Saved data to Redis1: ")
     return result
 
 
