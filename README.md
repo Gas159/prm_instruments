@@ -1,4 +1,4 @@
-# Car-Service
+# Car-Service API
 Сервис предоставляет агрегированные данные по услугам компаний в сфере автомобильных услуг, включая техническое обслуживание, ремонт, страхование и другие. Пользователи могут:
 
 - записываться на услуги онлайн
@@ -12,6 +12,32 @@
 
 ### Стек (backend)
 FastApi, SQLalchemyORM, Redis, postgres, docker-compose, alembic, pydantic.
+
+## Описание
+Car Service - это сервис для управления данными о транспортных средствах и их сервисе.
+
+## Используемые технологии:
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
+- Redis
+- Docker
+
+## Запуск проекта
+1. Клонируйте репозиторий:
+    ```bash
+    git clone https://github.com/Gas159/Car-Service.git
+    ```
+
+2. Настройте переменные окружения (см. `.env.template`).
+
+3. Запустите проект с помощью Docker Compose:
+    ```bash
+    docker-compose up --build
+    ```
+
+## Архитектура
+Проект построен на основе FastAPI с использованием SQLAlchemy для работы с БД PostgreSQL и Redis для кэширования.
 
 [//]: # (## Installation)
 
