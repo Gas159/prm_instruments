@@ -55,17 +55,11 @@ async def get_all_companies(
     session: AsyncSession, params: Params
 ) -> Page[SCompany]:  # Sequence[SCompany]:
     redis_key: str = f'all_companies:{str(params.size)}:{str(params.page)}'
-    redis_total_key = "total"
-    # redis_pages_key = 'pages'
     cached_data = await redis.get(redis_key)
-    # cached_total = await redis.get(redis_total_key)
-    # cached_pages = await redis.get(redis_pages_key)
 
+    # Если данные есть в Redis, то возвращаем их
     if cached_data:
         print(f"Loaded data from Redis: ")
-        # for i in json.loads(cached_data):
-        #     print(i)
-        # print(params)
         cached_data = json.loads(cached_data)
         companies = [SCompany(**company) for company in cached_data['companies']]
 
@@ -77,17 +71,14 @@ async def get_all_companies(
         .order_by(CompanyModel.id)
     )
     result = await paginate(query=stmt, conn=session)
+    # print(result, type(result), result.items, type(result.items), sep="\n")
 
     # Сериализация и сохранение результата в Redis
     serialized_result = json.dumps(
-        {'companies': [company.dict() for company in result.items], 'total': result.total}
+        {'companies': [company.model_dump() for company in result.items], 'total': result.total}
     )
-    # print(result.total)
-    # print(result.pages)
-    # print(result.page)
-
     await redis.set(redis_key, serialized_result, ex=10)
-    print(f"Saved data to Redis1: ")
+    print(f"Saved data to Redis: ")
     return result
 
 
