@@ -9,16 +9,17 @@ from fastapi_pagination import Page, Params
 router = APIRouter()
 
 
-@router.get("/{company_id}", response_model=SCompany)
+@router.get("/company/{company_id}", response_model=SCompany)
 async def get_one_company(
     company_id: int,
+    # session db_helper.session_getter,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> SCompany:
     company = await companies_crud.get_company(session=session, company_id=company_id)
     return company
 
 
-@router.get("", response_model=Page[SCompany])
+@router.get("/companies", response_model=Page[SCompany])
 async def get_all_companies(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     params: Annotated[Params, Depends()],
@@ -35,7 +36,7 @@ async def get_all_companies(
     # return await paginate(session, stmt)
 
 
-@router.post("", response_model=SCompanyCreate)
+@router.post("/company", response_model=SCompanyCreate)
 async def create_company(
     company_create: Annotated[SCompanyCreate, Depends()],
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
@@ -46,7 +47,7 @@ async def create_company(
     return service
 
 
-@router.put("/{company_id}", response_model=SCompany)
+@router.put("/company/{company_id}", response_model=SCompany)
 async def update_company(
     company_id: int,
     company_update: Annotated[SCompanyUpdate, Depends()],
@@ -59,7 +60,7 @@ async def update_company(
     return company
 
 
-@router.delete("/{company_id}", response_model=SCompany)
+@router.delete("/company/{company_id}", response_model=SCompany)
 async def delete_company(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     company_id: int,

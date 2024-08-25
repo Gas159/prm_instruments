@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Annotated
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions
 
@@ -17,7 +17,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
 
     async def create(
         self,
-        user_create: UserCreate,
+        user_create: Annotated[UserCreate, Depends()],
         safe: bool = False,
         request: Optional[Request] = None,
     ) -> User:
@@ -49,9 +49,9 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         user_dict["hashed_password"] = self.password_helper.hash(password)
 
         # Устанавливаем поля по умолчанию
-        user_dict["is_active"] = True
-        user_dict["is_superuser"] = False
-        user_dict["is_verified"] = False
+        # user_dict["is_active"] = True
+        # user_dict["is_superuser"] = False
+        # user_dict["is_verified"] = False
 
         created_user = await self.user_db.create(user_dict)
 

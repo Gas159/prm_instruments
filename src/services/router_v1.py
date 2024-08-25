@@ -14,11 +14,11 @@ from services.schemas import Service, ServiceBase, ServiceUpdate, CreateService
 router = APIRouter()
 
 
-
 @router.get("/{service_id}", response_model=Service)
 async def get_one_service(
     service_id: int,
     # session: AsyncSession = Depends(db_helper.session_getter),
+    # session,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> ServiceModel:
     service = await services_crud.get_service(session=session, service_id=service_id)
@@ -36,6 +36,7 @@ async def get_all_services(
 @router.post("", response_model=ServiceBase)
 async def create_service(
     service_create: Annotated[CreateService, Depends()],
+    # service_create: CreateService,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> ServiceBase:
     service = await services_crud.create_service(

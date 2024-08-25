@@ -22,10 +22,10 @@ class UserRead(schemas.BaseUser[int]):
 class UserCreate(schemas.BaseUserCreate):
 # class UserCreate(BaseModel):
     # class UserCreate(BaseModel):
-    username: str | None = Field(default="username", max_length=32)
+    username: str | None = Field(default="first_name", max_length=32)
     second_name: str | None = Field(default="second_name", max_length=32)
-    email: EmailStr
-    password: str | None = Field(default="password", max_length=128)
+    # email: EmailStr
+    # password: str | None = Field(default="password", max_length=128)
     # role_id: int
     # is_active: Optional[bool] = True
     # is_superuser: Optional[bool] = False

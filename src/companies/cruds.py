@@ -52,7 +52,8 @@ async def get_company(
 
 
 async def get_all_companies(
-    session: AsyncSession, params: Params
+    session: AsyncSession,
+    params: Params,
 ) -> Page[SCompany]:  # Sequence[SCompany]:
     redis_key: str = f'all_companies:{str(params.size)}:{str(params.page)}'
     cached_data = await redis.get(redis_key)

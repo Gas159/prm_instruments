@@ -11,9 +11,9 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str]    # = mapped_column(unique=True)
     second_name: Mapped[str]
-    email: Mapped[str] = mapped_column(
-        String(length=320), unique=True, index=True, nullable=False
-    )
+    # email: Mapped[str] = mapped_column(
+    #     String(length=320), unique=True, index=True, nullable=False
+    # )
     registration_at: Mapped[int] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
