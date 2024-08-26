@@ -8,9 +8,9 @@ from y_project_services.mixins.int_id_pk import IntPkMixin
 class UserModel(IntPkMixin, Base):
     username: Mapped[str]  # = mapped_column(unique=True)
     second_name: Mapped[str]
-    # email: Mapped[str] = mapped_column(
-    #     String(length=320), unique=True, index=True, nullable=False
-    # )
+    email: Mapped[str] = mapped_column(
+        String(length=320), unique=True, index=True, nullable=False
+    )
     # role_id: Mapped[int] = mapped_column(ForeignKey("role.c.id"), nullable=False)
 
     # registration_at: Mapped[int] = mapped_column(

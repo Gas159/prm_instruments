@@ -1,12 +1,15 @@
 from typing import Optional, Annotated
 from fastapi import Depends, Request
-from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions
+from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions, FastAPIUsers
+from fastapi_users.authentication import AuthenticationBackend
 
+from auth.auth import cookie_transport, get_jwt_strategy
+from auth.database import get_user_db
 from auth.schemas import UserCreate
-from auth.database import User, get_user_db
+from auth.models import User
 
 
-SECRET = "SECRET1"
+SECRET = "SECRET"
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
@@ -14,7 +17,22 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     verification_token_secret = SECRET
 
     user_db_model = User  # Модель пользователя
-
+    # async def get_by_oauth_account(self, oauth: str, account_id: str):
+    #     """
+    #     Get a user by OAuth account.
+    #
+    #     :param oauth: Name of the OAuth client.
+    #     :param account_id: Id. of the account on the external OAuth service.
+    #     :raises UserNotExists: The user does not exist.
+    #     :return: A user.
+    #     """
+    #     user = await self.user_db.get_by_oauth_account(oauth, account_id)
+    #
+    #     if user is None:
+    #         raise exceptions.UserNotExists()
+    #     await self.on_after_login(user)
+    #
+    #     return user
     async def create(
         self,
         user_create: Annotated[UserCreate, Depends()],
@@ -61,6 +79,8 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
+    # async def on_after_login(self, user):
+    #     print(f"User {user} has login.")
 
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
@@ -75,3 +95,16 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
 
 async def get_user_manager(user_db=Depends(get_user_db)):
     yield UserManager(user_db)
+
+auth_backend = AuthenticationBackend(
+    name="jwt",
+    transport=cookie_transport,
+    get_strategy=get_jwt_strategy,
+)
+
+fastapi_users = FastAPIUsers[User, int](
+    get_user_manager,
+    [auth_backend],
+)
+
+current_active_user = fastapi_users.current_user(active=True)

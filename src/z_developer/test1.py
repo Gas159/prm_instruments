@@ -12,7 +12,9 @@ w = "This website is for losers LOL!"
 ["Jacob", "Alex"]                 -->  "Jacob and Alex like this"
 ["Max", "John", "Mark"]           -->  "Max, John and Mark like this"
 ["Alex", "Jacob", "Mark", "Max"]  -->  "Alex, Jacob and 2 others like this"'''
-
+print({x: x**2 for x in range(5)})
+for i in range(5):
+    print(i)
 def is_anagram(test, original):
     return sorted(test.lower()) == sorted(original.lower())
 

@@ -17,6 +17,11 @@ alembic revision --autogenerate -m 'create user table'
 alembic upgrade head
 alembic downgrade -1 or alembic downgrade base
 
+poetry add celery flower
+celery -A y_project_services.task_celery.tasks:celery [worker, flower, bit (переодические задания)] -l info
+flower  = http://localhost:5555/
+celery -A y_project_services.task_celery.tasks:celery flower -l info
+
 
 poetry add --group dev black
 black --diff --color ./
@@ -46,3 +51,12 @@ pip3 freeze > requirements.txt
 сделать таблицу с языками
 перевод динамический
 настроить авторизацию отображение, кастомизировать
+
+
+есть проблемы  легендой.
+короче о проектах
+план. о себе.
+CRM
+стек ограничен. проектов не видно.
+хочу ваш стек в компании. посмотри что в компании.
+пишем программы, разрабатываем, проектируем.

@@ -39,6 +39,13 @@ class DatabaseConfig(BaseModel):
     }
 
 
+class CeleryConfig(BaseModel):
+    broker_url: str = "redis://localhost:6379"
+    result_backend: str = "redis://localhost:6379"
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PASSWORD: str
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=(".env.template", ".env", ".env.local"),
@@ -49,6 +56,7 @@ class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
     db: DatabaseConfig
+    celery: CeleryConfig
 
 
 settings = Settings()
