@@ -1,6 +1,4 @@
-from contextlib import asynccontextmanager
-
-from fastapi import Depends, FastAPI, APIRouter
+from fastapi import Depends, APIRouter
 
 from auth.manager import fastapi_users, auth_backend, current_active_user
 from auth.models import User
@@ -9,7 +7,9 @@ from auth.schemas import UserRead, UserCreate, UserUpdate
 router = APIRouter()
 
 router.include_router(
-    fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
+    fastapi_users.get_auth_router(auth_backend),
+    prefix="/auth/jwt",
+    tags=["auth"],
 )
 router.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),

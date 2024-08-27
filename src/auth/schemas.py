@@ -6,18 +6,14 @@ from pydantic import EmailStr, ConfigDict, Field, BaseModel
 
 
 class UserRead(schemas.BaseUser[int]):
-    # class UserRead(BaseModel):
     id: int
-    # id: models.ID
     username: str
-    second_name: str
     email: str  # EmailStr
     registration_at: datetime
-    # is_active: bool = True
-    # is_superuser: bool = False
-    # is_verified: bool = False
 
     model_config = ConfigDict(from_attributes=True)
+
+    # second_name: str
 
 
 class UserCreate(schemas.BaseUserCreate):
@@ -28,9 +24,9 @@ class UserCreate(schemas.BaseUserCreate):
     username: str | None = Field(
         examples=["1first_name1"], default="first_name", max_length=32
     )
-    second_name: str | None = Field(
-        examples=["1second_name1"], default="second_name", max_length=32
-    )
+    # second_name: str | None = Field(
+    #     examples=["1second_name1"], default="second_name", max_length=32
+    # )
     # role_id: int
     # is_active: Optional[bool] = True
     # is_superuser: Optional[bool] = False

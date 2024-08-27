@@ -44,33 +44,6 @@ async def root():
     return {"data": "check"}
 
 
-# @main_app.post("/login")
-# def login(form_data: Annotated[UserLogin, Depends()]):
-#     data = form_data.model_dump()
-#     # data["scopes"] = []
-#     # for scope in form_data.scopes:
-#     #     data["scopes"].append(scope)
-#     # if form_data.client_id:
-#     #     data["client_id"] = form_data.client_id
-#     # if form_data.client_secret:
-#     #     data["client_secret"] = form_data.client_secret
-#     return data
-
-
-# current_user = fastapi_users.current_user()
-# @main_app.get("/current_user")
-# async def protected_route(user=Depends(current_user)):
-#     return {"status": "ok", "data": "email sending", "detail": None, 'user': user.username}
-#
-#
-# @main_app.post("/login")
-# async def login(request: Request, response: Response, user: User = Depends(fastapi_users.get_current_user)):
-#     # Пример получения токена
-#     token = await fastapi_users.get_login_response(user)
-#     response.set_cookie(key="access_token", value=token.access_token, max_age=3600)
-#     return {"message": "Login successful"}
-
-
 if __name__ == "__main__":
     uvicorn.run(
         "main:main_app",

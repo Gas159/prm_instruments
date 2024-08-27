@@ -14,7 +14,7 @@ from services.schemas import Service, ServiceBase, ServiceUpdate, CreateService
 router = APIRouter()
 
 
-@router.get("/{service_id}", response_model=Service)
+@router.get("/service/{service_id}", response_model=Service)
 async def get_one_service(
     service_id: int,
     # session: AsyncSession = Depends(db_helper.session_getter),
@@ -25,7 +25,7 @@ async def get_one_service(
     return service
 
 
-@router.get("", response_model=Page[Service])
+@router.get("/services", response_model=Page[Service])
 async def get_all_services(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> Page[Service]:
@@ -33,7 +33,7 @@ async def get_all_services(
     return services
 
 
-@router.post("", response_model=ServiceBase)
+@router.post("/service", response_model=ServiceBase)
 async def create_service(
     service_create: Annotated[CreateService, Depends()],
     # service_create: CreateService,
@@ -45,7 +45,7 @@ async def create_service(
     return service
 
 
-@router.put("/{service_id}", response_model=Service)
+@router.put("/service/{service_id}", response_model=Service)
 async def update_service(
     service_id: int,
     service_update: Annotated[ServiceUpdate, Depends()],
@@ -58,7 +58,7 @@ async def update_service(
     return service
 
 
-@router.delete("/{service_id}", response_model=Service)
+@router.delete("/service/{service_id}", response_model=Service)
 async def delete_service(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     service_id: int,

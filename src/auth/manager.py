@@ -17,22 +17,6 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     verification_token_secret = SECRET
 
     user_db_model = User  # Модель пользователя
-    # async def get_by_oauth_account(self, oauth: str, account_id: str):
-    #     """
-    #     Get a user by OAuth account.
-    #
-    #     :param oauth: Name of the OAuth client.
-    #     :param account_id: Id. of the account on the external OAuth service.
-    #     :raises UserNotExists: The user does not exist.
-    #     :return: A user.
-    #     """
-    #     user = await self.user_db.get_by_oauth_account(oauth, account_id)
-    #
-    #     if user is None:
-    #         raise exceptions.UserNotExists()
-    #     await self.on_after_login(user)
-    #
-    #     return user
     async def create(
         self,
         user_create: Annotated[UserCreate, Depends()],

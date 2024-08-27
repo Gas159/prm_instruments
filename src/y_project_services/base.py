@@ -6,7 +6,7 @@ from utils import camel_case_to_snake_case
 
 
 class Base(DeclarativeBase):
-    __abstract__ = True
+    # __abstract__ = True
 
     metadata = MetaData(
         # naming_convention={

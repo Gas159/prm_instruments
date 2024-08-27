@@ -40,10 +40,14 @@ class DatabaseConfig(BaseModel):
 
 
 class CeleryConfig(BaseModel):
-    broker_url: str = "redis://localhost:6379"
-    result_backend: str = "redis://localhost:6379"
-    SMTP_HOST: str = "smtp.gmail.com"
-    SMTP_PASSWORD: str
+    smtp_host: str = "smtp.gmail.com"
+    smtp_port: int = 465
+    smtp_password: str
+    smtp_user: str
+
+
+class RedisConfig(BaseModel):
+    url: str = "redis://localhost:6379"
 
 
 class Settings(BaseSettings):
@@ -57,6 +61,7 @@ class Settings(BaseSettings):
     api: ApiPrefix = ApiPrefix()
     db: DatabaseConfig
     celery: CeleryConfig
+    redis: RedisConfig = RedisConfig()
 
 
 settings = Settings()
