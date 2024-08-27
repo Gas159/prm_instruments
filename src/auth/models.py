@@ -2,9 +2,7 @@ from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy import String, DateTime, func, Boolean
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-
-class Base(DeclarativeBase):
-    pass
+from y_project_services.base import Base
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
