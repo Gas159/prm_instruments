@@ -7,8 +7,7 @@ from pydantic import EmailStr, ConfigDict, Field, BaseModel
 
 class UserRead(schemas.BaseUser[int]):
     id: int
-    username: str
-    email: str  # EmailStr
+    name: str
     registration_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
@@ -21,8 +20,8 @@ class UserCreate(schemas.BaseUserCreate):
         examples=["j1Cw5Z@example.com"], default="jCw5Z@example.com", max_length=320
     )
     password: str = Field(default="VeryStrongPassword123!!!", max_length=128)
-    username: str | None = Field(
-        examples=["1first_name1"], default="first_name", max_length=32
+    name: str | None = Field(
+        examples=["first_name1"], default="first_name", max_length=32
     )
     # second_name: str | None = Field(
     #     examples=["1second_name1"], default="second_name", max_length=32

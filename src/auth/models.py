@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
 
 class User(SQLAlchemyBaseUserTable[int], Base):
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(default="user_name")
+    name: Mapped[str] = mapped_column(default="user_name")
     registration_at: Mapped[int] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
