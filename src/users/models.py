@@ -6,7 +6,7 @@ from y_project_services.mixins.int_id_pk import IntPkMixin
 
 
 class UserModel(IntPkMixin, Base):
-    username: Mapped[str] = mapped_column(default="user_name")
+    name: Mapped[str] = mapped_column(default="user_name")
     email: Mapped[str] = mapped_column(
         String(length=320), unique=True, index=True, nullable=False
     )

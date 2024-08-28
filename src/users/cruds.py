@@ -24,7 +24,7 @@ async def get_user(
 
 async def get_all_users(
     session: AsyncSession,
-) -> Sequence[UserModel  ]:
+) -> Sequence[UserModel]:
     stmt = select(UserModel).order_by(UserModel.id)
     res = await session.scalars(stmt)
     return res.all()

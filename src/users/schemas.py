@@ -3,7 +3,7 @@ from pydantic import ConfigDict
 
 
 class UserBase(BaseModel):
-    username: str
+    name: str
     # second_name: str
     email: str | None
     # foo: str
