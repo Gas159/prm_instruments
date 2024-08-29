@@ -39,7 +39,7 @@ def get_email_template(name: str, email_to_send: str):
     return email
 
 
-@celery.task()
+@celery.task
 def send_email_test(name: str, email_to_send: str):
     email = get_email_template(name, email_to_send)
     with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
