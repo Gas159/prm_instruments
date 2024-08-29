@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+    <link rel="stylesheet" href="/static/style.css"> <!-- Если нужен CSS -->
+    <style>
+        #notification, #timestamp, #timeSpent {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Главная страница</h1>
+
+    <!-- Форма с кнопкой отправки отчета -->
+    <form id="reportForm">
+        <button type="submit">Отправить отчет</button>
+    </form>
+
+    <!-- Место для отображения уведомлений -->
+    <div id="notification"></div>
+
+    <!-- Место для отображения времени отправки отчета и затраченного времени -->
+    <div id="timestamp"></div>
+    <div id="timeSpent"></div>
+
+    <script>
+        document.getElementById('reportForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Отменяем стандартное поведение формы
+
+            const timestampElement = document.getElementById('timestamp');
+            const timeSpentElement = document.getElementById('timeSpent');
+            const notificationElement = document.getElementById('notification');
+            const startTime = Date.now();  // Время начала отправки
+
+            fetch('/api/send-test-email-for-user', {
+                method: 'GET'  // Если ваш серверный маршрут ожидает GET-запрос
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Обработка ответа от сервера
+                console.log(data);  // Для отладки
+                const endTime = Date.now();  // Время завершения отправки
+                const timeSpent = (endTime - startTime) / 1000;  // Время в секундах
+
+                showNotification('Отчет успешно отправлен!');
+                const currentTime = new Date().toLocaleString();  // Получаем текущее время
+                timestampElement.textContent = `Время отправки отчета: ${currentTime}`;
+                timeSpentElement.textContent = `Время затраченное на отправку: ${timeSpent.toFixed(2)} секунд`;
+
+                // Стираем сообщения через 3 секунды
+                setTimeout(() => {
+                    notificationElement.textContent = '';
+                    timestampElement.textContent = '';
+                    timeSpentElement.textContent = '';
+                }, 10000);
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                const endTime = Date.now();  // Время завершения при ошибке
+                const timeSpent = (endTime - startTime) / 1000;  // Время в секундах
+
+                showNotification('Произошла ошибка при отправке отчета.');
+                const currentTime = new Date().toLocaleString();  // Получаем текущее время
+                timestampElement.textContent = `Время отправки отчета: ${currentTime}`;
+                timeSpentElement.textContent = `Время затраченное на отправку: ${timeSpent.toFixed(2)} секунд`;
+
+                // Стираем сообщения через 3 секунды
+                setTimeout(() => {
+                    notificationElement.textContent = '';
+                    timestampElement.textContent = '';
+                    timeSpentElement.textContent = '';
+                }, 3000);
+            });
+        });
+
+        function showNotification(message) {
+            const notificationElement = document.getElementById('notification');
+            notificationElement.textContent = message;
+
+            // Уведомление браузера
+            if (Notification.permission === "granted") {
+                new Notification(message);
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        new Notification(message);
+                    }
+                });
+            }
+        }
+
+        // Запрос разрешения на уведомления при загрузке страницы
+        if (Notification.permission === "default") {
+            Notification.requestPermission();
+        }
+    </script>
+</body>
+</html>
