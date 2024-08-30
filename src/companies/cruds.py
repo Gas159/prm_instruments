@@ -10,7 +10,7 @@ from sqlalchemy.orm import selectinload
 
 from companies.models import CompanyModel
 from companies.schemas import SCompanyCreate, SCompanyUpdate, SCompany
-from y_project_services.redis_tools import redis
+from project_services.redis_tools import redis
 
 
 def model_to_dict(model):

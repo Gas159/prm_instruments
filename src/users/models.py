@@ -1,8 +1,8 @@
 from sqlalchemy import String, Boolean, DateTime, func
 from sqlalchemy.orm import mapped_column, Mapped
 
-from y_project_services.base import Base
-from y_project_services.mixins.int_id_pk import IntPkMixin
+from project_services.base import Base
+from project_services.mixins.int_id_pk import IntPkMixin
 
 
 class UserModel(IntPkMixin, Base):

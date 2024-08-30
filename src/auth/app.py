@@ -1,4 +1,4 @@
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 
 from auth.manager import fastapi_users, auth_backend, current_active_user
 from auth.models import User
@@ -16,6 +16,11 @@ router.include_router(
     prefix="/auth",
     tags=["auth"],
 )
+router.include_router(
+    fastapi_users.get_users_router(UserRead, UserUpdate),
+    prefix="/users",
+    tags=["users"],
+)
 # router.include_router(
 #     fastapi_users.get_reset_password_router(),
 #     prefix="/auth",
@@ -26,11 +31,6 @@ router.include_router(
 #     prefix="/auth",
 #     tags=["auth"],
 # )
-router.include_router(
-    fastapi_users.get_users_router(UserRead, UserUpdate),
-    prefix="/users",
-    tags=["users"],
-)
 
 
 @router.get("/authenticated-route")
