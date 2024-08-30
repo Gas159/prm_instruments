@@ -17,7 +17,8 @@ run2:
 tmux:
 		tmux attach -t fast
 
-
+celery:
+		celery -A project_services.task_celery.tasks:celery worker -l info
 #poetry
 shell:
 		poetry shell
