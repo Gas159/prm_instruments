@@ -13,7 +13,7 @@ pip install 'fastapi-users[sqlalchemy]'
 
 poetry add alembic
 alembic init -t async alembic
-alembic revision --autogenerate -m 'create user table'
+alembic revision --autogenerate -m 'create user table2'
 alembic upgrade head
 alembic downgrade -1 or alembic downgrade base
 
