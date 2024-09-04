@@ -2,10 +2,12 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from fastapi_pagination import Page
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from config import settings
+
 from database import db_helper
+from repositories.services import ServiceRepository
 from services import cruds as services_crud
 from services.models import ServiceModel
 from services.schemas import Service, ServiceBase, ServiceUpdate, CreateService
@@ -14,6 +16,19 @@ from services.schemas import Service, ServiceBase, ServiceUpdate, CreateService
 router = APIRouter()
 
 
+# Pattern Repository
+@router.post("/service_repository")
+async def create_service_repository(
+    service_create: Annotated[CreateService, Depends()],
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    # service_create: CreateService,
+):
+    # service_dict = service_create.model_dump()
+    res = await ServiceRepository().add_one(data=service_create.model_dump(), session=session)
+    return {"id": res}
+
+
+# Cruds
 @router.get("/service/{service_id}", response_model=Service)
 async def get_one_service(
     service_id: int,
