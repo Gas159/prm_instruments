@@ -83,11 +83,16 @@ CRM
 
 накидать список вопросов на мок собес. гит, докер, солид, принципы програмирования
 
-Стек:  Python, FastAPI, Django, SQLAlchemy,
-Tools: Linux, Git, Docker/compose, CI\CD, Redis, RabbitMQ, Nginx, Celery, asyncio, alembic, pytest.
-Principles: SOLID, DRY, KISS, Asynchronous programming, REST API.
+Стек:
+Python, FastAPI, Django, Docker/compose, PostgreSQL, Redis, RabbitMQ, Celery, asyncio, alembic, pytest
+Инструменты:
+Linux, Git, CI/CD, Nginx
+Протоколы и технологии:
+TCP/UDP, HTTP/HTTPS, AMQP, WebSocket, gRPC
+Принципы:
+SOLID, DRY, KISS, Асинхронное программирование, REST API
 
 
 websocket:  события open/close/message/error
 
-3-5 рукопожатий, почитать.
+3-5 рукопожатий, почитать. aioredis, celery, rabbitmq
