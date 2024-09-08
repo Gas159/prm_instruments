@@ -69,7 +69,7 @@ Linux, Git, CI/CD, Nginx
 Протоколы и технологии:
 TCP/UDP, HTTP/HTTPS, AMQP, WebSocket, gRPC
 Принципы:
-SOLID, DRY, KISS, Асинхронное программирование, REST API
+SOLID, DRY, KISS, Асинхронное программирование, REST API1
 
 
 websocket:  события open/close/message/error
