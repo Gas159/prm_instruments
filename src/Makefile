@@ -14,7 +14,7 @@ run2:
 		uvicorn main:main_app --host 0.0.0.0 --port 443 --ssl-keyfile /etc/letsencrypt/live/gas159.ru/privkey.pem --ssl-certfile /etc/letsencrypt/live/gas159.ru/fullchain.pem --workers 3
 
 run3:
-		uvicorn src/main:main_app --host 0.0.0.0 --port 8001  --reload
+		uvicorn main:main_app --host 0.0.0.0 --port 8001  --reload
 
 
 tmux:

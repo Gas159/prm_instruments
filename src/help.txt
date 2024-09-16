@@ -78,3 +78,4 @@ websocket:  события open/close/message/error
 
 3-5 рукопожатий, почитать. aioredis, celery, rabbitmq
 string internel1
+docker exec -it fastapi_app /bin/bash
