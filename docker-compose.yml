@@ -1,10 +1,16 @@
 services:
 
-  python:
-    container_name: python_fastapi
+  server:
+    container_name: fastapi_app
     build: .
     ports:
-      - "8001:8000"
+      - "8000:8000"
+#    volumes:
+#      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+
+    command: poetry run uvicorn src.main:main_app --host 0.0.0.0 --port 8000
 #    depends_on:
 #      - pg
 
@@ -17,10 +23,11 @@ services:
       POSTGRES_USER: gas
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: car_service
-    #    volumes:
-    #      - pgdata:/var/lib/postgresql/data
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data
     ports:
       - "5433:5432"
+
 
   adminer:
     image: adminer

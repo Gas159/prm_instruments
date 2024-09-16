@@ -1,0 +1,36 @@
+# Используем официальный базовый образ Python
+FROM python:3.12.3-slim
+
+# Устанавливаем необходимые зависимости для Poetry
+RUN apt-get update && apt-get install -y \
+    curl \
+    build-essential \
+    && apt-get clean
+
+# Устанавливаем Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# Устанавливаем переменные окружения для Poetry
+ENV PATH="/root/.local/bin:$PATH"
+ENV POETRY_VIRTUALENVS_CREATE=false
+
+
+# Создаем рабочую директорию
+WORKDIR /app
+COPY pyproject.toml poetry.lock /app/
+#RUN #pip install poetry && poetry install --no-root
+RUN poetry install
+# Копируем файлы проекта
+COPY . .
+
+# Устанавливаем зависимости с помощью Poetry
+RUN #poetry install
+#RUN
+
+# Устанавливаем PYTHONPATH для использования модуля src
+ENV PYTHONPATH=/app/src
+CMD ["poetry", "run", "uvicorn", "src.main:main_app", "--host", "0.0.0.0", "--port", "8000"]
+# Команда запуска приложения
+#uvicorn main:main_app --host 0.0.0.0 --port 8001  --reload
+#CMD ["uvicorn", "src/main:main:app", "--host", "0.0.0.0", "--port", "8000"]
+#CMD ["make", "run3"]
