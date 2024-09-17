@@ -16,9 +16,12 @@ rmi:
 
 clean: stop rm rmi
 
-rerun:
-		docker-compose down && docker-compose up --build
 
+reload:
+		docker-compose stop && docker-compose up --build
+
+redown: #Удалит тома и контейнер
+		docker-compose down  && docker-compose up --build
 
 
 

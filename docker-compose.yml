@@ -2,7 +2,7 @@
 services:
 
   app:
-    container_name: app
+    container_name: app_parma
     build:
       context: .
       dockerfile: Dockerfile
@@ -24,7 +24,7 @@ services:
 
 
   pg:
-    container_name: pg
+    container_name: pg_parma
     image: postgres:15
     restart: always
 #    environment:
@@ -36,17 +36,17 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5435:5432"
+      - "5434:5432"
 
 
 #  adminer:
-#    container_name: adminer
+#    container_name: adminer_parma
 #    image: adminer
 #    ports:
 #      - "8080:8080"
 
 #  pgadmin:
-#    container_name: pg_admin
+#    container_name: pg_admin_parma
 #    image: dpage/pgadmin4
 #    environment:
 #      PGADMIN_DEFAULT_EMAIL: admin@admin.org
@@ -57,7 +57,7 @@ services:
 
 
 #  redis:
-#    container_name: redis
+#    container_name: redis_parma
 #    image: redis:7
 ##    command: --port 5370
 ##    expose:
@@ -74,7 +74,7 @@ services:
 #      - redis
 #
 #  flower:
-#    container_name: flower
+#    container_name: flower_parma
 #    build:
 #      context: .
 #    env_file:
