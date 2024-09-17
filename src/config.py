@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class RunConfig(BaseModel):
     host: str = "localhost"
-    port: int = 8001
+    port: int = 8003
 
 
 class ApiV1Prefix(BaseModel):
@@ -25,6 +25,9 @@ class ApiPrefix(BaseModel):
 # url: str = 'postgresql+asyncpg://gas:123@localhost:5432/shop'
 class DatabaseConfig(BaseModel):
     url: PostgresDsn
+    postgres_user: str
+    postgres_password: str
+    postgres_db: str
     echo: bool = False
     echo_pool: bool = False
     pool_size: int = 50

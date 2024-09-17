@@ -1,45 +1,91 @@
+
 services:
 
-  server:
-    container_name: fastapi_app
-    build: .
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - src/.env
+    restart: always
     ports:
-      - "8000:8000"
-#    volumes:
-#      - .:/app
+      - "8003:8003"
+    volumes:
+      - .:/app:delegated
     environment:
       - PYTHONUNBUFFERED=1
-
-    command: poetry run uvicorn main:main_app --host 0.0.0.0 --port 8000
-#    depends_on:
-#      - pg
+      - PYTHONDONTWRITEBYTECODE=1
+    command: ["./docker/app.sh"]
+#    command: gunicorn main:main_app --workers 3 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8003
+    depends_on:
+      - pg
+#      - redis
 
 
   pg:
-    container_name: pg_fastapi
-    image: postgres
+    container_name: pg
+    image: postgres:15
     restart: always
-    environment:
-      POSTGRES_USER: gas
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: car_service
-#    volumes:
-#      - pgdata:/var/lib/postgresql/data
+#    environment:
+#      POSTGRES_USER: gas
+#      POSTGRES_PASSWORD: 123
+#      POSTGRES_DB: car_service
+    env_file:
+      - src/.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - "5435:5432"
 
 
-  adminer:
-    image: adminer
-    ports:
-      - "8080:8080"
+#  adminer:
+#    container_name: adminer
+#    image: adminer
+#    ports:
+#      - "8080:8080"
 
-  pgadmin:
-    container_name: pg_admin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.org
-      PGADMIN_DEFAULT_PASSWORD: 123
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    ports:
-      - "5054:80"
+#  pgadmin:
+#    container_name: pg_admin
+#    image: dpage/pgadmin4
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: admin@admin.org
+#      PGADMIN_DEFAULT_PASSWORD: 123
+#      PGADMIN_CONFIG_SERVER_MODE: 'False'
+#    ports:
+#      - "5054:80"
+
+
+#  redis:
+#    container_name: redis
+#    image: redis:7
+##    command: --port 5370
+##    expose:
+##      - 5370
+#
+#  celery:
+#    container_name: celery
+#    build:
+#      context: .
+#    env_file:
+#      - .env
+#    command: [ "/app/docker/celery.sh", "celery" ]
+#    depends_on:
+#      - redis
+#
+#  flower:
+#    container_name: flower
+#    build:
+#      context: .
+#    env_file:
+#      - .env
+#    command: [ "/app/docker/celery.sh", "flower" ]
+#    depends_on:
+#      - redis
+#      - celery
+#    ports:
+#      - 8888:5555
+
+
+volumes:
+  pgdata:
