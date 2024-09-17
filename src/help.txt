@@ -79,3 +79,5 @@ websocket:  события open/close/message/error
 3-5 рукопожатий, почитать. aioredis, celery, rabbitmq
 string internel1
 docker exec -it fastapi_app /bin/bash
+
+Стек: Python, FastAPI, Django, Docker/compose, PostgreSQL, CI\CD, REST API, Redis, RabbitMQ, Nginx, Celery, Linux, Git, SOLID, asyncio, alembic, pytest, Asynchronous programming.

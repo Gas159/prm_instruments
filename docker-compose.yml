@@ -26,11 +26,15 @@ services:
   pg:
     container_name: pg_parma
     image: postgres
-    restart: always
+#    restart: always
 #    environment:
 #      POSTGRES_USER: gas
 #      POSTGRES_PASSWORD: 123
 #      POSTGRES_DB: parma
+    environment:
+      - POSTGRES_USER=${FASTAPI__DB__POSTGRES_USER}
+      - POSTGRES_PASSWORD=${FASTAPI__DB__POSTGRES_PASSWORD}
+      - POSTGRES_DB=${FASTAPI__DB__POSTGRES_DB}
     env_file:
       - src/.env
 #    volumes:
@@ -39,7 +43,7 @@ services:
 #    expose:
 #      - 5434
     ports:
-      - "5434:5432"
+      - "5435:5432"
 
 
 #  adminer:
