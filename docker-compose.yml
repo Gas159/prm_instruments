@@ -33,8 +33,8 @@ services:
 #      POSTGRES_DB: car_service
     env_file:
       - src/.env
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data
     ports:
       - "5434:5432"
 
