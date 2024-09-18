@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Update Tool</h1>
+    <form method="POST" action="/update/{{ tool.id }}">
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" id="name" name="name" class="form-control" value="{{ tool.name }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="diameter" class="form-label">Diameter</label>
+            <input type="number" id="diameter" name="diameter" step="any" class="form-control" value="{{ tool.diameter }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="lenght" class="form-label">Length</label>
+            <input type="number" id="lenght" name="lenght" step="any" class="form-control" value="{{ tool.lenght }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="deep_of_drill" class="form-label">Deep of Drill</label>
+            <input type="number" id="deep_of_drill" name="deep_of_drill" step="any" class="form-control" value="{{ tool.deep_of_drill }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Tool</button>
+    </form>
+</div>
+{% endblock %}

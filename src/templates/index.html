@@ -1,101 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Инструменты</title>
-    <link rel="stylesheet" href="/static/style.css"> <!-- Если нужен CSS -->
-    <style>
-        #notification, #timestamp, #timeSpent {
-            margin-top: 10px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Инструменты Инструменты</h1>
+{% extends 'base.html' %}
 
-    <!-- Форма с кнопкой отправки отчета -->
-    <form id="reportForm">
-        <button type="submit">Отправить тестовый емайл</button>
-    </form>
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Tools</h1>
+    <div>
+        <a href="/create/" class="btn btn-success">Add New Tool</a>
+        <form id="search-form" method="GET" action="/" class="d-inline ms-3">
+            <div class="input-group">
+                <input id="search-input" type="text" name="search" class="form-control" placeholder="Search..." value="{{ search }}">
 
-    <!-- Место для отображения уведомлений -->
-    <div id="notification"></div>
+            </div>
+        </form>
+    </div>
+</div>
+<table class="table table-dark table-hover">
+    <thead>
+        <tr>
+            <th>
+                <a href="/?sort_by=id&order={{ 'desc' if order == 'asc' else 'asc' }}">ID</a>
+                {% if sort_by == 'id' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                {% endif %}
+            </th>
+            <th>
+                <a href="/?sort_by=name&order={{ 'desc' if order == 'asc' else 'asc' }}">Name</a>
+                {% if sort_by == 'name' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                {% endif %}
+            </th>
+            <th>
+                <a href="/?sort_by=diameter&order={{ 'desc' if order == 'asc' else 'asc' }}">Diameter</a>
+                {% if sort_by == 'diameter' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                {% endif %}
+            </th>
+            <th>
+                <a href="/?sort_by=lenght&order={{ 'desc' if order == 'asc' else 'asc' }}">Length</a>
+                {% if sort_by == 'lenght' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                {% endif %}
+            </th>
+            <th>
+                <a href="/?sort_by=deep_of_drill&order={{ 'desc' if order == 'asc' else 'asc' }}">Deep of Drill</a>
+                {% if sort_by == 'deep_of_drill' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                {% endif %}
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if tools %}
+            {% for tool in tools %}
+            <tr>
+                <td>{{ tool.id }}</td>
+                <td>{{ tool.name }}</td>
+                <td>{{ tool.diameter }}</td>
+                <td>{{ tool.lenght }}</td>
+                <td>{{ tool.deep_of_drill }}</td>
+                <td>
+                    <a href="/update/{{ tool.id }}" class="btn btn-warning btn-sm">✏️</a>
+                    <form method="POST" action="/delete/{{ tool.id }}" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm">🗑️</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="6" class="text-center">No tools found</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
 
-    <!-- Место для отображения времени отправки отчета и затраченного времени -->
-    <div id="timestamp"></div>
-    <div id="timeSpent"></div>
-
-    <script>
-        document.getElementById('reportForm').addEventListener('submit', function(event) {
-            event.preventDefault();  // Отменяем стандартное поведение формы
-
-            const timestampElement = document.getElementById('timestamp');
-            const timeSpentElement = document.getElementById('timeSpent');
-            const notificationElement = document.getElementById('notification');
-            const startTime = Date.now();  // Время начала отправки
-
-            fetch('/api/send-test-email-for-user', {
-                method: 'GET'  // Если ваш серверный маршрут ожидает GET-запрос
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Обработка ответа от сервера
-                console.log(data);  // Для отладки
-                const endTime = Date.now();  // Время завершения отправки
-                const timeSpent = (endTime - startTime) / 1000;  // Время в секундах
-
-                showNotification('Отчет успешно отправлен!');
-                const currentTime = new Date().toLocaleString();  // Получаем текущее время
-                timestampElement.textContent = `Время отправки отчета: ${currentTime}`;
-                timeSpentElement.textContent = `Время затраченное на отправку: ${timeSpent.toFixed(2)} секунд`;
-
-                // Стираем сообщения через 3 секунды
-                setTimeout(() => {
-                    notificationElement.textContent = '';
-                    timestampElement.textContent = '';
-                    timeSpentElement.textContent = '';
-                }, 10000);
-            })
-            .catch(error => {
-                console.error('Ошибка:', error);
-                const endTime = Date.now();  // Время завершения при ошибке
-                const timeSpent = (endTime - startTime) / 1000;  // Время в секундах
-
-                showNotification('Произошла ошибка при отправке отчета.');
-                const currentTime = new Date().toLocaleString();  // Получаем текущее время
-                timestampElement.textContent = `Время отправки отчета: ${currentTime}`;
-                timeSpentElement.textContent = `Время затраченное на отправку: ${timeSpent.toFixed(2)} секунд`;
-
-                // Стираем сообщения через 3 секунды
-                setTimeout(() => {
-                    notificationElement.textContent = '';
-                    timestampElement.textContent = '';
-                    timeSpentElement.textContent = '';
-                }, 3000);
-            });
-        });
-
-        function showNotification(message) {
-            const notificationElement = document.getElementById('notification');
-            notificationElement.textContent = message;
-
-            // Уведомление браузера
-            if (Notification.permission === "granted") {
-                new Notification(message);
-            } else if (Notification.permission !== 'denied') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        new Notification(message);
-                    }
-                });
-            }
-        }
-
-        // Запрос разрешения на уведомления при загрузке страницы
-        if (Notification.permission === "default") {
-            Notification.requestPermission();
-        }
-    </script>
-</body>
-</html>
+<script>
+document.getElementById('search-input').addEventListener('input', function() {
+    const form = document.getElementById('search-form');
+    form.submit();
+});
+</script>
+{% endblock %}
