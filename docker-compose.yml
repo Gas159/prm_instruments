@@ -44,14 +44,16 @@ services:
 #      - 5434
     ports:
       - "5433:5432"
+
+  adminer:
+    container_name: adminer_parma
+    image: adminer
+    ports:
+      - "8080:8080"
 volumes:
   pgdata:
 
-#  adminer:
-#    container_name: adminer_parma
-#    image: adminer
-#    ports:
-#      - "8080:8080"
+
 
 #  pgadmin:
 #    container_name: pg_admin_parma
