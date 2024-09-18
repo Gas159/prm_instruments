@@ -1,19 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Добавляем кнопку для открытия окна фил��трации -->
-<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#filter-modal">Фильтровать по диаметру</button>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Tools</h1>
+    <div>
+        <a href="/create/" class="btn btn-success">Add New Tool</a>
+        <form id="search-form" method="GET" action="/" class="d-inline ms-3">
+            <div class="input-group">
+                <input id="search-input" type="text" name="search" class="form-control" placeholder="Search..." value="{{ search }}">
+            </div>
+        </form>
+        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#filter-modal">Фильтровать по диаметру</button>
+    </div>
+</div>
 
-<!-- Создаем модальное окно для фильтрации -->
+<!-- Модальное окно для фильтрации -->
 <div class="modal fade" id="filter-modal" tabindex="-1" aria-labelledby="filter-modal-label" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="filter-modal-label">Фильтрация по диаметру</h5>
+        <h5 class="modal-title" id="filter-modal-label">Фильтрация по диаметru</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <!-- Создаем список диаметров -->
         <select id="diameter-select" class="form-select">
           {% for tool in tools %}
             <option value="{{ tool.diameter }}">{{ tool.diameter }}</option>
@@ -28,27 +37,8 @@
   </div>
 </div>
 
-<!-- Добавляем JavaScript для фильтрации -->
-<script>
-  document.getElementById('filter-button').addEventListener('click', function() {
-    const diameter = document.getElementById('diameter-select').value;
-    const url = `/tools/?diameter=${diameter}`;
-    window.location.href = url;
-  });
-</script>
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Tools</h1>
-    <div>
-        <a href="/create/" class="btn btn-success">Add New Tool</a>
-        <form id="search-form" method="GET" action="/" class="d-inline ms-3">
-            <div class="input-group">
-                <input id="search-input" type="text" name="search" class="form-control" placeholder="Search..." value="{{ search }}">
-
-            </div>
-        </form>
-    </div>
-</div>
 <table class="table table-dark table-hover">
+    <!-- таблица с данными -->
     <thead>
         <tr>
             <th>
@@ -110,9 +100,20 @@
 </table>
 
 <script>
-document.getElementById('search-input').addEventListener('input', function() {
+$(document).ready(function() {
+  document.getElementById('search-input').addEventListener('input', function() {
     const form = document.getElementById('search-form');
     form.submit();
+  });
+
+  const filterButton = document.getElementById('filter-button');
+  const diameterSelect = document.getElementById('diameter-select');
+
+  filterButton.addEventListener('click', function() {
+    const diameter = diameterSelect.value;
+    const url = `/tools/?diameter=${diameter}`;
+    window.location.href = url;
+  });
 });
 </script>
 {% endblock %}
