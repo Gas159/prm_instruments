@@ -1,6 +1,41 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<!-- Добавляем кнопку для открытия окна фил��трации -->
+<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#filter-modal">Фильтровать по диаметру</button>
+
+<!-- Создаем модальное окно для фильтрации -->
+<div class="modal fade" id="filter-modal" tabindex="-1" aria-labelledby="filter-modal-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="filter-modal-label">Фильтрация по диаметру</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Создаем список диаметров -->
+        <select id="diameter-select" class="form-select">
+          {% for tool in tools %}
+            <option value="{{ tool.diameter }}">{{ tool.diameter }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-primary" id="filter-button">Фильтровать</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Добавляем JavaScript для фильтрации -->
+<script>
+  document.getElementById('filter-button').addEventListener('click', function() {
+    const diameter = document.getElementById('diameter-select').value;
+    const url = `/tools/?diameter=${diameter}`;
+    window.location.href = url;
+  });
+</script>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Tools</h1>
     <div>
