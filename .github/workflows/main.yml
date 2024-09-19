@@ -48,3 +48,4 @@ jobs:
             docker-compose down;
             docker-compose up -d;
             docker system prune --all --force;
+            echo "Done!"
