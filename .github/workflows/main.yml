@@ -27,6 +27,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Add SSH host key
+        run: |
+            mkdir -p ~/.ssh
+            ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Debug SSH
+        run: |
+          cat ~/.ssh/known_hosts
+
       - name: Run command on remote server
         uses: D3rHase/ssh-command-action@v0.2.2
         with:
