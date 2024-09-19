@@ -22,7 +22,7 @@ class SToolCreate(SToolBase):
 
 
 class SToolUpdate(SToolBase):
-	...
+	model_config = ConfigDict(from_attributes=True)
 
 
 class SDeleteTool(BaseModel):
