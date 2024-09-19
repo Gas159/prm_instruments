@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
+      - name: Add SSH host key
+        run: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
       - name: Checkout code
         uses: actions/checkout@v3
 
