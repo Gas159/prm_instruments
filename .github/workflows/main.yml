@@ -10,10 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Add SSH host key
-        run: |
-            mkdir -p ~/.ssh
-            ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -27,14 +23,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Add SSH host key
-        run: |
-            mkdir -p ~/.ssh
-            ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Debug SSH
-        run: |
-          cat ~/.ssh/known_hosts
+#      - name: Add SSH host key
+#        run: |
+#            mkdir -p ~/.ssh
+#            ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+#
+#      - name: Debug SSH
+#        run: |
+#          cat ~/.ssh/known_hosts
 
       - name: Run command on remote server
         uses: D3rHase/ssh-command-action@v0.2.2
@@ -42,7 +38,7 @@ jobs:
           host: ${{secrets.SSH_HOST}}
           user: ${{secrets.SSH_USER}}
           private_key: ${{secrets.SSH_PRIVATE_KEY}}
-          host_fingerprint: ${{ secrets.INPUT_HOST_FINGERPRINT }}
+#          host_fingerprint: ${{ secrets.INPUT_HOST_FINGERPRINT }}
           command: |
             cd ${{ secrets.PROJECT_FOLDER }};
             git checkout main;
