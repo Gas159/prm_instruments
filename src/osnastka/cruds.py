@@ -48,17 +48,27 @@ async def add_tool(db: AsyncSession, tool: SToolCreate):
 		raise HTTPException(status_code=500, detail=str(e))
 
 
-async def update_tool(db: AsyncSession, tool_id: int, tool: SToolUpdate):
+async def update_tool_in_db(db: AsyncSession, tool_id: int, tool: SToolUpdate):
 	db_tool = await db.get(ToolModel, tool_id)
-	print(db_tool)
-	if db_tool is None:
-		return None
 
-	for key, value in tool.dict(exclude_unset=True).items():
-		setattr(db_tool, key, value)
-	await db.commit()
-	await db.refresh(db_tool)
-	# return db_tool
+	try:
+
+		if db_tool is None:
+			raise HTTPException(status_code=404, detail="Tool not found")
+
+		for key, value in tool.model_dump(exclude_unset=True).items():
+			if value is None:
+				continue
+			setattr(db_tool, key, value)
+
+		await db.commit()
+		await db.refresh(db_tool)
+
+	except IntegrityError:
+		await db.rollback()
+		raise Exception("Failed to add tool: Integrity Error")
+	except Exception as e:
+		raise HTTPException(status_code=500, detail=str(e))
 
 
 async def delete_tool(db: AsyncSession, tool_id: int):
@@ -67,4 +77,4 @@ async def delete_tool(db: AsyncSession, tool_id: int):
 		return None
 	await db.delete(db_tool)
 	await db.commit()
-	return db_tool
+# return db_tool

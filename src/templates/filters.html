@@ -10,7 +10,6 @@
             {% endfor %}
         </select>
     </form>
-
 </div>
 
 <!-- JavaScript to handle the form submission and selection styling -->
@@ -21,14 +20,39 @@
 
     // Add checkmarks to selected options
     const selectElement = document.getElementById('diameter-select');
-    for (let option of selectElement.options) {
-        option.textContent = option.selected ? '✔ ' + option.value : option.value;
-    }
-
-    // Update checkmarks when options are clicked
-    selectElement.addEventListener('click', function() {
+    function updateOptions() {
         for (let option of selectElement.options) {
             option.textContent = option.selected ? '✔ ' + option.value : option.value;
         }
+    }
+
+    // Initial update
+    updateOptions();
+
+    // Update checkmarks when options are clicked
+    selectElement.addEventListener('click', function() {
+        updateOptions();
     });
 </script>
+
+<style>
+    /* Ensure the custom styling for dark themes */
+    .form-select {
+        background-color: #343a40; /* Dark background color */
+        color: #ffffff; /* White text color */
+        border: 1px solid #6c757d; /* Border color */
+    }
+
+    .form-select option {
+        background-color: #343a40; /* Dark background color for options */
+        color: #ffffff; /* White text color for options */
+    }
+
+    .form-select option:checked {
+        background-color: #495057; /* Slightly lighter background for selected options */
+    }
+
+    .form-select option:hover {
+        background-color: #495057; /* Hover effect for better visibility */
+    }
+</style>

@@ -10,12 +10,14 @@ from typing import List, Optional, Annotated
 from database import db_helper
 from osnastka.models import ToolModel
 from osnastka.schemas import STool, SToolBase, SToolCreate, SDeleteTool, SToolUpdate
-from osnastka.cruds import get_tools, add_tool, update_tool, delete_tool, get_all_diameters
+from osnastka.cruds import get_tools, add_tool, update_tool_in_db, delete_tool, get_all_diameters
 from starlette.responses import HTMLResponse
 
 router = APIRouter()
+import logging
 
 templates = Jinja2Templates(directory="templates")
+loger = logging.getLogger(__name__)
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -72,7 +74,7 @@ async def update_tool_view(
 
 		return templates.TemplateResponse(
 			"update.html",
-			{"request": request, "tool": tool}
+			{"request": request, 'tool': tool}
 		)
 
 	except NoResultFound:
@@ -82,13 +84,15 @@ async def update_tool_view(
 
 
 @router.put("/update/{tool_id}")
-async def update_tool_view(
+async def update_tool(
 		session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 		tool_id: int,
 		tool: SToolUpdate,
 ):
-	await update_tool(session, tool_id, tool)
-	return RedirectResponse(url="/", status_code=303)
+	loger.info('Update tool: %s', tool)
+
+	await update_tool_in_db(session, tool_id, tool)
+	return RedirectResponse("/", status_code=303)
 
 
 @router.post("/delete/{tool_id}")
