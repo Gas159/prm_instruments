@@ -1,0 +1,34 @@
+<!-- filters.html -->
+<div class="bg-dark text-light text-center p-2 mb-1 border rounded shadow custom-size">
+    <h5>Filter by Diameter</h5>
+    <form method="GET" action="/" id="diameter-filter-form">
+        <select name="diameter" multiple class="form-select" id="diameter-select" size="5">
+            {% for diameter in diameters %}
+            <option value="{{ diameter }}" {% if diameter in selected_diameters %}selected{% endif %}>
+                {{ diameter }}
+            </option>
+            {% endfor %}
+        </select>
+    </form>
+
+</div>
+
+<!-- JavaScript to handle the form submission and selection styling -->
+<script>
+    document.getElementById('diameter-select').addEventListener('change', function() {
+        document.getElementById('diameter-filter-form').submit();
+    });
+
+    // Add checkmarks to selected options
+    const selectElement = document.getElementById('diameter-select');
+    for (let option of selectElement.options) {
+        option.textContent = option.selected ? '✔ ' + option.value : option.value;
+    }
+
+    // Update checkmarks when options are clicked
+    selectElement.addEventListener('click', function() {
+        for (let option of selectElement.options) {
+            option.textContent = option.selected ? '✔ ' + option.value : option.value;
+        }
+    });
+</script>

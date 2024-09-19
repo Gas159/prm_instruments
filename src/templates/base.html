@@ -6,20 +6,54 @@
     <title>Tool Manager</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/styles.css" rel="stylesheet">
+    <style>
+        /* Стили для уменьшения ширины и высоты */
+       .custom-size {
+           width: 15%; /* Укажите желаемую ширину, например, 200px или 15% */
+           height: 80%; /* Укажите желаемую высоту, например, 100px */
+           padding: 10px; /* Уменьшите отступы внутри элемента */
+           margin: 5px ; /* Слегка уменьшите внешний отступ и выровняйте по центру */
+       }
+
+
+
+                            body, html {
+                                     height: 100%;
+                                     margin: 0;
+                                     display: flex;
+                                     flex-direction: column;
+
+                                 }
+
+                                 .wrapper {
+                                     flex: 1;
+                                     display: flex;
+                                     flex-direction: column;
+                                 }
+
+                                 .content {
+                                     flex: 1;
+                                 }
+                          footer {
+                                     background-color: #f8f9fa;
+                                     padding: 10px;
+                                     text-align: center;
+                                 }
+    </style>
 </head>
 <body class="bg-dark text-light">
-    <nav class="navbar navbar-dark bg-primary">
-        <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1">Tool Manager</span>
-        </div>
-    </nav>
-    <div class="container mt-4">
-        {% block content %}{% endblock %}
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Tool Manager</span>
     </div>
-    <footer class="footer mt-auto py-3 bg-primary text-center text-light">
-        <div class="container">
-            <span>&copy; 2024 Tool Manager</span>
-        </div>
-    </footer>
+</nav>
+<div class="container mt-4">
+    {% block content %}{% endblock %}
+</div>
+<footer class="footer mt-auto py-3 bg-primary text-center text-light">
+    <div class="container">
+        <span>&copy; 2024 Tool Manager</span>
+    </div>
+</footer>
 </body>
 </html>
