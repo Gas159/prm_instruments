@@ -24,7 +24,9 @@ async def create_service_repository(
     # service_create: CreateService,
 ):
     # service_dict = service_create.model_dump()
-    res = await ServiceRepository().add_one(data=service_create.model_dump(), session=session)
+    res = await ServiceRepository().add_one(
+        data=service_create.model_dump(), session=session
+    )
     return {"id": res}
 
 

@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from auth.models import User
 from database import db_helper
 
+
 async def get_user_db(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)]
 ):

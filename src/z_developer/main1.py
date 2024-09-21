@@ -32,8 +32,6 @@ for router in [
 add_pagination(main_app)
 
 
-
-
 @main_app.get("/")
 async def root():
     return {"data": "check"}

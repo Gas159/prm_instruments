@@ -48,6 +48,7 @@ print(var)
 # ---
 # slot = type(A, __slot__, ('a','b'))
 
+
 #
 class A:
     __slots__ = ("a", "b")
@@ -71,7 +72,7 @@ class B(A):
 
 # a = A(1, 2, 3)
 # print(type(a), a.a, a.b, dir(a))
-b = B(1,2,3)
+b = B(1, 2, 3)
 print(B(1, 2, 3))
 print(B.__slots__)
 print(A.__slots__)

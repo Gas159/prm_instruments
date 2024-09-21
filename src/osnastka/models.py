@@ -5,8 +5,8 @@ from project_services.mixins.int_id_pk import IntPkMixin
 
 
 class ToolModel(IntPkMixin, Base):
-	# __tablename__ = "tools"
-	name: Mapped[str]
-	diameter: Mapped[float]
-	lenght: Mapped[float]
-	deep_of_drill: Mapped[float]
+    # __tablename__ = "tools"
+    name: Mapped[str]
+    diameter: Mapped[float]
+    lenght: Mapped[float]
+    deep_of_drill: Mapped[float]

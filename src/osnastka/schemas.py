@@ -4,26 +4,26 @@ from pydantic import BaseModel, ConfigDict
 
 
 class SToolBase(BaseModel):
-	name: str
-	diameter: int | float
-	lenght: int | float
-	deep_of_drill: int | float
+    name: str
+    diameter: int | float
+    lenght: int | float
+    deep_of_drill: int | float
 
-	model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class STool(SToolBase):
-	# services: list[Service] = []
-	id: int
+    # services: list[Service] = []
+    id: int
 
 
 class SToolCreate(SToolBase):
-	model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SToolUpdate(SToolBase):
-	model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SDeleteTool(BaseModel):
-	id: int
+    id: int

@@ -24,7 +24,6 @@ def upgrade() -> None:
     op.create_table(
         "tool",
         sa.Column("id", sa.Integer(), nullable=False),
-
         sa.Column("name", sa.String(), nullable=False),
         sa.Column("diameter", sa.Float(), nullable=False),
         sa.Column("lenght", sa.Float(), nullable=False),

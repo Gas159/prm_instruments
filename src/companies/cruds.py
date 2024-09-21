@@ -7,7 +7,6 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-
 from companies.models import CompanyModel
 from companies.schemas import SCompanyCreate, SCompanyUpdate, SCompany
 from project_services.redis_tools import redis
@@ -55,16 +54,16 @@ async def get_all_companies(
     session: AsyncSession,
     params: Params,
 ) -> Page[SCompany]:  # Sequence[SCompany]:
-    redis_key: str = f'all_companies:{str(params.size)}:{str(params.page)}'
+    redis_key: str = f"all_companies:{str(params.size)}:{str(params.page)}"
     cached_data = await redis.get(redis_key)
 
     # Если данные есть в Redis, то возвращаем их
     if cached_data:
         print(f"Loaded data from Redis: ")
         cached_data = json.loads(cached_data)
-        companies = [SCompany(**company) for company in cached_data['companies']]
+        companies = [SCompany(**company) for company in cached_data["companies"]]
 
-        return Page.create(companies, total=int(cached_data['total']), params=params)
+        return Page.create(companies, total=int(cached_data["total"]), params=params)
 
     stmt = (
         select(CompanyModel)
@@ -76,7 +75,10 @@ async def get_all_companies(
 
     # Сериализация и сохранение результата в Redis
     serialized_result = json.dumps(
-        {'companies': [company.model_dump() for company in result.items], 'total': result.total}
+        {
+            "companies": [company.model_dump() for company in result.items],
+            "total": result.total,
+        }
     )
     await redis.set(redis_key, serialized_result, ex=10)
     print(f"Saved data to Redis: ")

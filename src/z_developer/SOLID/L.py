@@ -33,8 +33,6 @@ class Eagle(BadBird):
         bird.swim()
 
 
-
-
 # good example
 class Bird(ABC):
     def __init__(self, name):

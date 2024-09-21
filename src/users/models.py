@@ -18,7 +18,6 @@ class UserModel(IntPkMixin, Base):
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
-
     # second_name: Mapped[str]
     # role_id: Mapped[int] = mapped_column(ForeignKey("role.c.id"), nullable=False)
     # id: Mapped[int] = mapped_column(primary_key=True)

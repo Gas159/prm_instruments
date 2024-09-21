@@ -24,7 +24,6 @@ def upgrade() -> None:
     op.create_table(
         "company",
         sa.Column("id", sa.Integer(), nullable=False),
-
         sa.Column("name", sa.String(), nullable=False),
         sa.Column("description", sa.String(), nullable=False),
         sa.Column("coordinates", sa.String(), nullable=True),
@@ -33,7 +32,6 @@ def upgrade() -> None:
     op.create_table(
         "user",
         sa.Column("id", sa.Integer(), nullable=False),
-
         sa.Column("name", sa.String(), nullable=False),
         sa.Column("email", sa.String(length=320), nullable=False),
         sa.Column(
@@ -52,7 +50,6 @@ def upgrade() -> None:
     op.create_table(
         "service",
         sa.Column("id", sa.Integer(), nullable=False),
-
         sa.Column("name", sa.String(), nullable=False),
         sa.Column("description", sa.String(), nullable=False),
         sa.Column("company_id", sa.Integer(), nullable=True),

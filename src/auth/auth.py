@@ -1,4 +1,3 @@
-
 from fastapi_users.authentication import CookieTransport
 from fastapi_users.authentication import JWTStrategy
 

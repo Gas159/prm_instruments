@@ -3,9 +3,9 @@ import aioredis
 import asyncio
 
 
-
 class RedisTools:
-	redis = aioredis.from_url("redis://localhost")
+    redis = aioredis.from_url("redis://localhost")
+
 
 # async def redis_and_rabbitmq():
 # 	redis = aioredis.from_url("redis://localhost")

@@ -9,6 +9,7 @@ from starlette.responses import FileResponse
 from config import settings
 
 from fastapi.templating import Jinja2Templates
+
 # from auth.app import router as router_v1_auth
 # from companies import router as router_v1_company
 # from services import router as router_v1_service
@@ -55,7 +56,6 @@ add_pagination(main_app)
 # @main_app.get("/1", response_class=FileResponse)
 # async def get_homepage(request: Request):
 #     return FileResponse("templates/base.html")
-
 
 
 if __name__ == "__main__":
