@@ -23,6 +23,11 @@ router = APIRouter()
 import logging
 
 templates = Jinja2Templates(directory="templates")
+# Настройка логгирования
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
 loger = logging.getLogger(__name__)
 
 
@@ -33,7 +38,7 @@ async def read_tools(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     sort_by: str = Query(
         "id",
-        regex="^(id|name|diameter|lenght|deep_of_drill|plate|screws|key|company|is_broken)$",
+        regex="^(id|name|diameter|length|deep_of_drill|plate|screws|key|company|is_broken)$",
     ),
     order: str = Query("asc", regex="^(asc|desc)$"),
     search: str | None = Query(""),
@@ -70,6 +75,8 @@ async def create_tool(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     tool: SToolCreate,
 ):
+    loger.info("Create tool: %s", tool)
+
     await add_tool(session, tool)
     return RedirectResponse("/", status_code=303)
 
@@ -118,6 +125,7 @@ async def update_tool_status(
     request: Request,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ):
+
     data = await request.json()
     is_broken = data.get("is_broken")
 
@@ -129,7 +137,7 @@ async def update_tool_status(
     # Обновляем статус
     tool.is_broken = is_broken
     await session.commit()
-    loger.info("1221212121")
+    loger.info("Tool status updated successfully")
     return {"message": "Tool status updated successfully"}
 
 

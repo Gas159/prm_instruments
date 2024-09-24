@@ -1,13 +1,16 @@
-from dataclasses import Field
-
 from pydantic import BaseModel, ConfigDict
 
 
 class SToolBase(BaseModel):
     name: str
-    diameter: int | float
-    lenght: int | float
-    deep_of_drill: int | float
+    diameter: float | None
+    length: float | None
+    deep_of_drill: float | None
+    plate: str | None
+    screws: str | None
+    key: str | None
+    company: str | None
+    is_broken: bool | None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -18,10 +21,11 @@ class STool(SToolBase):
 
 
 class SToolCreate(SToolBase):
-    model_config = ConfigDict(from_attributes=True)
+    pass
 
 
 class SToolUpdate(SToolBase):
+
     model_config = ConfigDict(from_attributes=True)
 
 

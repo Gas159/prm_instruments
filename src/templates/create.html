@@ -1,46 +1,67 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<body>
 <div class="container mt-4">
     <div class="card bg-dark text-light shadow-lg">
         <div class="card-header bg-secondary">
-            <h1 class="mb-0 text-center">Add New Tool</h1>
+            <h1 class="mb-0 text-center">Добавить Новый Инструмент</h1>
         </div>
         <div class="card-body bg-dark text-light">
-            <!--                        <h2 class="mb-0 text-center">Add New Tool</h2>-->
-        </div>
-        <div class="card-body">
-            <form id="tool-form">
+            <div id="success-message" class="alert alert-success mt-3" role="alert" style="display: none;">
+                Инструмент успешно добавлен!
+            </div>
+            <form id="tool-form" method="POST" action="/create/">
                 <div class="form-group mb-3">
-                    <label for="name" class="form-label">Name</label>
+                    <label for="name" class="form-label">Название</label>
                     <input type="text" id="name" name="name" class="form-control dark-input" required>
                 </div>
                 <div class="mb-3">
-                    <label for="diameter" class="form-label">Diameter (mm)</label>
-                    <input type="number" id="diameter" name="diameter" class="form-control dark-input" step="any" required>
+                    <label for="diameter" class="form-label">Диаметр (мм)</label>
+                    <input type="number" id="diameter" name="diameter" class="form-control dark-input" step="any"
+                           placeholder="Необязательно">
                 </div>
                 <div class="mb-3">
-                    <label for="lenght" class="form-label">Length (mm)</label>
-                    <input type="number" id="lenght" name="lenght" class="form-control dark-input" step="any" required>
+                    <label for="length" class="form-label">Длина (мм)</label>
+                    <input type="number" id="length" name="length" class="form-control dark-input" step="any"
+                           placeholder="Необязательно">
                 </div>
                 <div class="mb-3">
-                    <label for="deep_of_drill" class="form-label">Depth of Drill (mm)</label>
-                    <input type="number" id="deep_of_drill" name="deep_of_drill" class="form-control dark-input" step="any" required>
+                    <label for="deep_of_drill" class="form-label">Глубина сверления (мм)</label>
+                    <input type="number" id="deep_of_drill" name="deep_of_drill" class="form-control dark-input"
+                           step="any" placeholder="Необязательно">
                 </div>
-                <button type="submit" class="btn btn-primary">Add Tool</button>
+                <div class="mb-3">
+                    <label for="plate" class="form-label">Пластина</label>
+                    <input type="text" id="plate" name="plate" class="form-control dark-input"
+                           placeholder="Необязательно">
+                </div>
+                <div class="mb-3">
+                    <label for="screws" class="form-label">Винт</label>
+                    <input type="text" id="screws" name="screws" class="form-control dark-input"
+                           placeholder="Необязательно">
+                </div>
+                <div class="mb-3">
+                    <label for="key" class="form-label">Ключ</label>
+                    <input type="text" id="key" name="key" class="form-control dark-input" placeholder="Необязательно">
+                </div>
+                <div class="mb-3">
+                    <label for="company" class="form-label">Компания</label>
+                    <input type="text" id="company" name="company" class="form-control dark-input"
+                           placeholder="Необязательно">
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="hidden" name="is_broken" value="false">
+                    <input type="checkbox" id="is_broken" name="is_broken" class="form-check-input">
+                    <label for="is_broken" class="form-check-label">Сломан?</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Добавить Инструмент</button>
             </form>
-            <!-- Сообщение об успехе, скрыто по умолчанию -->
-            <div id="success-message" class="alert alert-success mt-3" role="alert" style="display: none;">
-                Tool added successfully!
-            </div>
+
         </div>
     </div>
 </div>
-</div>
-</div>
 
-<!-- Bootstrap JS and dependencies -->
+<!-- Bootstrap JS и зависимости -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 
@@ -55,13 +76,14 @@
             const response = await fetch('/create/', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'  // Добавьте CSRF-токен, если он используется в проекте
                 },
                 body: JSON.stringify(tool)
             });
 
             if (!response.ok) {
-                throw new Error('Failed to add tool');
+                throw new Error('Не удалось добавить инструмент');
             }
 
             const successMessage = document.getElementById('success-message');
@@ -70,36 +92,33 @@
             }
 
             setTimeout(() => {
-                window.location.href = '/';
-            }, 1); // Redirect after 1.5 seconds
+                window.location.href = '/';  // Перенаправление на главную страницу
+            }, 15); // Перенаправление через 1.5 секунды
         } catch (error) {
-            alert('Error: ' + error.message);
+            alert('Ошибка: ' + error.message);
         }
     });
 </script>
 
 <style>
-    /* Стили для темных полей ввода */
     .dark-input {
-        background-color: #495057; /* Темный фон */
-        color: #ffffff; /* Светлый текст */
-        border: 1px solid #6c757d; /* Светло-серый бордер */
+        background-color: #495057;
+        color: #ffffff;
+        border: 1px solid #6c757d;
     }
 
     .dark-input::placeholder {
-        color: #ffffff; /* Цвет плейсхолдера */
+        color: #ffffff;
     }
 
-    /* Стили для кнопок и других элементов формы */
     .btn-primary {
-        background-color: #007bff; /* Цвет фона кнопки */
-        border-color: #007bff; /* Цвет бордера кнопки */
+        background-color: #007bff;
+        border-color: #007bff;
     }
 
     .btn-primary:hover {
-        background-color: #0056b3; /* Цвет фона кнопки при наведении */
-        border-color: #004085; /* Цвет бордера кнопки при наведении */
+        background-color: #0056b3;
+        border-color: #004085;
     }
 </style>
-</body>
 {% endblock %}

@@ -45,8 +45,8 @@
                     {% endif %}
                 </th>
                 <th>
-                    <a href="/?sort_by=lenght&order={{ 'desc' if order == 'asc' else 'asc' }}">Length</a>
-                    {% if sort_by == 'lenght' %}
+                    <a href="/?sort_by=length&order={{ 'desc' if order == 'asc' else 'asc' }}">Length</a>
+                    {% if sort_by == 'length' %}
                     <span>{{ '▲' if order == 'asc' else '▼' }}</span>
                     {% endif %}
                 </th>
@@ -95,10 +95,10 @@
                 <td>{{ tool.id }}</td>
                 <td>{{ tool.name | default('N/A') }}</td>
                 <td>{{ tool.diameter | default('N/A') }}</td>
-                <td>{{ tool.lenght | default('N/A') }}</td>
+                <td>{{ tool.length | default('N/A') }}</td>
                 <td>{{ tool.deep_of_drill if tool.deep_of_drill else '' }}</td>
-                <td>{{ tool.plate if tool.plate else '' }}</td>
-                <td>{{ tool.screws if tool.screws else ''}}</td>
+                <td>{{ tool.plate | default('N/A') }}</td>
+                <td>{{ tool.screws if tool.screws  else ''}}</td>
                 <td>{{ tool.key if tool.key else ''}}</td>
                 <td>{{ tool.company if tool.company else '' }}</td>
                 <!--                <td>{{ 'Yes' if tool.is_broken else 'No' }}</td>-->

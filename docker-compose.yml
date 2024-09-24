@@ -27,44 +27,32 @@ services:
     container_name: pg_parma
     image: postgres
     restart: always
-
-    environment:
-      - POSTGRES_USER=${FASTAPI__DB__POSTGRES_USER}
-      - POSTGRES_PASSWORD=${FASTAPI__DB__POSTGRES_PASSWORD}
-      - POSTGRES_DB=${FASTAPI__DB__POSTGRES_DB}
     env_file:
       - src/.env
     volumes:
       - pgdata:/var/lib/postgresql/data
-#    command: -p 5434
-#    expose:
-#      - 5434
     ports:
       - "5433:5432"
 
   adminer:
     container_name: adminer_parma
     image: adminer
+    restart: always
     ports:
       - "8080:8080" # Adminer будет доступен по адресу http://localhost:8080
-volumes:
-  pgdata:
 
 
 
-#  pgadmin:
-#    image: dpage/pgadmin4
-#    container_name: pg_admin_parma
-##    environment:
-##      - PGADMIN_DEFAULT_EMAIL: admin@admin.org
-##      - PGADMIN_DEFAULT_PASSWORD: 123
-##      - PGADMIN_CONFIG_SERVER_MODE: 'False'
-#    environment:
-#      - POSTGRES_USER=${FASTAPI__DB__POSTGRES_USER}
-#      - POSTGRES_PASSWORD=${FASTAPI__DB__POSTGRES_PASSWORD}
-#      - POSTGRES_DB=${FASTAPI__DB__POSTGRES_DB}
-#    ports:
-#      - "5054:80"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pg_admin_parma
+    environment:
+          PGADMIN_DEFAULT_EMAIL: admin@admin.org
+          PGADMIN_DEFAULT_PASSWORD: 123
+          PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5054:80"
 
 
 #  redis:
@@ -98,5 +86,5 @@ volumes:
 #      - 8888:5555
 
 
-#volumes:
-#  pgdata:
+volumes:
+  pgdata:

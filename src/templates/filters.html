@@ -2,7 +2,7 @@
 <div class="bg-dark text-light text-center p-2 mb-1 border rounded shadow custom-size">
     <h5>Filter by Diameter</h5>
     <form method="GET" action="/" id="diameter-filter-form">
-        <select name="diameter" multiple class="form-select" id="diameter-select" size="5">
+        <select name="diameter" multiple class="form-select" id="diameter-select" size="8">
             {% for diameter in diameters %}
             <option value="{{ diameter }}" {% if diameter in selected_diameters %}selected{% endif %}>
                 {{ diameter }}
