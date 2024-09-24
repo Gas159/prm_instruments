@@ -3,14 +3,14 @@ from pydantic import BaseModel, ConfigDict
 
 class SToolBase(BaseModel):
     name: str
-    diameter: float | None
-    length: float | None
-    deep_of_drill: float | None
-    plate: str | None
-    screws: str | None
-    key: str | None
-    company: str | None
-    is_broken: bool | None
+    diameter: float | None = None
+    length: float | None = None
+    deep_of_drill: float | None = None
+    plate: str | None = None
+    screws: str | None = None
+    key: str | None = None
+    company: str | None = None
+    is_broken: bool | None = None
 
     model_config = ConfigDict(from_attributes=True)
 

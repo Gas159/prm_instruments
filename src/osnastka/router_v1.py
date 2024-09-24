@@ -73,7 +73,9 @@ async def create_tool_form(request: Request):
 @router.post("/create/")
 async def create_tool(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    # tool: Annotated[SToolCreate, Depends()],
     tool: SToolCreate,
+    # company_create: Annotated[SCompanyCreate, Depends()],
 ):
     loger.info("Create tool: %s", tool)
 

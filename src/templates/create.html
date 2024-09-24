@@ -81,7 +81,12 @@
                 },
                 body: JSON.stringify(tool)
             });
-
+            // Преобразуем пустые строки в null
+    for (const key in tool) {
+        if (tool[key] === "") {
+            tool[key] = null;
+        }
+    }
             if (!response.ok) {
                 throw new Error('Не удалось добавить инструмент');
             }
