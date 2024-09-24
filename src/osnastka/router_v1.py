@@ -17,7 +17,7 @@ from osnastka.cruds import (
     delete_tool,
     get_all_diameters,
 )
-from starlette.responses import HTMLResponse
+from starlette.responses import HTMLResponse, JSONResponse
 
 router = APIRouter()
 import logging
@@ -26,15 +26,19 @@ templates = Jinja2Templates(directory="templates")
 loger = logging.getLogger(__name__)
 
 
+# Получение всех свёрл
 @router.get("/", response_class=HTMLResponse)
 async def read_tools(
     request: Request,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    sort_by: str = Query("id", regex="^(id|name|diameter|lenght|deep_of_drill)$"),
+    sort_by: str = Query(
+        "id",
+        regex="^(id|name|diameter|lenght|deep_of_drill|plate|screws|key|company|is_broken)$",
+    ),
     order: str = Query("asc", regex="^(asc|desc)$"),
-    search: Optional[str] = Query(""),
+    search: str | None = Query(""),
     diameter: List[float] = Query(None),  # Получение списка выбранных диаметров
-):
+) -> HTMLResponse:
     search = search.strip()
     tools = await get_tools(
         session, sort_by=sort_by, order=order, search=search, diameters=diameter
@@ -55,6 +59,7 @@ async def read_tools(
     )
 
 
+# Создание сверла
 @router.get("/create/", response_class=HTMLResponse)
 async def create_tool_form(request: Request):
     return templates.TemplateResponse("create.html", {"request": request})
@@ -69,6 +74,7 @@ async def create_tool(
     return RedirectResponse("/", status_code=303)
 
 
+# Обновление сверла
 @router.get("/update/{tool_id}", response_class=HTMLResponse)
 async def update_tool_view(
     request: Request,
@@ -105,6 +111,29 @@ async def update_tool(
     return RedirectResponse("/", status_code=303)
 
 
+# Обновление статуса состояния инструмента
+@router.post("/update_broken_status/{tool_id}")
+async def update_tool_status(
+    tool_id: int,
+    request: Request,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+):
+    data = await request.json()
+    is_broken = data.get("is_broken")
+
+    # Получаем инструмент по ID
+    tool = await session.get(ToolModel, tool_id)
+    if not tool:
+        return JSONResponse(status_code=404, content={"message": "Tool not found"})
+
+    # Обновляем статус
+    tool.is_broken = is_broken
+    await session.commit()
+    loger.info("1221212121")
+    return {"message": "Tool status updated successfully"}
+
+
+# Удаление сверла
 @router.post("/delete/{tool_id}")
 async def delete_tool_view(
     tool_id: int, session: Annotated[AsyncSession, Depends(db_helper.session_getter)]

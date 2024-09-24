@@ -21,10 +21,8 @@
     <!-- Filters -->
     {% include 'filters.html' %}
 
-
     <!-- Main content area (table) -->
     <div class="content">
-
         <table class="table table-dark table-hover">
             <thead>
             <tr>
@@ -58,6 +56,36 @@
                     <span>{{ '▲' if order == 'asc' else '▼' }}</span>
                     {% endif %}
                 </th>
+                <th>
+                    <a href="/?sort_by=plate&order={{ 'desc' if order == 'asc' else 'asc' }}">Plate</a>
+                    {% if sort_by == 'plate' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                    {% endif %}
+                </th>
+                <th>
+                    <a href="/?sort_by=screws&order={{ 'desc' if order == 'asc' else 'asc' }}">Screws</a>
+                    {% if sort_by == 'screws' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                    {% endif %}
+                </th>
+                <th>
+                    <a href="/?sort_by=key&order={{ 'desc' if order == 'asc' else 'asc' }}">Key</a>
+                    {% if sort_by == 'key' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                    {% endif %}
+                </th>
+                <th>
+                    <a href="/?sort_by=company&order={{ 'desc' if order == 'asc' else 'asc' }}">Company</a>
+                    {% if sort_by == 'company' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                    {% endif %}
+                </th>
+                <th>
+                    <a href="/?sort_by=is_broken&order={{ 'desc' if order == 'asc' else 'asc' }}">Broken</a>
+                    {% if sort_by == 'is_broken' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                    {% endif %}
+                </th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -65,10 +93,21 @@
             {% for tool in tools %}
             <tr>
                 <td>{{ tool.id }}</td>
-                <td>{{ tool.name }}</td>
-                <td>{{ tool.diameter }}</td>
-                <td>{{ tool.lenght }}</td>
-                <td>{{ tool.deep_of_drill }}</td>
+                <td>{{ tool.name | default('N/A') }}</td>
+                <td>{{ tool.diameter | default('N/A') }}</td>
+                <td>{{ tool.lenght | default('N/A') }}</td>
+                <td>{{ tool.deep_of_drill if tool.deep_of_drill else '' }}</td>
+                <td>{{ tool.plate if tool.plate else '' }}</td>
+                <td>{{ tool.screws if tool.screws else ''}}</td>
+                <td>{{ tool.key if tool.key else ''}}</td>
+                <td>{{ tool.company if tool.company else '' }}</td>
+                <!--                <td>{{ 'Yes' if tool.is_broken else 'No' }}</td>-->
+                <!-- Checkbox для поля "is_broken" -->
+                <td>
+                    <input type="checkbox" class="form-check-input is-broken-checkbox"
+                           data-tool-id="{{ tool.id }}" {% if tool.is_broken %} checked {% endif %}>
+                </td>
+
                 <td>
                     <a href="/update/{{ tool.id }}" class="btn btn-warning btn-sm">✏️</a>
                     <form method="POST" action="/delete/{{ tool.id }}" class="d-inline">
@@ -85,21 +124,50 @@
 <!-- JavaScript for filter behavior -->
 <script>
 
-    document.getElementById('diameter-select').addEventListener('change', function() {
-        document.getElementById('diameter-filter-form').submit();
-    });
+<!--    document.getElementById('diameter-select').addEventListener('change', function() {-->
+<!--        document.getElementById('diameter-filter-form').submit();-->
+<!--    });-->
 
-    // Add checkmarks to selected options
-    const selectElement = document.getElementById('diameter-select');
-    for (let option of selectElement.options) {
-        option.textContent = option.selected ? '✔ ' + option.value : option.value;
-    }
+<!--    // Add checkmarks to selected options-->
+<!--    const selectElement = document.getElementById('diameter-select');-->
+<!--    for (let option of selectElement.options) {-->
+<!--        option.textContent = option.selected ? '✔ ' + option.value : option.value;-->
+<!--    }-->
 
-    // Update checkmarks when options are clicked
-    selectElement.addEventListener('click', function() {
-        for (let option of selectElement.options) {
-            option.textContent = option.selected ? '✔ ' + option.value : option.value;
-        }
+<!--    // Update checkmarks when options are clicked-->
+<!--    selectElement.addEventListener('click', function() {-->
+<!--        for (let option of selectElement.options) {-->
+<!--            option.textContent = option.selected ? '✔ ' + option.value : option.value;-->
+<!--        }-->
+<!--    });-->
+
+
+        document.querySelectorAll('.is-broken-checkbox').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            const toolId = this.getAttribute('data-tool-id');
+            const isBroken = this.checked;
+
+            // Выполняем AJAX-запрос для обновления значения в базе
+            fetch(`/update_broken_status/${toolId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'  // Добавьте CSRF-токен, если он используется в проекте
+                },
+                body: JSON.stringify({ is_broken: isBroken })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Status updated successfully');
+                } else {
+                    console.error('Failed to update status');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
     });
 </script>
 {% endblock %}

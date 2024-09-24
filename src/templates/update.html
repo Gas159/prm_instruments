@@ -13,7 +13,7 @@
 
                 <div class="mb-3">
                     <label for="name" class="form-label">Name</label>
-                    <input type="text" id="name" name="name" class="form-control dark-input"  value="{{ tool.name }}" required>
+                    <input type="text" id="name" name="name" class="form-control dark-input" value="{{ tool.name }}" required>
                 </div>
                 <div class="mb-3">
                     <label for="diameter" class="form-label">Diameter (mm)</label>
@@ -30,6 +30,27 @@
                     <input type="number" id="deep_of_drill" name="deep_of_drill" step="any" class="form-control dark-input"
                            value="{{ tool.deep_of_drill }}" required>
                 </div>
+                <div class="mb-3">
+                    <label for="plate" class="form-label">Plate</label>
+                    <input type="text" id="plate" name="plate" class="form-control dark-input" value="{{ tool.plate }}" placeholder="Optional">
+                </div>
+                <div class="mb-3">
+                    <label for="screws" class="form-label">Screws</label>
+                    <input type="text" id="screws" name="screws" class="form-control dark-input" value="{{ tool.screws }}" placeholder="Optional">
+                </div>
+                <div class="mb-3">
+                    <label for="key" class="form-label">Key</label>
+                    <input type="text" id="key" name="key" class="form-control dark-input" value="{{ tool.key }}" placeholder="Optional">
+                </div>
+                <div class="mb-3">
+                    <label for="company" class="form-label">Company</label>
+                    <input type="text" id="company" name="company" class="form-control dark-input" value="{{ tool.company }}" placeholder="Optional">
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" id="is_broken" name="is_broken" class="form-check-input" {% if tool.is_broken %} checked {% endif %}>
+                    <label for="is_broken" class="form-check-label">Is Broken?</label>
+                </div>
+
                 <button type="submit" class="btn btn-primary">Update Tool</button>
             </form>
         </div>

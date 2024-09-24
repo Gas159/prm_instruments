@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container"> <!-- Контейнер для центрирования содержимого -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Tools</h1>
+        <div>
+
+            <!-- Search Form -->
+            <form method="GET" action="/" class="d-inline ms-3">
+                <input type="text" name="search" class="form-control dark-input" placeholder="Search..."
+                       value="{{ search | default('') }}">
+            </form>
+
+            <!-- Add New Tool Button -->
+            <a href="/create/" class="btn btn-success">Add New Tool</a>
+        </div>
+
+    </div>
+
+    <!-- Filters -->
+    {% include 'filters.html' %}
+
+
+    <!-- Main content area (table) -->
+    <div class="content">
+
+        <table class="table table-dark table-hover">
+            <thead>
+            <tr>
+                <th>
+                    <a href="/?sort_by=id&order={{ 'desc' if order == 'asc' else 'asc' }}">ID</a>
+                    {% if sort_by == 'id' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                    {% endif %}
+                </th>
+                <th>
+                    <a href="/?sort_by=name&order={{ 'desc' if order == 'asc' else 'asc' }}">Name</a>
+                    {% if sort_by == 'name' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                    {% endif %}
+                </th>
+                <th>
+                    <a href="/?sort_by=diameter&order={{ 'desc' if order == 'asc' else 'asc' }}">Diameter</a>
+                    {% if sort_by == 'diameter' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                    {% endif %}
+                </th>
+                <th>
+                    <a href="/?sort_by=lenght&order={{ 'desc' if order == 'asc' else 'asc' }}">Length</a>
+                    {% if sort_by == 'lenght' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                    {% endif %}
+                </th>
+                <th>
+                    <a href="/?sort_by=deep_of_drill&order={{ 'desc' if order == 'asc' else 'asc' }}">Deep of Drill</a>
+                    {% if sort_by == 'deep_of_drill' %}
+                    <span>{{ '▲' if order == 'asc' else '▼' }}</span>
+                    {% endif %}
+                </th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for tool in tools %}
+            <tr>
+                <td>{{ tool.id }}</td>
+                <td>{{ tool.name }}</td>
+                <td>{{ tool.diameter }}</td>
+                <td>{{ tool.lenght }}</td>
+                <td>{{ tool.deep_of_drill }}</td>
+                <td>
+                    <a href="/update/{{ tool.id }}" class="btn btn-warning btn-sm">✏️</a>
+                    <form method="POST" action="/delete/{{ tool.id }}" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm">🗑️</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- JavaScript for filter behavior -->
+<script>
+
+    document.getElementById('diameter-select').addEventListener('change', function() {
+        document.getElementById('diameter-filter-form').submit();
+    });
+
+    // Add checkmarks to selected options
+    const selectElement = document.getElementById('diameter-select');
+    for (let option of selectElement.options) {
+        option.textContent = option.selected ? '✔ ' + option.value : option.value;
+    }
+
+    // Update checkmarks when options are clicked
+    selectElement.addEventListener('click', function() {
+        for (let option of selectElement.options) {
+            option.textContent = option.selected ? '✔ ' + option.value : option.value;
+        }
+    });
+</script>
+{% endblock %}
