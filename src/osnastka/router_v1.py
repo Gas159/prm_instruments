@@ -42,7 +42,7 @@ async def read_tools(
     ),
     order: str = Query("asc", regex="^(asc|desc)$"),
     search: str | None = Query(""),
-    diameter: List[float] = Query(None),  # Получение списка выбранных диаметров
+    diameter: List[float | None] = Query(None),  # Получение списка выбранных диаметров
 ) -> HTMLResponse:
     search = search.strip()
     tools = await get_tools(
