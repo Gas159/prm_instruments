@@ -72,6 +72,13 @@
         const formData = new FormData(event.target);
         const tool = Object.fromEntries(formData.entries());
 
+        // Удаляем поля с пустыми значениями
+        for (const key in tool) {
+            if (tool[key] === "") {
+                delete tool[key];
+            }
+        }
+
         try {
             const response = await fetch('/create/', {
                 method: 'POST',
@@ -81,12 +88,7 @@
                 },
                 body: JSON.stringify(tool)
             });
-            // Преобразуем пустые строки в null
-    for (const key in tool) {
-        if (tool[key] === "") {
-            tool[key] = null;
-        }
-    }
+
             if (!response.ok) {
                 throw new Error('Не удалось добавить инструмент');
             }
@@ -98,7 +100,7 @@
 
             setTimeout(() => {
                 window.location.href = '/';  // Перенаправление на главную страницу
-            }, 15); // Перенаправление через 1.5 секунды
+            }, 1500); // Перенаправление через 1.5 секунды
         } catch (error) {
             alert('Ошибка: ' + error.message);
         }
