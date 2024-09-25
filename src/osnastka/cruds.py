@@ -25,7 +25,7 @@ async def get_tools(
     sort_by: str = "id",
     order: str = "asc",
     search: str = None,
-    diameters: Optional[List[float]] = None,
+    diameters: Optional[List[float | None]] = None,
 ):
     query = select(ToolModel)
     if search:
@@ -54,12 +54,12 @@ async def add_tool(db: AsyncSession, tool: SToolCreate):
 
     try:
         await db.commit()
-        # await db.refresh(db_tool)
+        await db.refresh(db_tool)
 
     except IntegrityError:
-        pass
-        # await db.rollback()
-        # raise Exception("Failed to add tool: Integrity Error")
+        
+        await db.rollback()
+        raise Exception("Failed to add tool: Integrity Error")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
