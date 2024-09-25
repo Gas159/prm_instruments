@@ -45,7 +45,9 @@ async def get_tools(
 async def get_all_diameters(session: AsyncSession):
     query = select(ToolModel.diameter).distinct()
     result = await session.execute(query)
-    return sorted([row[0] for row in result.fetchall() if row is not None])
+    return sorted([row[0] for row in result.fetchall()], key=lambda x: (x is None, x))
+
+   # return sorted([row[0] for row in result.fetchall() ])
 
 
 async def add_tool(db: AsyncSession, tool: SToolCreate):
