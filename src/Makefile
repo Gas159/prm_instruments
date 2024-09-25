@@ -21,7 +21,7 @@ reload:
 		docker-compose stop && docker-compose up --build
 
 redown: #Удалит тома и контейнер
-		docker-compose down  && docker-compose up --build
+		docker-compose down  && docker-compose up --build app pg
 
 
 
