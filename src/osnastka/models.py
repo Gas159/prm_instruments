@@ -10,9 +10,9 @@ from project_services.mixins.int_id_pk import IntPkMixin
 class ToolModel(IntPkMixin, Base):
     # __tablename__ = "tools"
     name: Mapped[str]
-    diameter: Mapped[float] = mapped_column(default=0.0, nullable=True)
-    length: Mapped[float] = mapped_column(default=0.0, nullable=True)
-    deep_of_drill: Mapped[float] = mapped_column(default=0.0, nullable=True)
+    diameter: Mapped[float] = mapped_column(nullable=True)
+    length: Mapped[float] = mapped_column( nullable=True)
+    deep_of_drill: Mapped[float] = mapped_column( nullable=True)
     plate: Mapped[str] = mapped_column(nullable=True)
     screws: Mapped[str] = mapped_column(nullable=True)
     key: Mapped[str] = mapped_column(nullable=True)
