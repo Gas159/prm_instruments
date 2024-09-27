@@ -47,7 +47,8 @@ async def get_all_diameters(session: AsyncSession):
     result = await session.execute(query)
     return sorted([row[0] for row in result.fetchall()], key=lambda x: (x is None, x))
 
-   # return sorted([row[0] for row in result.fetchall() ])
+
+# return sorted([row[0] for row in result.fetchall() ])
 
 
 async def add_tool(db: AsyncSession, tool: SToolCreate):
@@ -59,7 +60,7 @@ async def add_tool(db: AsyncSession, tool: SToolCreate):
         await db.refresh(db_tool)
 
     except IntegrityError:
-        
+
         await db.rollback()
         raise Exception("Failed to add tool: Integrity Error")
     except Exception as e:

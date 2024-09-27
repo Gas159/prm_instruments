@@ -2,7 +2,6 @@
 from sys import prefix
 
 from pygments.lexer import include
-from requests import session
 from sqlalchemy import asc, desc
 from sqlalchemy.future import select
 from sqlalchemy.exc import NoResultFound

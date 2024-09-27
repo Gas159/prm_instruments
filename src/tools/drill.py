@@ -36,7 +36,7 @@ loger = logging.getLogger(__name__)
 
 # Get ONE
 @router.get("/drill/{tool_id}")
-async def get_drill(
+async def get_one(
     tool_id: int,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ):

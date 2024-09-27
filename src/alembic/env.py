@@ -28,6 +28,7 @@ from services.models import ServiceModel  # Импорт модели серви
 from users.models import UserModel  # Импорт модели пользователя
 from osnastka.models import ToolModel
 
+
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
