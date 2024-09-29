@@ -16,8 +16,8 @@ from fastapi.templating import Jinja2Templates
 # from companies import router as router_v1_company
 # from services import router as router_v1_service
 # from users import router as router_v1_user
-from osnastka import router as router_v1_utils
-from tools import router as router_v1_tools
+# from osnastka import router as router_v1_utils
+from tools.drills import router as router_drills
 from exceptions import validation_exception_handler, internal_server_error
 from project_services.cors import add_cors_middleware
 from project_services.llifespan import lifespan
@@ -39,7 +39,7 @@ for router in [
     # router_v1_company,
     # router_v1_task,
     # router_v1_utils,
-    router_v1_tools,
+    router_drills
 ]:
     # main_app.include_router(router, prefix=settings.api.prefix)
     main_app.include_router(router)

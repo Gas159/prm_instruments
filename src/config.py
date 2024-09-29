@@ -1,6 +1,21 @@
+import logging
+
 from pydantic import BaseModel
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+import logging
+
+# Настройка логирования
+logging.basicConfig(
+    level=logging.DEBUG,  # Общий уровень логирования
+    format="%(asctime)s - %(name)s - %(filename)s:%(lineno)d - %(funcName)s() - %(levelname)s - %(process)d - %(threadName)s - %(message)s",
+    handlers=[
+        logging.FileHandler("app.log"),  # Логи записываются в файл
+        logging.StreamHandler(),  # Логи выводятся на консоль
+    ],
+)
 
 
 class RunConfig(BaseModel):
