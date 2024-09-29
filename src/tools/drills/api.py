@@ -75,12 +75,12 @@ async def get_all(
 # @router.get("/create/", response_class=HTMLResponse)
 # async def create_tool_form(request: Request):
 #     return templates.TemplateResponse("create.html", {"request": request})
-#
-# #
+
+
 @router.post("/create/")
 async def create_drill(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    drill: DrillCreateSchema,
+    drill: Annotated[DrillCreateSchema, Depends()],
 ):
     loger.info("Create tool: %s", drill)
 

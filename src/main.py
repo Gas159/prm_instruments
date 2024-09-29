@@ -1,16 +1,13 @@
-from typing import Annotated
-
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi_pagination import add_pagination
-from starlette.requests import Request
-from starlette.responses import FileResponse
 from starlette.staticfiles import StaticFiles
 
 from config import settings
-
-from fastapi.templating import Jinja2Templates
+from exceptions import validation_exception_handler, internal_server_error
+from project_services.cors import add_cors_middleware
+from project_services.llifespan import lifespan
 
 # from auth.app import router as router_v1_auth
 # from companies import router as router_v1_company
@@ -18,10 +15,6 @@ from fastapi.templating import Jinja2Templates
 # from users import router as router_v1_user
 # from osnastka import router as router_v1_utils
 from tools.drills import router as router_drills
-from exceptions import validation_exception_handler, internal_server_error
-from project_services.cors import add_cors_middleware
-from project_services.llifespan import lifespan
-from project_services.task_celery.router import router as router_v1_task
 
 main_app = FastAPI(
     lifespan=lifespan,
