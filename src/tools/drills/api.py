@@ -7,8 +7,8 @@ from sqlalchemy.future import select
 
 from database import db_helper
 from tools.drills.models import DrillModel
-from tools.drills.schemas import DrillSchema, DrillCreateSchema
-from tools.drills.cruds import get_tools, add_drill, delete_tool, update_tool_in_db
+from tools.drills.schemas import DrillSchema, DrillCreateSchema, DrillBaseSchema
+from tools.drills.cruds import add_drill
 
 router = APIRouter()
 
@@ -81,7 +81,7 @@ async def get_all(
 async def create_drill(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     drill: Annotated[DrillCreateSchema, Depends()],
-):
+) -> DrillSchema:
     loger.info("Create tool: %s", drill)
 
     result = await add_drill(session, drill)

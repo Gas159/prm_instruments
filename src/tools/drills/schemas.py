@@ -26,8 +26,17 @@ class DrillSchema(DrillBaseSchema):
     id: int
 
 
-class DrillCreateSchema(DrillBaseSchema):
-    pass
+class DrillCreateSchema(BaseModel):
+    name: str
+    diameter: float
+    length: float | None = None
+    deep_of_drill: float
+    plate: str | None = None
+    screws: str | None = None
+    key: str | None = None
+    company: str | None = None
+    storage: str | None = None
+    image_path: str | None = None
 
 
 class DrillUpdateSchema(DrillBaseSchema):
