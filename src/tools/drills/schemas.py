@@ -35,13 +35,14 @@ class DrillCreateSchema(BaseModel):
     screws: str | None = None
     key: str | None = None
     company: str | None = None
-    storage: str | None = None
+    storage: str | None = "Склад"
     image_path: str | None = None
-
-
-class DrillUpdateSchema(DrillBaseSchema):
+    is_broken: bool | None = False
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class DrillUpdateSchema(DrillCreateSchema): ...
 
 
 class DrillDeleteSchema(BaseModel):

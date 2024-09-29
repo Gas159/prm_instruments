@@ -1,14 +1,18 @@
 import logging
 from typing import List, Annotated
 
-from fastapi import Depends, Request, APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from database import db_helper
 from tools.drills.models import DrillModel
-from tools.drills.schemas import DrillSchema, DrillCreateSchema, DrillBaseSchema
-from tools.drills.cruds import add_drill
+from tools.drills.schemas import (
+    DrillSchema,
+    DrillCreateSchema,
+    DrillUpdateSchema,
+)
+from tools.drills.cruds import add_drill, update_drill_in_db, delete_drill_from_bd
 
 router = APIRouter()
 
@@ -35,7 +39,6 @@ async def get_one(
 # Get ALL
 @router.get("", response_model=List[DrillSchema])
 async def get_all(
-    request: Request,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     #     sort_by: str = Query(
     #         "id",
@@ -72,11 +75,6 @@ async def get_all(
     return list(drills)
 
 
-# @router.get("/create/", response_class=HTMLResponse)
-# async def create_tool_form(request: Request):
-#     return templates.TemplateResponse("create.html", {"request": request})
-
-
 @router.post("/create/")
 async def create_drill(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
@@ -88,42 +86,18 @@ async def create_drill(
     return result
 
 
-#
-# # Обновление сверла
-# @router.get("/update/{tool_id}", response_class=HTMLResponse)
-# async def update_tool_view(
-#     request: Request,
-#     tool_id: int,
-#     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-# ):
-#     try:
-#         stmt = select(ToolModel).where(ToolModel.id == tool_id)
-#         result = await session.execute(stmt)
-#         tool = result.scalars().first()
-#
-#         if not tool:
-#             raise HTTPException(status_code=404, detail="Tool not found")
-#
-#         return templates.TemplateResponse(
-#             "update.html", {"request": request, "tool": tool}
-#         )
-#
-#     except NoResultFound:
-#         raise HTTPException(status_code=404, detail="Tool not found")
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-#
-#
-# @router.put("/update/{tool_id}")
-# async def update_tool(
-#     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-#     tool_id: int,
-#     tool: SToolUpdate,
-# ):
-#     loger.info("Update tool: %s", tool)
-#
-#     await update_tool_in_db(session, tool_id, tool)
-#     return RedirectResponse("/", status_code=303)
+@router.put("/update/{tool_id}", response_model=DrillSchema)
+async def update_drill(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    drill_id: int,
+    drill: DrillUpdateSchema,
+) -> DrillModel:
+    loger.info("Update tool: %s", drill)
+
+    result = await update_drill_in_db(session, drill_id, drill)
+    return result
+
+
 #
 #
 # # Обновление статуса состояния инструмента
@@ -149,10 +123,10 @@ async def create_drill(
 #     return {"message": "Tool status updated successfully"}
 #
 #
-# # Удаление сверла
-# @router.delete("/delete/{tool_id}")
-# async def delete_tool_view(
-#     tool_id: int, session: Annotated[AsyncSession, Depends(db_helper.session_getter)]
-# ):
-#     await delete_tool(session, tool_id)
-#     return RedirectResponse(url="/", status_code=303)
+# Удаление сверла
+@router.delete("/delete/{tool_id}", response_model=DrillSchema)
+async def delete_drill(
+    drill_id: int, session: Annotated[AsyncSession, Depends(db_helper.session_getter)]
+) -> DrillSchema:
+    result = await delete_drill_from_bd(session, drill_id)
+    return result

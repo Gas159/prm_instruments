@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from tools.drills.models import DrillModel
-from tools.drills.schemas import DrillCreateSchema
+from tools.drills.schemas import DrillCreateSchema, DrillUpdateSchema
 
 loger = logging.getLogger(__name__)
 
@@ -67,41 +67,38 @@ async def add_drill(db: AsyncSession, drill: DrillCreateSchema):
     return drill
 
 
-#
-#
-# async def update_tool_in_db(db: AsyncSession, tool_id: int, tool: SToolUpdate):
-#     db_tool = await db.get(ToolModel, tool_id)
-#
-#     try:
-#
-#         if db_tool is None:
-#             raise HTTPException(status_code=404, detail="Tool not found")
-#
-#         # Применяем обновления только к тем полям, которые были установлены
-#         for key, value in tool.model_dump(exclude_unset=True).items():
-#             loger.info("Tool updated: %s %s ", key, value)
-#
-#             if value is not None:  # Пропускаем поля с None
-#                 setattr(db_tool, key, value)
-#
-#         loger.info("Update tool: %s", tool)
-#
-#         await db.commit()
-#         await db.refresh(db_tool)
-#
-#     except IntegrityError:
-#         await db.rollback()
-#         raise Exception("Failed to add tool: Integrity Error")
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-#
-#
-# async def delete_tool(db: AsyncSession, tool_id: int):
-#     db_tool = await db.get(ToolModel, tool_id)
-#     if db_tool is None:
-#         return None
-#     await db.delete(db_tool)
-#     await db.commit()
-#
-#
-# # return db_tool
+async def update_drill_in_db(db: AsyncSession, drill_id: int, drill: DrillUpdateSchema):
+    db_drill = await db.get(DrillModel, drill_id)
+
+    try:
+
+        if db_drill is None:
+            raise HTTPException(status_code=404, detail="drill not found")
+
+        # Применяем обновления только к тем полям, которые были установлены
+        for key, value in drill.model_dump(exclude_unset=True).items():
+            loger.info("drill updated: %s %s ", key, value)
+
+            if value is not None:  # Пропускаем поля с None
+                setattr(db_drill, key, value)
+
+        loger.info("Update drill: %s", drill)
+
+        await db.commit()
+        await db.refresh(db_drill)
+        return db_drill
+
+    except IntegrityError:
+        await db.rollback()
+        raise Exception("Failed to add drill: Integrity Error")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+async def delete_drill_from_bd(db: AsyncSession, drill_id: int):
+    db_drill = await db.get(DrillModel, drill_id)
+    if db_drill is None:
+        raise HTTPException(status_code=404, detail="Drill not found")
+    await db.delete(db_drill)
+    await db.commit()
+    return db_drill
