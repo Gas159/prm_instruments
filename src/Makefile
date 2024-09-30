@@ -14,6 +14,9 @@ rm:
 rmi:
 		@if [ -n "$$(docker images -q)" ]; then docker rmi -f $$(docker images -q); fi
 
+prune:
+		docker system prune -a
+
 clean: stop rm rmi
 
 
