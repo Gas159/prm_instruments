@@ -12,10 +12,10 @@ class DrillModel(IntPkMixin, Base):
     # __tablename__ = "tools"
     name: Mapped[str]
     diameter: Mapped[float] = mapped_column(nullable=True)
-    length: Mapped[float] = mapped_column(nullable=True)
+    length_xD: Mapped[float] = mapped_column(nullable=True)
     deep_of_drill: Mapped[float] = mapped_column(nullable=True)
     plate: Mapped[str] = mapped_column(nullable=True)
-    screws: Mapped[str] = mapped_column(nullable=True)
+    screw: Mapped[str] = mapped_column(nullable=True)
     key: Mapped[str] = mapped_column(nullable=True)
     company: Mapped[str] = mapped_column(nullable=True)
     is_broken: Mapped[bool] = mapped_column(default=False, nullable=True)
@@ -24,6 +24,7 @@ class DrillModel(IntPkMixin, Base):
     image_path: Mapped[str] = mapped_column(String, nullable=True)
     # new
     storage: Mapped[str] = mapped_column(default="Cклад", nullable=True)
+    description: Mapped[str] = mapped_column(nullable=True)
     create_at: Mapped[int] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )

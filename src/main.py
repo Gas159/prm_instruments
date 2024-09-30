@@ -9,11 +9,6 @@ from exceptions import validation_exception_handler, internal_server_error
 from project_services.cors import add_cors_middleware
 from project_services.llifespan import lifespan
 
-# from auth.app import router as router_v1_auth
-# from companies import router as router_v1_company
-# from services import router as router_v1_service
-# from users import router as router_v1_user
-# from osnastka import router as router_v1_utils
 from tools.drills import router as router_drills
 
 main_app = FastAPI(
@@ -25,16 +20,7 @@ main_app.mount("/static", StaticFiles(directory="static"), name="static")
 main_app.add_exception_handler(500, internal_server_error)
 main_app.add_exception_handler(422, validation_exception_handler)
 
-for router in [
-    # router_v1_auth,
-    # router_v1_user,
-    # router_v1_service,
-    # router_v1_company,
-    # router_v1_task,
-    # router_v1_utils,
-    router_drills
-]:
-    # main_app.include_router(router, prefix=settings.api.prefix)
+for router in [router_drills]:
     main_app.include_router(router)
 
 # add cors
@@ -42,10 +28,6 @@ add_cors_middleware(main_app)
 
 add_pagination(main_app)
 # templates = Jinja2Templates(directory="templates")
-
-# @main_app.get("/")
-# async def root():
-#     return {"data": "check"}
 
 
 @main_app.get("/")

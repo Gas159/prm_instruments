@@ -2,6 +2,8 @@ import logging
 from typing import List, Annotated
 
 from fastapi import Depends, APIRouter, HTTPException, Query
+from sqlalchemy import and_
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -40,35 +42,27 @@ async def get_one(
 @router.get("", response_model=List[DrillSchema])
 async def get_all(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    #     sort_by: str = Query(
-    #         "id",
-    #         regex="^(id|name|diameter|length|deep_of_drill|plate|screws|key|company|is_broken)$",
-    #     ),
-    #     order: str = Query("asc", regex="^(asc|desc)$"),
-    #     search: str | None = Query(""),
-    #     diameter: List[float | None] = Query(None),  # Получение списка выбранных диаметров
+    broken: bool | None = Query(False),
+    diameter: List[float] | None = Query(None),  # Получение списка выбранных диаметров
 ) -> List[DrillModel]:
-    #     search = search.strip()
-    #     tools = await get_tools(
-    #         session, sort_by=sort_by, order=order, search=search, diameters=diameter
-    #     )
-    #     # Получаем список всех возможных диаметров для отображения в фильтре
-    #     all_diameters = await get_all_diameters(session)
-    # return templates.TemplateResponse(
-    #     "index.html",
-    #     {
-    #         "request": request,
-    #         # "tools": tools,
-    #         # "sort_by": sort_by,
-    #         # "order": order,
-    #         # "search": search,
-    #         # "diameters": all_diameters,
-    #         # "selected_diameters": diameter or [],  # Отмечаем выбранные диаметры
-    #     },
-    # )
 
-    # Создание сверла
+    loger.debug("Get tools: %s", broken)
+
     query = select(DrillModel)
+    # Применение фильтров, если они заданы
+    filters = []
+    if broken is not None:
+        loger.debug("Check broken: %s", broken)
+        filters.append(DrillModel.is_broken == broken)
+    #
+    if diameter is not None:
+        loger.debug("Check diameter: %s", diameter)
+        filters.append(DrillModel.diameter.in_(diameter))
+
+    # Применение фильтров к запросу
+    if filters:
+        query = query.where(and_(*filters))
+
     result = await session.execute(query)
     drills = result.scalars().all()
     # Преобразование SQLAlchemy моделей в Pydantic
