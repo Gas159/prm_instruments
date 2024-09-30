@@ -56,11 +56,15 @@ install:
 		poetry install
 
 install_depends:
+		poetry export -f requirements.txt --output requirements.txt --without-hashes --only main # экпорт зависимостей
+
 		pip3 freeze > requirements.txt
 		pip  install -r requirements.txt
+
 		poetry export -f requirements.txt > requirements.txt
 		python -m pip install -r requirements.txt
 		poetry install
+
 
 # alembic
 revision:
