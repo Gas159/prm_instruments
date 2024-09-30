@@ -60,7 +60,7 @@ install:
 
 install_depends:
 		poetry export -f requirements.txt --output requirements.txt --without-hashes --only main # экпорт зависимостей
-
+		poetry self add poetry-plugin-export
 		pip3 freeze > requirements.txt
 		pip  install -r requirements.txt
 

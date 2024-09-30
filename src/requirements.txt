@@ -62,6 +62,7 @@ python-dotenv==1.0.1 ; python_version >= "3.10" and python_version < "4.0"
 pytz==2024.2 ; python_version >= "3.10" and python_version < "4.0"
 pyyaml==6.0.2 ; python_version >= "3.10" and python_version < "4.0"
 redis==5.1.0 ; python_version >= "3.10" and python_version < "4.0"
+python-multipart>=0.0.9,<0.0.13
 rich==13.8.1 ; python_version >= "3.10" and python_version < "4.0"
 shellingham==1.5.4 ; python_version >= "3.10" and python_version < "4.0"
 six==1.16.0 ; python_version >= "3.10" and python_version < "4.0"
