@@ -1,13 +1,12 @@
 # crud.py
 import logging
 import shutil
-import uuid
 from pathlib import Path
 from sqlite3 import IntegrityError
-from typing import List, Union, Annotated, Optional
+from typing import List
 
-from fastapi import HTTPException, UploadFile, File
-from markdown_it.rules_inline import image
+from fastapi import HTTPException, UploadFile
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from tools.drills.models import DrillModel
@@ -55,13 +54,11 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 async def add_drill(
     db: AsyncSession,
     drill: DrillCreateSchema,
-    images: List[UploadFile] = None,
-    # images: UploadFile = None,
+    # images: List[UploadFile] | None | str = None,
+    images: UploadFile = None,
     # images: List[UploadFile] | None = None,
     # images: Annotated[List[UploadFile], File([])] | None = None,
 ):
-    if not isinstance(images, list):
-        images = []  # Если файлы не переданы, инициализируем пустой список
 
     drill = DrillModel(**drill.model_dump())
     db.add(drill)
@@ -82,8 +79,10 @@ async def add_drill(
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
     loger.info("Images: %s", images)
-    if not images:
+
+    if not isinstance(images, list):
         images = []  # Если файлы не переданы, инициализируем пустой список
+
     # Проверка и сохранение изображения, если оно есть
     if images:
         # Создание директории для хранения изображений, уникальной для каждого сверла по его ID

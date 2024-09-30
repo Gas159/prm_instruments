@@ -16,6 +16,7 @@ logging.basicConfig(
         logging.StreamHandler(),  # Логи выводятся на консоль
     ],
 )
+logging.getLogger("multipart").setLevel(logging.INFO)
 
 
 class RunConfig(BaseModel):

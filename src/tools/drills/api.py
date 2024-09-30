@@ -75,9 +75,9 @@ async def create_drill(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     drill: Annotated[DrillCreateSchema, Depends()],
     # images:  Annotated[list[bytes], File()]
-    # images: UploadFile = None,
+    images: UploadFile = None,
     # images: List[UploadFile] | None = None,
-    images: List[UploadFile] = None,
+    # images: List[UploadFile] | None | str = None,
 ) -> DrillSchema:
 
     loger.info("Images: %s", images)
