@@ -7,8 +7,6 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python-multipart = "^0.0.9"
-
 python = "^3.10"
 fastapi = "^0.111.0"
 uvicorn = { extras = ["standard"], version = "^0.30.5" }
