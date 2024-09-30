@@ -4,8 +4,10 @@ import shutil
 import uuid
 from pathlib import Path
 from sqlite3 import IntegrityError
+from typing import List, Union, Annotated, Optional
 
-from fastapi import HTTPException, UploadFile
+from fastapi import HTTPException, UploadFile, File
+from markdown_it.rules_inline import image
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from tools.drills.models import DrillModel
@@ -53,8 +55,14 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 async def add_drill(
     db: AsyncSession,
     drill: DrillCreateSchema,
-    image: UploadFile | None = None,
+    images: List[UploadFile] = None,
+    # images: UploadFile = None,
+    # images: List[UploadFile] | None = None,
+    # images: Annotated[List[UploadFile], File([])] | None = None,
 ):
+    if not isinstance(images, list):
+        images = []  # Если файлы не переданы, инициализируем пустой список
+
     drill = DrillModel(**drill.model_dump())
     db.add(drill)
 
@@ -73,39 +81,54 @@ async def add_drill(
         await db.rollback()  # Откат для всех других исключений
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
+    loger.info("Images: %s", images)
+    if not images:
+        images = []  # Если файлы не переданы, инициализируем пустой список
     # Проверка и сохранение изображения, если оно есть
-    if image:
-        if not image.content_type.startswith("image/"):
-            raise HTTPException(
-                status_code=400, detail="Uploaded file is not an image."
-            )
-
+    if images:
         # Создание директории для хранения изображений, уникальной для каждого сверла по его ID
         drill_dir = UPLOAD_DIR / "drills" / str(drill.id)
         drill_dir.mkdir(exist_ok=True)
 
-        # Генерация уникального имени файла
-        file_ext = image.filename.split(".")[-1]
-        file_name = f"drill_{drill.id}_{uuid.uuid4()}.{file_ext}"
-        file_path = drill_dir / file_name
+        image_paths = []
 
-        # Сохранение файла на диск
-        try:
-            with open(file_path, "wb") as buffer:
-                shutil.copyfileobj(image.file, buffer)
+        for image in images:
+            if image is None:
+                continue
+            if not image.content_type.startswith("image/"):
+                raise HTTPException(
+                    status_code=400, detail="Uploaded file is not an image."
+                )
 
-            # Сохранение пути к изображению в модели сверла
-            drill.image_path = str(file_path)
+            # Генерация уникального имени файла
+            file_ext = image.filename.split(".")[-1]
+            file_first_name = drill.name.split(".")[0]
+            file_name = f"drill_{drill.id}_{file_first_name}.{file_ext}"
+            file_path = drill_dir / file_name
 
-            # Повторный коммит для сохранения пути к файлу
-            await db.commit()
-            await db.refresh(drill)
+            # Сохранение файла на диск
+            try:
+                with open(file_path, "wb") as buffer:
+                    shutil.copyfileobj(image.file, buffer)
 
-        except Exception as e:
-            loger.error(f"Error saving image: {str(e)}")
-            await db.rollback()
-            raise HTTPException(status_code=500, detail="Error saving image.")
+                # Сохранение пути к изображению в модели сверла
+                image_paths.append(str(file_path))
 
+            except Exception as e:
+                loger.error(f"Error saving image: {str(e)}")
+                await db.rollback()
+                raise HTTPException(status_code=500, detail="Error saving image.")
+
+        # Присвоим список путей изображений объекту модели сверла
+        loger.debug("image_paths: %s", image_paths)
+        drill.image_path = ", ".join(image_paths)
+        loger.debug("Drill.image_path: %s", drill.image_path)
+
+        # Повторный коммит для сохранения пути к файлу
+        await db.commit()
+        await db.refresh(drill)
+    # drill.image_path = ",".join(image_paths)
+    # drill.image_path = "tests string"
     return drill
 
 

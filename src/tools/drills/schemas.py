@@ -1,19 +1,20 @@
 from datetime import datetime
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict
 
 
 class DrillBaseSchema(BaseModel):
-    name: str
-    diameter: float | None
-    length_xD: float | None
-    deep_of_drill: float | None
+    name: str = "test"
+    diameter: float | None = 0
+    length_xD: float | None = 0
+    deep_of_drill: float | None = 0
     plate: str | None = "?"
     screw: str | None = "?"
     key: str | None = "?"
     company: str | None = "?"
     is_broken: bool | None = False
-    # image_path: str | None
+    # image_path: List[str] | None = None
     storage: str | None = "Склад"
     description: str | None = "?"
 
@@ -23,7 +24,7 @@ class DrillBaseSchema(BaseModel):
 class DrillSchema(DrillBaseSchema):
     # services: list[Service] = []
     id: int
-    image_path: str | None
+    image_path: Optional[str] = None
 
     create_at: datetime
     update_at: datetime

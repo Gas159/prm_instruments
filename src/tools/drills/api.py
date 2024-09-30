@@ -1,7 +1,8 @@
 import logging
-from typing import List, Annotated
+from typing import List, Annotated, Union, Optional
 
 from fastapi import Depends, APIRouter, HTTPException, Query, UploadFile, File
+from pygments.lexer import default
 from sqlalchemy import and_
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -73,11 +74,15 @@ async def get_all(
 async def create_drill(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     drill: Annotated[DrillCreateSchema, Depends()],
-    image: UploadFile | None = File(None),
+    # images:  Annotated[list[bytes], File()]
+    # images: UploadFile = None,
+    # images: List[UploadFile] | None = None,
+    images: List[UploadFile] = None,
 ) -> DrillSchema:
-    loger.info("Create tool: %s", drill)
 
-    result = await add_drill(session, drill, image)
+    loger.info("Images: %s", images)
+
+    result = await add_drill(session, drill, images)
     return result
 
 
