@@ -1,7 +1,7 @@
 import logging
 from typing import List, Annotated
 
-from fastapi import Depends, APIRouter, HTTPException, Query
+from fastapi import Depends, APIRouter, HTTPException, Query, UploadFile, File
 from sqlalchemy import and_
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -73,10 +73,11 @@ async def get_all(
 async def create_drill(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     drill: Annotated[DrillCreateSchema, Depends()],
+    image: UploadFile | None = File(None),
 ) -> DrillSchema:
     loger.info("Create tool: %s", drill)
 
-    result = await add_drill(session, drill)
+    result = await add_drill(session, drill, image)
     return result
 
 

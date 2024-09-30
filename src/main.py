@@ -10,6 +10,7 @@ from project_services.cors import add_cors_middleware
 from project_services.llifespan import lifespan
 
 from tools.drills import router as router_drills
+from tools.drills.cruds import UPLOAD_DIR
 
 main_app = FastAPI(
     lifespan=lifespan,
@@ -19,6 +20,12 @@ main_app = FastAPI(
 main_app.mount("/static", StaticFiles(directory="static"), name="static")
 main_app.add_exception_handler(500, internal_server_error)
 main_app.add_exception_handler(422, validation_exception_handler)
+
+
+# Добавляем путь для статических файлов
+main_app.mount(
+    "/uploaded_images", StaticFiles(directory=UPLOAD_DIR), name="uploaded_images"
+)
 
 for router in [router_drills]:
     main_app.include_router(router)

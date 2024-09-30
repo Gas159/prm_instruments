@@ -20,8 +20,8 @@ class DrillModel(IntPkMixin, Base):
     company: Mapped[str] = mapped_column(nullable=True)
     is_broken: Mapped[bool] = mapped_column(default=False, nullable=True)
 
-    # Поле для хранения пути к изображению
     image_path: Mapped[str] = mapped_column(String, nullable=True)
+
     # new
     storage: Mapped[str] = mapped_column(default="Cклад", nullable=True)
     description: Mapped[str] = mapped_column(nullable=True)

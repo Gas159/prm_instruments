@@ -12,8 +12,8 @@ class DrillBaseSchema(BaseModel):
     screw: str | None = "?"
     key: str | None = "?"
     company: str | None = "?"
-    is_broken: bool | None = "?"
-    image_path: str | None = "?"
+    is_broken: bool | None = False
+    # image_path: str | None
     storage: str | None = "Склад"
     description: str | None = "?"
 
@@ -23,6 +23,8 @@ class DrillBaseSchema(BaseModel):
 class DrillSchema(DrillBaseSchema):
     # services: list[Service] = []
     id: int
+    image_path: str | None
+
     create_at: datetime
     update_at: datetime
 

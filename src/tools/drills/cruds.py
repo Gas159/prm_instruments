@@ -1,8 +1,11 @@
 # crud.py
 import logging
+import shutil
+import uuid
+from pathlib import Path
 from sqlite3 import IntegrityError
 
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from tools.drills.models import DrillModel
@@ -10,6 +13,9 @@ from tools.drills.schemas import DrillCreateSchema, DrillUpdateSchema
 
 loger = logging.getLogger(__name__)
 
+# Директория для загрузки изображений
+UPLOAD_DIR = Path("uploaded_images")
+UPLOAD_DIR.mkdir(exist_ok=True)
 
 # async def get_tools(
 #     db: AsyncSession,
@@ -44,7 +50,11 @@ loger = logging.getLogger(__name__)
 # # return sorted([row[0] for row in result.fetchall() ])
 
 
-async def add_drill(db: AsyncSession, drill: DrillCreateSchema):
+async def add_drill(
+    db: AsyncSession,
+    drill: DrillCreateSchema,
+    image: UploadFile | None = None,
+):
     drill = DrillModel(**drill.model_dump())
     db.add(drill)
 
@@ -59,10 +69,42 @@ async def add_drill(db: AsyncSession, drill: DrillCreateSchema):
         raise HTTPException(
             status_code=400, detail="Failed to add tool: Integrity Error"
         )
-
     except Exception as e:
         await db.rollback()  # Откат для всех других исключений
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+
+    # Проверка и сохранение изображения, если оно есть
+    if image:
+        if not image.content_type.startswith("image/"):
+            raise HTTPException(
+                status_code=400, detail="Uploaded file is not an image."
+            )
+
+        # Создание директории для хранения изображений, уникальной для каждого сверла по его ID
+        drill_dir = UPLOAD_DIR / "drills" / str(drill.id)
+        drill_dir.mkdir(exist_ok=True)
+
+        # Генерация уникального имени файла
+        file_ext = image.filename.split(".")[-1]
+        file_name = f"drill_{drill.id}_{uuid.uuid4()}.{file_ext}"
+        file_path = drill_dir / file_name
+
+        # Сохранение файла на диск
+        try:
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(image.file, buffer)
+
+            # Сохранение пути к изображению в модели сверла
+            drill.image_path = str(file_path)
+
+            # Повторный коммит для сохранения пути к файлу
+            await db.commit()
+            await db.refresh(drill)
+
+        except Exception as e:
+            loger.error(f"Error saving image: {str(e)}")
+            await db.rollback()
+            raise HTTPException(status_code=500, detail="Error saving image.")
 
     return drill
 
