@@ -1,22 +1,20 @@
 import logging
-from typing import List, Annotated, Union, Optional
+from typing import List, Annotated
 
-from fastapi import Depends, APIRouter, HTTPException, Query, UploadFile, File
-from pygments.lexer import default
+from fastapi import Depends, APIRouter, HTTPException, Query, UploadFile
 from sqlalchemy import and_
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 from database import db_helper
+from tools.drills.cruds import add_drill, update_drill_in_db, delete_drill_from_bd
 from tools.drills.models import DrillModel
 from tools.drills.schemas import (
     DrillSchema,
     DrillCreateSchema,
     DrillUpdateSchema,
 )
-from tools.drills.cruds import add_drill, update_drill_in_db, delete_drill_from_bd
 
 router = APIRouter()
 
@@ -25,13 +23,20 @@ loger = logging.getLogger(__name__)
 
 
 # Get ONE
-@router.get("/{tool_id}", response_model=DrillSchema)
+@router.get(
+    "/{tool_id}",
+    response_model=DrillSchema,
+)
 async def get_one(
     tool_id: int,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> DrillModel:
 
-    query = select(DrillModel).where(DrillModel.id == tool_id)
+    query = (
+        select(DrillModel)
+        .options(selectinload(DrillModel.screws))
+        .where(DrillModel.id == tool_id)
+    )
     result = await session.execute(query)
     tool = result.scalars().first()
     loger.info("Get tool: %s", tool)
@@ -41,7 +46,7 @@ async def get_one(
 
 
 # Get ALL
-@router.get("", response_model=List[DrillSchema])
+@router.get("s", response_model=List[DrillSchema], operation_id="get_all_drills")
 async def get_all(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     broken: bool | None = Query(False),
@@ -70,13 +75,13 @@ async def get_all(
     if filters:
         query = query.where(and_(*filters))
 
-    result = await session.execute(query)
-    drills = result.scalars().all()
+    result = await session.execute(query.order_by(DrillModel.id.desc()))
+    drills1 = result.scalars().all()
     # Преобразование SQLAlchemy моделей в Pydantic
-    return list(drills)
+    return list(drills1)
 
 
-@router.post("/create/")
+@router.post("/create")
 async def create_drill(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     drill: Annotated[DrillCreateSchema, Depends()],

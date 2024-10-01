@@ -26,18 +26,6 @@ class ScrewSchema(ScrewBaseSchema):
 
 
 class ScrewCreateSchema(ScrewBaseSchema):
-    # name: str
-    # diameter: float
-    # length_xD: float | None = None
-    # deep_of_drill: float
-    # plate: str | None = None
-    # screw: str | None = None
-    # key: str | None = None
-    # company: str | None = None
-    # storage: str | None = "Склад"
-    # image_path: str | None = None
-    # is_broken: bool | None = False
-    # description: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 

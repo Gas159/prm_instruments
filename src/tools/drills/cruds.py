@@ -83,8 +83,8 @@ async def add_drill(
 
     loger.info("Images: %s", images)
 
-    if not isinstance(images, list):
-        images = []  # Если файлы не переданы, инициализируем пустой список
+    # if not isinstance(images, list):
+    #     images = []  # Если файлы не переданы, инициализируем пустой список
 
     # Проверка и сохранение изображения, если оно есть
     if images:
@@ -93,7 +93,7 @@ async def add_drill(
         drill_dir.mkdir(exist_ok=True)
 
         image_paths = []
-
+        images = [images]
         for image in images:
             if image is None:
                 continue

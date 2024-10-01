@@ -19,7 +19,7 @@ loger = logging.getLogger(__name__)
 
 
 # Get ONE
-@router.get("/{tool_id}", response_model=DrillSchema)
+@router.get("/drill_archive/{tool_id}", response_model=DrillSchema)
 async def get_one(
     tool_id: int,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
@@ -35,7 +35,7 @@ async def get_one(
 
 
 # Get ALL
-@router.get("", response_model=List[DrillSchema])
+@router.get("/drills_archive", response_model=List[DrillSchema])
 async def get_all(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     broken: bool | None = Query(False),

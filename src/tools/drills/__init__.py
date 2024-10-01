@@ -8,7 +8,7 @@ router = APIRouter(
 
 router.include_router(
     drill_router,
-    prefix="/drills",
+    prefix="/drill",
     tags=["Drills"],
     responses={404: {"description": "Not found"}},
 )

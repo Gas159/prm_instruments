@@ -14,8 +14,7 @@ class DrillBaseSchema(BaseModel):
     deep_of_drill: float | None = 0
     plate: str | None = None
     # screw: str | None = None
-    screws: list[ScrewSchema] = []
-    # services: list[Service] = []
+    # screws: List[ScrewSchema | None] | None = None
     key: str | None = None
     company: str | None = None
     is_broken: bool | None = False
@@ -29,7 +28,7 @@ class DrillBaseSchema(BaseModel):
 class DrillSchema(DrillBaseSchema):
     # services: list[Service] = []
     id: int
-    image_path: Optional[str] = None
+    image_path: str | None = None
 
     create_at: datetime
     update_at: datetime
