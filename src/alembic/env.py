@@ -26,7 +26,9 @@ if config.config_file_name is not None:
 from companies.models import CompanyModel  # Импорт модели компании
 from services.models import ServiceModel  # Импорт модели сервиса
 from users.models import UserModel  # Импорт модели пользователя
+
 from tools.drills.models import DrillModel
+from tools.archive.drills.models import DrillArchiveModel
 
 target_metadata = Base.metadata
 

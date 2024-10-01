@@ -76,6 +76,7 @@ async def create_drill(
     drill: Annotated[DrillCreateSchema, Depends()],
     # images:  Annotated[list[bytes], File()]
     images: UploadFile = None,
+    # images: List[UploadFile] = File(None, description="Multiple files as UploadFile"),
     # images: List[UploadFile] | None = None,
     # images: List[UploadFile] | None | str = None,
 ) -> DrillSchema:
@@ -92,37 +93,13 @@ async def update_drill(
     drill_id: int,
     drill: DrillUpdateSchema,
 ) -> DrillModel:
+
     loger.info("Update tool: %s", drill)
 
     result = await update_drill_in_db(session, drill_id, drill)
     return result
 
 
-#
-#
-# # Обновление статуса состояния инструмента
-# @router.post("/update_broken_status/{tool_id}")
-# async def update_tool_status(
-#     tool_id: int,
-#     request: Request,
-#     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-# ):
-#     loger.info("Update tool status: %s", tool_id)
-#     data = await request.json()
-#     is_broken = data.get("is_broken")
-#
-#     # Получаем инструмент по ID
-#     tool = await session.get(ToolModel, tool_id)
-#     if not tool:
-#         return JSONResponse(status_code=404, content={"message": "Tool not found"})
-#
-#     # Обновляем статус
-#     tool.is_broken = is_broken
-#     await session.commit()
-#     loger.info("Tool status updated successfully")
-#     return {"message": "Tool status updated successfully"}
-#
-#
 # Удаление сверла
 @router.delete("/delete/{tool_id}", response_model=DrillSchema)
 async def delete_drill(

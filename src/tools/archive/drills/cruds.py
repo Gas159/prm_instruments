@@ -10,8 +10,7 @@ from sqlalchemy import select
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from tools.archive.drills.models import DrillArchiveModel
-from tools.drills.models import DrillModel
+from tools.drills.models import DrillModel, DrillArchiveModel
 from tools.drills.schemas import DrillCreateSchema, DrillUpdateSchema
 
 loger = logging.getLogger(__name__)
