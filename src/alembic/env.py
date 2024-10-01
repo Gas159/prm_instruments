@@ -29,6 +29,7 @@ from users.models import UserModel  # Импорт модели пользова
 
 from tools.drills.models import DrillModel
 from tools.archive.drills.models import DrillArchiveModel
+from tools.screws.models import ScrewModel
 
 target_metadata = Base.metadata
 

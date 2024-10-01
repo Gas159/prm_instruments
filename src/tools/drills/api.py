@@ -7,6 +7,7 @@ from sqlalchemy import and_
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 
 from database import db_helper
 from tools.drills.models import DrillModel
@@ -49,7 +50,12 @@ async def get_all(
 
     loger.debug("Get tools: %s", broken)
 
-    query = select(DrillModel)
+    query = select(DrillModel).options(selectinload(DrillModel.screws))
+    # stmt = (
+    #     select(CompanyModel)
+    #     .options(selectinload(CompanyModel.services))
+    #     .where(CompanyModel.id == company_id)
+    # )
     # Применение фильтров, если они заданы
     filters = []
     if broken is not None:

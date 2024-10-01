@@ -4,38 +4,28 @@ from typing import List, Optional
 from pydantic import BaseModel, ConfigDict
 
 from tools.screws.models import ScrewModel
-from tools.screws.schemas import ScrewSchema
 
 
-class DrillBaseSchema(BaseModel):
-    name: str = "test"
-    diameter: float | None = 0
-    length_xD: float | None = 0
-    deep_of_drill: float | None = 0
-    plate: str | None = None
-    # screw: str | None = None
-    screws: list[ScrewSchema] = []
-    # services: list[Service] = []
-    key: str | None = None
+class ScrewBaseSchema(BaseModel):
+    type: str | None = None
+    length: float | None = None
+    thread: str | None = None
+    step_of_thread: float | None = None
     company: str | None = None
-    is_broken: bool | None = False
-    # image_path: List[str] | None = None
-    storage: str | None = "Склад"
+    image_path: str | None = None
     description: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
 
-class DrillSchema(DrillBaseSchema):
+class ScrewSchema(ScrewBaseSchema):
     # services: list[Service] = []
-    id: int
-    image_path: Optional[str] = None
-
-    create_at: datetime
-    update_at: datetime
+    id: int | None = None
+    create_at: datetime | None = None
+    update_at: datetime | None = None
 
 
-class DrillCreateSchema(DrillBaseSchema):
+class ScrewCreateSchema(ScrewBaseSchema):
     # name: str
     # diameter: float
     # length_xD: float | None = None
@@ -52,8 +42,8 @@ class DrillCreateSchema(DrillBaseSchema):
     model_config = ConfigDict(from_attributes=True)
 
 
-class DrillUpdateSchema(DrillBaseSchema): ...
+class ScrewUpdateSchema(ScrewBaseSchema): ...
 
 
-class DrillDeleteSchema(BaseModel):
+class ScrewDeleteSchema(BaseModel):
     id: int
