@@ -93,7 +93,7 @@ async def create_drill(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     drill: Annotated[DrillCreateSchema, Depends()],
     screws_ids: List[int | str] = Form(None),
-    images: UploadFile | None = None,
+    images: list[UploadFile] | None = None,
     # screws: List[ScrewSchema] = Depends(get_all_crews),
     # screw_ids: list = Query(),
     # images: List[UploadFile] | str = File(None),
