@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 from pydantic import BaseModel
 from pydantic import PostgresDsn
@@ -17,6 +18,9 @@ logging.basicConfig(
     ],
 )
 logging.getLogger("multipart").setLevel(logging.INFO)
+
+
+upload_dir = Path("uploaded_images")
 
 
 class RunConfig(BaseModel):

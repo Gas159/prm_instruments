@@ -1,7 +1,7 @@
 import logging
 from typing import List, Annotated
 
-from fastapi import Depends, APIRouter, HTTPException, Query, UploadFile
+from fastapi import Depends, APIRouter, HTTPException, Query, UploadFile, File, Form
 from sqlalchemy import and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -14,7 +14,10 @@ from tools.drills.schemas import (
     DrillSchema,
     DrillCreateSchema,
     DrillUpdateSchema,
+    DrillBaseSchema,
 )
+from tools.screws.api import get_all_crews
+from tools.screws.schemas import ScrewSchema
 
 router = APIRouter()
 
@@ -23,19 +26,18 @@ loger = logging.getLogger(__name__)
 
 
 # Get ONE
-@router.get(
-    "/{tool_id}",
-    response_model=DrillSchema,
-)
+
+
+@router.get("/{tool_id}", response_model=DrillSchema)
 async def get_one(
     tool_id: int,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-) -> DrillModel:
+) -> DrillSchema:
 
     query = (
         select(DrillModel)
-        .options(selectinload(DrillModel.screws))
         .where(DrillModel.id == tool_id)
+        .options(selectinload(DrillModel.screws))
     )
     result = await session.execute(query)
     tool = result.scalars().first()
@@ -46,12 +48,14 @@ async def get_one(
 
 
 # Get ALL
+
+
 @router.get("s", response_model=List[DrillSchema], operation_id="get_all_drills")
 async def get_all(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     broken: bool | None = Query(False),
     diameter: List[float] | None = Query(None),  # Получение списка выбранных диаметров
-) -> List[DrillModel]:
+) -> List[DrillSchema]:
 
     loger.debug("Get tools: %s", broken)
 
@@ -81,20 +85,27 @@ async def get_all(
     return list(drills1)
 
 
-@router.post("/create")
+# Create Drill
+
+
+@router.post("/create", response_model=DrillSchema)
 async def create_drill(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     drill: Annotated[DrillCreateSchema, Depends()],
-    # images:  Annotated[list[bytes], File()]
-    images: UploadFile = None,
+    screws_ids: List[int | str] = Form(None),
+    images: UploadFile | None = None,
+    # screws: List[ScrewSchema] = Depends(get_all_crews),
+    # screw_ids: list = Query(),
+    # images: List[UploadFile] | str = File(None),
+    # images: Annotated[UploadFile, File(...)] = None,
     # images: List[UploadFile] = File(None, description="Multiple files as UploadFile"),
-    # images: List[UploadFile] | None = None,
     # images: List[UploadFile] | None | str = None,
+    # images:  Annotated[list[bytes], File()]
 ) -> DrillSchema:
 
-    loger.info("Images: %s", images)
+    loger.info("Screws_ids: %s", screws_ids)
 
-    result = await add_drill(session, drill, images)
+    result = await add_drill(session, drill, screws_ids, images)
     return result
 
 

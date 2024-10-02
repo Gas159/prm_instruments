@@ -1,13 +1,9 @@
-class A:
-    __slots__ = ("a", "b")
+q = [None]
+w = []
 
-    def __init__(self, a, b, c):
-        self.a = a
-        self.b = b
-        self.c = c
-
-    def __str__(self):
-        return f"A: [{self.a}] [{self.b}] [{self.c}]"
-
-
-print(A(1, 2, 3))
+if q:
+    print(q)
+if q is not None:
+    print(q)
+if w:
+    print(w)

@@ -9,17 +9,14 @@ from sqlalchemy import select
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-
-from tools.screws.models import ScrewModel  # Изменено на ScrewModel
-from tools.screws.schemas import (
-    ScrewCreateSchema,
-    ScrewUpdateSchema,
-)  # Изменено на соответствующие схемы
+from config import upload_dir
+from tools.screws.models import ScrewModel
+from tools.screws.schemas import ScrewCreateSchema, ScrewUpdateSchema
 
 logger = logging.getLogger(__name__)
 
 # Директория для загрузки изображений
-UPLOAD_DIR = Path("uploaded_images")
+UPLOAD_DIR = upload_dir
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 
@@ -28,14 +25,14 @@ async def add_screw(  # Изменено на add_screw
     screw: ScrewCreateSchema,  # Изменено на ScrewCreateSchema
     images: List[UploadFile] | None = None,  # Изменено на List[UploadFile]
 ):
-    screw_instance = ScrewModel(**screw.model_dump())  # Создание экземпляра ScrewModel
-    db.add(screw_instance)
+    screw = ScrewModel(**screw.model_dump())  # Создание экземпляра ScrewModel
+    db.add(screw)
 
-    logger.info("Add screw: %s", screw_instance)
+    logger.info("Add screw: %s", screw)
 
     try:
         await db.commit()
-        await db.refresh(screw_instance)
+        await db.refresh(screw)
     except IntegrityError:
         await db.rollback()
         raise HTTPException(
@@ -47,15 +44,16 @@ async def add_screw(  # Изменено на add_screw
 
     logger.info("Images: %s", images)
 
-    if not isinstance(images, list):
-        images = []  # Если файлы не переданы, инициализируем пустой список
+    # if not isinstance(images, list):
+    #     images = []  # Если файлы не переданы, инициализируем пустой список
 
     # Проверка и сохранение изображения, если оно есть
     if images:
-        screw_dir = UPLOAD_DIR / "screws" / str(screw_instance.id)  # Заменено на screws
-        screw_dir.mkdir(exist_ok=True)
+        screw_dir = upload_dir / "screws" / str(screw.id)  # Заменено на screws
+        screw_dir.mkdir(parents=True, exist_ok=True)
 
         image_paths = []
+        images = [images]
 
         for image in images:
             if image is None:
@@ -67,8 +65,8 @@ async def add_screw(  # Изменено на add_screw
 
             # Генерация уникального имени файла
             file_ext = image.filename.split(".")[-1]
-            file_first_name = screw_instance.name.split(".")[0]
-            file_name = f"screw_{screw_instance.id}_{file_first_name}.{file_ext}"
+            file_first_name = image.filename.split(".")[0]
+            file_name = f"{file_first_name}.{file_ext}"
             file_path = screw_dir / file_name
 
             # Сохранение файла на диск
@@ -86,14 +84,14 @@ async def add_screw(  # Изменено на add_screw
 
         # Присвоим список путей изображений объекту модели винта
         logger.debug("image_paths: %s", image_paths)
-        screw_instance.image_path = ", ".join(image_paths)
-        logger.debug("Screw.image_path: %s", screw_instance.image_path)
+        screw.image_path = ", ".join(image_paths)
+        logger.debug("Screw.image_path: %s", screw.image_path)
 
         # Повторный коммит для сохранения пути к файлу
         await db.commit()
-        await db.refresh(screw_instance)
+        await db.refresh(screw)
 
-    return screw_instance  # Возвращаем экземпляр ScrewModel
+    return screw  # Возвращаем экземпляр ScrewModel
 
 
 async def update_screw_in_db(

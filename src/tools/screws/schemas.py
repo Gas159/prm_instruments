@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, model_serializer
 
 from tools.screws.models import ScrewModel
 
@@ -23,6 +23,24 @@ class ScrewSchema(ScrewBaseSchema):
     id: int | None = None
     create_at: datetime | None = None
     update_at: datetime | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+    @model_serializer
+    def custom_serializer(self):
+        # Возвращаем поля в нужном порядке
+        return {
+            "id": self.id,
+            "type": self.type,
+            "length": self.length,
+            "thread": self.thread,
+            "step_of_thread": self.step_of_thread,
+            "company": self.company,
+            "description": self.description,
+            "image_path": self.image_path,
+            "create_at": self.create_at,
+            "update_at": self.update_at,
+        }
 
 
 class ScrewCreateSchema(ScrewBaseSchema):

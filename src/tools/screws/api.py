@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 # Get ONE
 @router.get("/screw/{screw_id}", response_model=ScrewSchema)  # Изменено на screw_id
-async def get_one(
+async def get_one_screw(
     screw_id: int,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> ScrewModel:
@@ -45,11 +45,11 @@ async def get_one(
 
 
 # Get ALL
-@router.get("/screws", response_model=List[ScrewSchema])  # Изменено на ScrewSchema
-async def get_all(
+@router.get("/screws", response_model=List[ScrewSchema])
+async def get_all_crews(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     # broken: bool | None = Query(False),
-    # diameter: List[float] | None = Query(None),  # Получение списка выбранных диаметров
+    # diameter: List[float] | None = Query(None),
 ) -> List[ScrewModel]:
     # logger.debug("Get screws: %s", broken)
 

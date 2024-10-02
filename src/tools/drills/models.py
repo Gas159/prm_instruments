@@ -22,7 +22,8 @@ drill_screw_association = Table(
 #     screw_id:Mapped[int] =   mapped_column(ForeignKey('screw.id'), primary_key=True)
 
 
-class DrillModel(IntPkMixin, Base):
+class DrillModel(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     diameter: Mapped[float] = mapped_column(nullable=True)
     length_xD: Mapped[float] = mapped_column(nullable=True)
