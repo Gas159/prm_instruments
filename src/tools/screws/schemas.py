@@ -1,9 +1,15 @@
 from datetime import datetime
-from typing import List, Optional
+
+# from typing import List, Optional, TYPE_CHECKING
 
 from pydantic import BaseModel, ConfigDict, model_serializer
 
-from tools.screws.models import ScrewModel
+# if TYPE_CHECKING:
+#     from tools.drills.schemas import DrillSchema
+
+# from tools.drills.schemas import DrillSchema
+# from tools.schemas_type import ScrewSchemaType, PlateSchemaType
+# from tools.dsa import DrillSchemaType
 
 
 class ScrewBaseSchema(BaseModel):
@@ -12,15 +18,17 @@ class ScrewBaseSchema(BaseModel):
     thread: str | None = None
     step_of_thread: float | None = None
     company: str | None = None
-    image_path: str | None = None
     description: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class ScrewSchema(ScrewBaseSchema):
-    # services: list[Service] = []
     id: int | None = None
+
+    image_path: str | None = None
+    # drills: List["DrillSchema"] | None = None
+
     create_at: datetime | None = None
     update_at: datetime | None = None
 

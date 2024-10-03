@@ -125,17 +125,16 @@ async def add_drill(
     query = (
         select(DrillModel)
         .where(DrillModel.id == drill.id)
-        .options(selectinload(DrillModel.screws))
+        .options(
+            selectinload(
+                DrillModel.screws,
+            )
+        )
     )
     result = await db.execute(query)
     drill = result.scalars().first()
     return drill
 
-
-# Директория для загрузки изображений
-
-
-UPLOAD_DIR = upload_dir
 
 # async def get_tools(
 #     db: AsyncSession,
@@ -168,9 +167,6 @@ UPLOAD_DIR = upload_dir
 #
 #
 # # return sorted([row[0] for row in result.fetchall() ])
-
-
-UPLOAD_DIR.mkdir(exist_ok=True)
 
 
 async def update_drill_in_db(db: AsyncSession, drill_id: int, drill: DrillUpdateSchema):

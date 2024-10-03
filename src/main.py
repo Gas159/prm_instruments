@@ -12,6 +12,7 @@ from project_services.llifespan import lifespan
 from tools.drills import router as router_drills
 from tools.archive.drills import router as router_drills_archive
 from tools.screws import router as screw_router
+from tools.plates import router as plate_router
 from tools.drills.cruds import UPLOAD_DIR
 
 main_app = FastAPI(
@@ -33,6 +34,7 @@ for router in [
     router_drills,
     router_drills_archive,
     screw_router,
+    plate_router,
 ]:
     main_app.include_router(router)
 

@@ -5,9 +5,9 @@ from sqlalchemy import DateTime, func, String, ForeignKey, Table, Integer, Colum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from project_services.base import Base
-from project_services.mixins.int_id_pk import IntPkMixin
 
 from tools.screws.models import ScrewModel
+from tools.plates.models import PlateModel
 
 # Промежуточная таблица для связи ScrewModel и DrillModel
 drill_screw_association = Table(
@@ -17,6 +17,12 @@ drill_screw_association = Table(
     Column("screw_id", Integer, ForeignKey("screw.id"), primary_key=True),
 )
 
+drill_plate_association = Table(
+    "drill_plate_association",
+    Base.metadata,
+    Column("drill_id", Integer, ForeignKey("drill.id"), primary_key=True),
+    Column("plate_id", Integer, ForeignKey("plate.id"), primary_key=True),
+)
 # class DrillScrewAssociation(Base):
 #     drill_id: Mapped[int] = mapped_column(ForeignKey('drill.id'), primary_key=True)
 #     screw_id:Mapped[int] =   mapped_column(ForeignKey('screw.id'), primary_key=True)
@@ -49,4 +55,7 @@ class DrillModel(Base):
     # Связь many-to-many с ScrewModel
     screws: Mapped[List["ScrewModel"]] = relationship(
         "ScrewModel", secondary="drill_screw_association", back_populates="drills"
+    )
+    plates: Mapped[List["PlateModel"]] = relationship(
+        "PlateModel", secondary="drill_plate_association", back_populates="drills"
     )

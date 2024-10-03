@@ -1,11 +1,15 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List, TYPE_CHECKING
 
-from fastapi import Query, UploadFile, File, Form
 from pydantic import BaseModel, ConfigDict, model_serializer
 
-from tools.screws.models import ScrewModel
+
+# if TYPE_CHECKING:
+#     from tools.plates.schemas import PlateSchema
+# from tools.screws.schemas import ScrewSchema
+
 from tools.screws.schemas import ScrewSchema
+from tools.plates.schemas import PlateSchema
 
 
 class DrillBaseSchema(BaseModel):
@@ -27,11 +31,11 @@ class DrillSchema(DrillBaseSchema):
     # services: list[Service] = []
     id: int
     image_path: str | None = None
-    # screw: List[ScrewSchema] = Query(..., description="Select screws for the drill")
 
     create_at: datetime
     update_at: datetime
-    screws: List[ScrewSchema] | None = None
+    screws: List["ScrewSchema"] | None = None
+    plates: List["PlateSchema"] | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -53,6 +57,7 @@ class DrillSchema(DrillBaseSchema):
             "create_at": self.create_at,
             "update_at": self.update_at,
             "screws": self.screws,
+            "plates": self.plates,
         }
 
 

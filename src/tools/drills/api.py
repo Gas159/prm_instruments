@@ -1,7 +1,7 @@
 import logging
 from typing import List, Annotated
 
-from fastapi import Depends, APIRouter, HTTPException, Query, UploadFile, File, Form
+from fastapi import Depends, APIRouter, HTTPException, Query, UploadFile, File
 from sqlalchemy import and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -14,10 +14,7 @@ from tools.drills.schemas import (
     DrillSchema,
     DrillCreateSchema,
     DrillUpdateSchema,
-    DrillBaseSchema,
 )
-from tools.screws.api import get_all_crews
-from tools.screws.schemas import ScrewSchema
 
 router = APIRouter()
 
@@ -37,7 +34,7 @@ async def get_one(
     query = (
         select(DrillModel)
         .where(DrillModel.id == tool_id)
-        .options(selectinload(DrillModel.screws))
+        .options(selectinload(DrillModel.plates), selectinload(DrillModel.screws))
     )
     result = await session.execute(query)
     tool = result.scalars().first()
@@ -50,7 +47,7 @@ async def get_one(
 # Get ALL
 
 
-@router.get("s", response_model=List[DrillSchema], operation_id="get_all_drills")
+@router.get("s", response_model=List[DrillSchema])
 async def get_all(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     broken: bool | None = Query(False),
@@ -59,7 +56,9 @@ async def get_all(
 
     logger.debug("Get tools: %s", broken)
 
-    query = select(DrillModel).options(selectinload(DrillModel.screws))
+    query = select(DrillModel).options(
+        selectinload(DrillModel.plates), selectinload(DrillModel.screws)
+    )
     # stmt = (
     #     select(CompanyModel)
     #     .options(selectinload(CompanyModel.services))
@@ -80,9 +79,8 @@ async def get_all(
         query = query.where(and_(*filters))
 
     result = await session.execute(query.order_by(DrillModel.id.desc()))
-    drills1 = result.scalars().all()
-    # Преобразование SQLAlchemy моделей в Pydantic
-    return list(drills1)
+    drills = result.scalars().all()
+    return list(drills)
 
 
 # Create Drill

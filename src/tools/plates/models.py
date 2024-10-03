@@ -1,22 +1,31 @@
 from datetime import datetime
 from typing import List
-
-from sqlalchemy import DateTime, func
+from enum import Enum
+from sqlalchemy import DateTime, func, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from project_services.base import Base
 
+# Пластины : тип,  субтип, сплав,  материал обр(селект s,m,p) , кол-во,  фирма, мин ост, фото.
 
-# Винт. Тип, резьба, длинна, фирма, шаг резьбы.  Поле выдать ро резьбе и длине.
+
+class MaterialEnum(str, Enum):
+    S = "s"
+    M = "m"
+    P = "p"
 
 
-class ScrewModel(Base):
+class PlateModel(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     type: Mapped[str] = mapped_column(default="?", nullable=True)
-    length: Mapped[float] = mapped_column(default=0, nullable=True)
-    thread: Mapped[str] = mapped_column(default="?", nullable=True)
-    step_of_thread: Mapped[float] = mapped_column(default=0, nullable=True)
+    sub_type: Mapped[str] = mapped_column(default="?", nullable=True)
+    material: Mapped[MaterialEnum] = mapped_column(
+        SQLAlchemyEnum(MaterialEnum), default=MaterialEnum.M, nullable=True
+    )
+    amount: Mapped[int] = mapped_column(default=0, nullable=True)
+    min_amount: Mapped[int] = mapped_column(default=0, nullable=True)
     company: Mapped[str] = mapped_column(default="?", nullable=True)
+
     image_path: Mapped[str] = mapped_column(default="?", nullable=True)
     description: Mapped[str] = mapped_column(default="?", nullable=True)
 
@@ -28,5 +37,5 @@ class ScrewModel(Base):
     )
 
     drills: Mapped[List["DrillModel"]] = relationship(
-        "DrillModel", secondary="drill_screw_association", back_populates="screws"
+        "DrillModel", secondary="drill_plate_association", back_populates="plates"
     )

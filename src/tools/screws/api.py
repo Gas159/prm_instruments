@@ -8,17 +8,17 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 from database import db_helper
-from tools.screws.models import ScrewModel  # Изменено на ScrewModel
+from tools.screws.models import ScrewModel
 from tools.screws.schemas import (
-    ScrewSchema,  # Изменено на ScrewSchema
-    ScrewCreateSchema,  # Изменено на ScrewCreateSchema
-    ScrewUpdateSchema,  # Изменено на ScrewUpdateSchema
+    ScrewSchema,
+    ScrewCreateSchema,
+    ScrewUpdateSchema,
 )
 from tools.screws.cruds import (
     add_screw,
     update_screw_in_db,
     delete_screw_from_db,
-)  # Изменено на соответствующие функции
+)
 
 router = APIRouter()
 
@@ -26,14 +26,14 @@ logger = logging.getLogger(__name__)
 
 
 # Get ONE
-@router.get("/screw/{screw_id}", response_model=ScrewSchema)  # Изменено на screw_id
+@router.get("/screw/{screw_id}", response_model=ScrewSchema)
 async def get_one_screw(
     screw_id: int,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> ScrewModel:
     query = (
         select(ScrewModel)
-        .options(selectinload(ScrewModel.drills))  # Заменено на ScrewModel.drills
+        .options(selectinload(ScrewModel.drills))
         .where(ScrewModel.id == screw_id)
     )
     result = await session.execute(query)
