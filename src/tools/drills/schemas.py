@@ -18,7 +18,7 @@ class DrillBaseSchema(BaseModel):
     length_xD: float | None = 0
     deep_of_drill: float | None = 0
     plate: str | None = None
-    key: str | None = None
+    key_: str | None = None
     company: str | None = None
     is_broken: bool | None = False
     storage: str | None = "Склад"
@@ -48,7 +48,7 @@ class DrillSchema(DrillBaseSchema):
             "length_xD": self.length_xD,
             "deep_of_drill": self.deep_of_drill,
             "plate": self.plate,
-            "key": self.key,
+            "key_": self.key_,
             "company": self.company,
             "is_broken": self.is_broken,
             "storage": self.storage,

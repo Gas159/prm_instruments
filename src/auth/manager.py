@@ -64,11 +64,11 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
-        send_email_test(
-            name=user.name,
-            email_to_send=user.email,
-            msg="Вы зарегистрированы. Это точно, наверное, ну максимум - нет:)",
-        )
+        # send_email_test(
+        #     name=user.name,
+        #     email_to_send=user.email,
+        #     msg="Вы зарегистрированы. Это точно, наверное, ну максимум - нет:)",
+        # )
 
     # async def on_after_login(self, user: User):
     #     print(f"User {user} has login.")

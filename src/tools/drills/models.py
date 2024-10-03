@@ -36,7 +36,7 @@ class DrillModel(Base):
     deep_of_drill: Mapped[float] = mapped_column(nullable=True)
     plate: Mapped[str] = mapped_column(default="?", nullable=True)
     # screw: Mapped[str] = mapped_column(default="?", nullable=True)
-    key: Mapped[str] = mapped_column(default="?", nullable=True)
+    key_: Mapped[str] = mapped_column(default="?", nullable=True)
     company: Mapped[str] = mapped_column(default="?", nullable=True)
     is_broken: Mapped[bool] = mapped_column(default=False, nullable=True)
 

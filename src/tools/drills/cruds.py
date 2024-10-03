@@ -125,11 +125,7 @@ async def add_drill(
     query = (
         select(DrillModel)
         .where(DrillModel.id == drill.id)
-        .options(
-            selectinload(
-                DrillModel.screws,
-            )
-        )
+        .options(selectinload(DrillModel.screws), selectinload(DrillModel.plates))
     )
     result = await db.execute(query)
     drill = result.scalars().first()
