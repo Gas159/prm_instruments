@@ -11,7 +11,7 @@ package-mode = false
 fastapi = "^0.111.0"
 
 #fastapi-users = "13.0.0"
-fastapi-users = "^13.0.0"
+fastapi-users = {extras = ["sqlalchemy"], version = "^13.0.0"}
 
 #python-multipart = "0.0.12"
 #python-multipart = { version = ">=0.0.9,<0.0.13" }

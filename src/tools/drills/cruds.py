@@ -94,10 +94,20 @@ async def add_drill(
                     status_code=400, detail="Uploaded file is not an image."
                 )
             logger.info("im here")
+
+            # import urllib.parse
+            #
+            # file_first_name_escaped = urllib.parse.quote(file_first_name)
+            # file_ext_escaped = urllib.parse.quote(file_ext)
+
+            # file_name = (
+            #     f"http://45.9.73.213:8003/{file_first_name_escaped}.{file_ext_escaped}"
+            # )
             # Генерация уникального имени файла
             file_ext = image.filename.split(".")[-1]
             file_first_name = image.filename.split(".")[0]
             file_name = f"{file_first_name}.{file_ext}"
+            logger.info("File name: %s", file_name)
             file_path = drill_dir / file_name
 
             # Сохранение файла на диск

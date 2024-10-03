@@ -1,13 +1,24 @@
-from sqlalchemy import String, Boolean, DateTime, func
+from enum import Enum
+
+from sqlalchemy import String, Boolean, DateTime, func, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import mapped_column, Mapped
 
 from project_services.base import Base
 from project_services.mixins.int_id_pk import IntPkMixin
 
 
+class RoleEnum(str, Enum):
+    NOOB = "Noob"
+    MASTER = "Master"
+    BOSS = "Boss"
+
+
 class UserModel(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(default="user_name")
+    name: Mapped[str] = mapped_column(default="Kto ti voin?:)")
+    role: Mapped[RoleEnum] = mapped_column(
+        SQLAlchemyEnum(RoleEnum), default=RoleEnum.NOOB, nullable=True
+    )
     email: Mapped[str] = mapped_column(
         String(length=320), unique=True, index=True, nullable=False
     )

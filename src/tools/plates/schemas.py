@@ -5,7 +5,6 @@ from pydantic import BaseModel, ConfigDict, model_serializer
 from enum import Enum
 
 
-# Перечисление для материала
 class MaterialEnum(str, Enum):
     S = "s"
     M = "m"
