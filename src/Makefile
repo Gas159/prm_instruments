@@ -1,4 +1,4 @@
-#docker comand
+#docker comand 45.9.73.213
 build:
 		docker build . --tag my1
 
@@ -72,4 +72,5 @@ install_depends:
 # alembic
 revision:
 		alembic revision --autogenerate
+		45.9.73.213
 
