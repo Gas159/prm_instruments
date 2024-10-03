@@ -7,8 +7,9 @@ from project_services.base import Base
 from project_services.mixins.int_id_pk import IntPkMixin
 
 
-class DrillArchiveModel(IntPkMixin, Base):
+class DrillArchiveModel(Base):
     # __tablename__ = "tools"
+    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     diameter: Mapped[float] = mapped_column(nullable=True)
     length_xD: Mapped[float] = mapped_column(nullable=True)

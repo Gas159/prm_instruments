@@ -5,7 +5,8 @@ from project_services.base import Base
 from project_services.mixins.int_id_pk import IntPkMixin
 
 
-class UserModel(IntPkMixin, Base):
+class UserModel(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(default="user_name")
     email: Mapped[str] = mapped_column(
         String(length=320), unique=True, index=True, nullable=False

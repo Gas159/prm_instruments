@@ -2,9 +2,9 @@
 import logging
 import shutil
 from sqlite3 import IntegrityError
-from typing import List, Annotated
 
-from fastapi import HTTPException, UploadFile, File, Form
+import starlette
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -15,7 +15,7 @@ from tools.drills.models import DrillModel
 from tools.drills.schemas import DrillCreateSchema, DrillUpdateSchema, DrillSchema
 from tools.screws.models import ScrewModel
 
-loger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 UPLOAD_DIR = upload_dir
 UPLOAD_DIR.mkdir(exist_ok=True)
@@ -34,30 +34,32 @@ async def add_drill(
     # images: Annotated[List[UploadFile], File([])] | None = None,
 ) -> DrillSchema:
 
-    loger.info("Screws: %s IDs: %s", screws_ids, type(screws_ids))
+    logger.info("Screws: %s IDs: %s", screws_ids, type(screws_ids))
 
     drill = DrillModel(**drill.model_dump())
 
     if screws_ids and None not in screws_ids and "" not in screws_ids:
+        # screws_ids = [item for item in screws_ids if item is not None and item != ""]
+        logger.info("Screws: %s IDs: %s", screws_ids, type(screws_ids))
 
         screws_ids = list(
             int(i)
             for i in screws_ids[0].split(",")
             if i.strip().isdigit() and int(i) != 0
         )
-        loger.info("Screws ids: %s %s", screws_ids, type(screws_ids))
+        logger.info("Screws ids: %s %s", screws_ids, type(screws_ids))
         screws_query = await db.execute(
             select(ScrewModel).where(ScrewModel.id.in_(screws_ids))
         )
         screws = screws_query.scalars().all()
 
-        loger.info("lenScrews: %s, Len Idis: %s", len(screws), len(screws_ids))
+        logger.info("lenScrews: %s, Len Idis: %s", len(screws), len(screws_ids))
         if len(screws) != len(screws_ids):
             raise HTTPException(status_code=400, detail="Some screws were not found.")
         drill.screws.extend(screws)
 
-    loger.info("Screws: %s", screws_ids)
-    loger.info("DrillScrews: %s", drill.screws)
+    logger.info("Screws: %s", screws_ids)
+    logger.info("DrillScrews: %s", drill.screws)
 
     db.add(drill)
 
@@ -74,28 +76,24 @@ async def add_drill(
         await db.rollback()  # Откат для всех других исключений
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
-    #
-    # if not isinstance(images, list):
-    #     images = []  # Если файлы не переданы, инициализируем пустой список
-    loger.info("Images: %s", images)
-
-    # Проверка и сохранение изображения, если оно есть
+    # clear images
     if images:
+        images = [image for image in images if image is not None and image != ""]
         drill_dir = upload_dir / "drills" / str(drill.id)
         drill_dir.mkdir(parents=True, exist_ok=True)
 
         image_paths = []
-        if not isinstance(images, list):
-            images = [images]
+        logger.info("im here")
 
         for image in images:
-            if image is None:
+            if not isinstance(image, starlette.datastructures.UploadFile):
+                logger.warning("Skipping non-UploadFile object: %s", type(image))
                 continue
             if not image.content_type.startswith("image/"):
                 raise HTTPException(
                     status_code=400, detail="Uploaded file is not an image."
                 )
-
+            logger.info("im here")
             # Генерация уникального имени файла
             file_ext = image.filename.split(".")[-1]
             file_first_name = image.filename.split(".")[0]
@@ -107,18 +105,18 @@ async def add_drill(
                 with open(file_path, "wb") as buffer:
                     shutil.copyfileobj(image.file, buffer)
 
-                # Сохранение пути к изображению в модели сверла
                 image_paths.append(str(file_path))
+                logger.info("File %s added", str(file_path))
 
             except Exception as e:
-                loger.error(f"Error saving image: {str(e)}")
+                logger.error(f"Error saving image: {str(e)}")
                 await db.rollback()
                 raise HTTPException(status_code=500, detail="Error saving image.")
 
         # Присвоим список путей изображений объекту модели сверла
-        loger.debug("image_paths: %s", image_paths)
+        logger.debug("image_paths: %s", image_paths)
         drill.image_path = ", ".join(image_paths)
-        loger.debug("Drill.image_path: %s", drill.image_path)
+        logger.debug("Drill.image_path: %s", drill.image_path)
 
         # Повторный коммит для сохранения пути к файлу
         await db.commit()
@@ -185,12 +183,12 @@ async def update_drill_in_db(db: AsyncSession, drill_id: int, drill: DrillUpdate
 
         # Применяем обновления только к тем полям, которые были установлены
         for key, value in drill.model_dump(exclude_unset=True).items():
-            loger.info("drills updated: %s %s ", key, value)
+            logger.info("drills updated: %s %s ", key, value)
 
             if value is not None:  # Пропускаем поля с None
                 setattr(db_drill, key, value)
 
-        loger.info("Update drills: %s", drill)
+        logger.info("Update drills: %s", drill)
 
         await db.commit()
         await db.refresh(db_drill)
@@ -214,7 +212,7 @@ async def delete_drill_from_bd(db: AsyncSession, drill_id: int):
     if db_drill is None:
         raise HTTPException(status_code=404, detail="Drill not found")
 
-    loger.info("Delete drills: %s %s", db_drill, db_drill.__dict__.items())
+    logger.info("Delete drills: %s %s", db_drill, db_drill.__dict__.items())
 
     try:
         drill_data = {
@@ -227,11 +225,11 @@ async def delete_drill_from_bd(db: AsyncSession, drill_id: int):
         await db.delete(db_drill)
         await db.commit()
 
-        loger.info("Drill archived and deleted: %s", drill_id)
+        logger.info("Drill archived and deleted: %s", drill_id)
 
     except Exception as e:
         await db.rollback()
-        loger.error("Failed to archive and delete drills: %s", str(e))
+        logger.error("Failed to archive and delete drills: %s", str(e))
         raise HTTPException(
             status_code=500, detail="Failed to archive and delete drills.g"
         )

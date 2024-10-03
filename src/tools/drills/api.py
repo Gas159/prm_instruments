@@ -22,7 +22,7 @@ from tools.screws.schemas import ScrewSchema
 router = APIRouter()
 
 
-loger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 # Get ONE
@@ -41,7 +41,7 @@ async def get_one(
     )
     result = await session.execute(query)
     tool = result.scalars().first()
-    loger.info("Get tool: %s", tool)
+    logger.info("Get tool: %s", tool)
     if not tool:
         raise HTTPException(status_code=404, detail="Tool not found")
     return tool
@@ -57,7 +57,7 @@ async def get_all(
     diameter: List[float] | None = Query(None),  # Получение списка выбранных диаметров
 ) -> List[DrillSchema]:
 
-    loger.debug("Get tools: %s", broken)
+    logger.debug("Get tools: %s", broken)
 
     query = select(DrillModel).options(selectinload(DrillModel.screws))
     # stmt = (
@@ -68,11 +68,11 @@ async def get_all(
     # Применение фильтров, если они заданы
     filters = []
     if broken is not None:
-        loger.debug("Check broken: %s", broken)
+        logger.debug("Check broken: %s", broken)
         filters.append(DrillModel.is_broken == broken)
     #
     if diameter is not None:
-        loger.debug("Check diameter: %s", diameter)
+        logger.debug("Check diameter: %s", diameter)
         filters.append(DrillModel.diameter.in_(diameter))
 
     # Применение фильтров к запросу
@@ -92,8 +92,10 @@ async def get_all(
 async def create_drill(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     drill: Annotated[DrillCreateSchema, Depends()],
-    screws_ids: List[int | str] = Form(None),
-    images: list[UploadFile | str] | None = None,
+    screws_ids: list[str] = None,
+    image_1: UploadFile | str = File(None),
+    image_2: UploadFile | str = File(None),
+    image_3: UploadFile | str = File(None),
     # screws: List[ScrewSchema] = Depends(get_all_crews),
     # screw_ids: list = Query(),
     # images: List[UploadFile] | str = File(None),
@@ -103,8 +105,9 @@ async def create_drill(
     # images:  Annotated[list[bytes], File()]
 ) -> DrillSchema:
 
-    loger.info("Screws_ids: %s", screws_ids)
-
+    logger.info("Screws_ids: %s", screws_ids)
+    images = [image_1, image_2, image_3]
+    logger.info("Images: %s", images)
     result = await add_drill(session, drill, screws_ids, images)
     return result
 
@@ -116,7 +119,7 @@ async def update_drill(
     drill: DrillUpdateSchema,
 ) -> DrillModel:
 
-    loger.info("Update tool: %s", drill)
+    logger.info("Update tool: %s", drill)
 
     result = await update_drill_in_db(session, drill_id, drill)
     return result

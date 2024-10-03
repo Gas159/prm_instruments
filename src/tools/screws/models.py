@@ -13,7 +13,8 @@ from project_services.mixins.int_id_pk import IntPkMixin
 # Винт. Тип, резьба, длинна, фирма, шаг резьбы.  Поле выдать ро резьбе и длине.
 
 
-class ScrewModel(IntPkMixin, Base):
+class ScrewModel(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
     type: Mapped[str] = mapped_column(default="?", nullable=True)
     length: Mapped[float] = mapped_column(default=0, nullable=True)
     thread: Mapped[str] = mapped_column(default="?", nullable=True)
