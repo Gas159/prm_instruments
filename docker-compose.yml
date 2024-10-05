@@ -48,15 +48,15 @@ services:
 
 
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pg_admin_parma
-    environment:
-          PGADMIN_DEFAULT_EMAIL: admin@admin.org
-          PGADMIN_DEFAULT_PASSWORD: 123
-          PGADMIN_CONFIG_SERVER_MODE: 'False'
-    ports:
-      - "5054:80"
+#  pgadmin:
+#    image: dpage/pgadmin4
+#    container_name: pg_admin_parma
+#    environment:
+#          PGADMIN_DEFAULT_EMAIL: admin@admin.org
+#          PGADMIN_DEFAULT_PASSWORD: 123
+#          PGADMIN_CONFIG_SERVER_MODE: 'False'
+#    ports:
+#      - "5054:80"
 
 
 #  redis:
