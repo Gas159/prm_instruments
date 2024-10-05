@@ -98,9 +98,9 @@ async def create_drill(
 ) -> DrillSchema:
 
     logger.info("Drill: %s %s", type(drill), drill)
-    logger.info("Screws_ids: %s", screws_ids)
+    logger.info("Screws_ids: %s %s", type(screws_ids), screws_ids)
     images = [image_1, image_2, image_3]
-    logger.info("Images: %s", images)
+    logger.info("Images: %s %s", type(images), images)
     result = await add_drill(session, drill, screws_ids, images)
     return result
 

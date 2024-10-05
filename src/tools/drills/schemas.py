@@ -62,7 +62,7 @@ class DrillSchema(DrillBaseSchema):
 
 
 class DrillCreateSchema(DrillBaseSchema):
-    # model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
     ...
 
 

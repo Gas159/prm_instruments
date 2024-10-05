@@ -144,6 +144,7 @@ async def add_drill(
     )
     result = await db.execute(query)
     drill = result.scalars().first()
+    logger.info("Cruds drill success: %s", drill)
     return drill
 
 
