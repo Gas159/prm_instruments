@@ -32,7 +32,7 @@ jobs:
       - name: Setup SSH for deploy
         run: |
             mkdir -p ~/.ssh
-            echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_rsa
+            echo "${{ secrets.SSH_PRIVATE_KEY_V1 }}" > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
             ssh-keyscan -H 45.9.73.213 >> ~/.ssh/known_hosts
 
