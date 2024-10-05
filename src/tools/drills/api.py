@@ -59,12 +59,6 @@ async def get_all(
     query = select(DrillModel).options(
         selectinload(DrillModel.plates), selectinload(DrillModel.screws)
     )
-    # stmt = (
-    #     select(CompanyModel)
-    #     .options(selectinload(CompanyModel.services))
-    #     .where(CompanyModel.id == company_id)
-    # )
-    # Применение фильтров, если они заданы
     filters = []
     if broken is not None:
         logger.debug("Check broken: %s", broken)
@@ -89,7 +83,7 @@ async def get_all(
 @router.post("/create", response_model=DrillSchema)
 async def create_drill(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    drill: Annotated[DrillCreateSchema, Depends()],
+    drill: DrillCreateSchema,
     screws_ids: list[str] = None,
     image_1: UploadFile | str = File(None),
     image_2: UploadFile | str = File(None),
