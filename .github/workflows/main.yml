@@ -40,7 +40,7 @@ jobs:
 #          user: ${{secrets.SSH_USER}}
           user: root
           private_key: ${{secrets.SSH_PRIVATE_KEY}}
-          host_fingerprint: ${{ secrets.INPUT_HOST_FINGERPRINT }}
+          # host_fingerprint: ${{ secrets.INPUT_HOST_FINGERPRINT }}
           command: |
             cd ${{ secrets.PROJECT_FOLDER }};
             git checkout main;
