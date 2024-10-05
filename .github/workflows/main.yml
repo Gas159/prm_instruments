@@ -67,5 +67,5 @@ jobs:
             docker-compose down && echo;
             docker-compose up -d app pg adminer && echo;
             docker system prune --all --force;
-            dcoker ps -a;
+            docker ps -a;
 
