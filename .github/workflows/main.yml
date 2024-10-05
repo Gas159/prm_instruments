@@ -23,29 +23,44 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Add SSH host key
+#      - name: Add SSH host key
+#        run: |
+#            mkdir -p ~/.ssh
+#            ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Setup SSH for deploy
         run: |
             mkdir -p ~/.ssh
-            ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+            echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            ssh-keyscan -H 45.9.73.213 >> ~/.ssh/known_hosts
 
       - name: Debug SSH
         run: |
           cat ~/.ssh/known_hosts
 
-      - name: Run command on remote server
-        uses: D3rHase/ssh-command-action@v0.2.2
-        with:
-#          host: ${{secrets.SSH_HOST}}
-          host: 45.9.73.213
-#          user: ${{secrets.SSH_USER}}
-          user: root
-          private_key: ${{secrets.SSH_PRIVATE_KEY}}
-          # host_fingerprint: ${{ secrets.INPUT_HOST_FINGERPRINT }}
-          command: |
-            cd ${{ secrets.PROJECT_FOLDER }};
-            git checkout main;
-            git pull;
-            docker-compose down;
-            docker-compose up -d;
-            docker system prune --all --force;
+      - name: Deploy to VPS
+        run: |
+          ssh root@45.9.73.213 "echo 123"
+          
+      
+          
+
+#
+#      - name: Run command on remote server
+#        uses: D3rHase/ssh-command-action@v0.2.2
+#        with:
+##          host: ${{secrets.SSH_HOST}}
+#          host: 45.9.73.213
+##          user: ${{secrets.SSH_USER}}
+#          user: root
+#          private_key: ${{secrets.SSH_PRIVATE_KEY}}
+#          host_fingerprint: ${{ secrets.INPUT_HOST_FINGERPRINT }}
+#          command: |
+#            cd ${{ secrets.PROJECT_FOLDER }};
+#            git checkout main;
+#            git pull;
+#            docker-compose down;
+#            docker-compose up -d;
+#            docker system prune --all --force;
 
