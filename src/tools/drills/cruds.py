@@ -1,4 +1,5 @@
 # crud.py
+import json
 import logging
 import shutil
 from sqlite3 import IntegrityError
@@ -23,7 +24,7 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 
 async def add_drill(
     db: AsyncSession,
-    drill: DrillCreateSchema,
+    drill,
     screws_ids,
     images,
     # images: Annotated[UploadFile, File(...)] = None,
@@ -34,9 +35,13 @@ async def add_drill(
     # images: Annotated[List[UploadFile], File([])] | None = None,
 ) -> DrillSchema:
 
-    logger.info("Screws: %s IDs: %s", screws_ids, type(screws_ids))
+    try:
+        drill_data = json.loads(drill)
+        logger.info("Parsed drill data: %s %s", type(drill_data), drill_data)
+    except json.JSONDecodeError as e:
+        raise HTTPException(status_code=400, detail="Invalid JSON format") from e
 
-    drill = DrillModel(**drill.model_dump())
+    drill = DrillModel(**drill_data)
 
     if screws_ids and None not in screws_ids and "" not in screws_ids:
         # screws_ids = [item for item in screws_ids if item is not None and item != ""]
