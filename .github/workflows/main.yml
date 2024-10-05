@@ -1,4 +1,4 @@
-name: "Ruby on Rails CI"
+name: "parma_vps"
 on:
   push:
     branches: ["main"]
@@ -23,20 +23,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-#      - name: Add SSH host key
-#        run: |
-#            mkdir -p ~/.ssh
-#            ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-#
-#      - name: Debug SSH
-#        run: |
-#          cat ~/.ssh/known_hosts
+      - name: Add SSH host key
+        run: |
+            mkdir -p ~/.ssh
+            ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Debug SSH
+        run: |
+          cat ~/.ssh/known_hosts
 
       - name: Run command on remote server
         uses: D3rHase/ssh-command-action@v0.2.2
         with:
-          host: ${{secrets.SSH_HOST}}
-          user: ${{secrets.SSH_USER}}
+#          host: ${{secrets.SSH_HOST}}
+          host: 45.9.73.213
+#          user: ${{secrets.SSH_USER}}
+          user: root
           private_key: ${{secrets.SSH_PRIVATE_KEY}}
           host_fingerprint: ${{ secrets.INPUT_HOST_FINGERPRINT }}
           command: |
