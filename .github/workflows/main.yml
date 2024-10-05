@@ -59,9 +59,12 @@ jobs:
 #          host_fingerprint: ${{ secrets.INPUT_HOST_FINGERPRINT }}
           command: |
             cd ${{ secrets.PROJECT_FOLDER }};
+            echo 'cd project folder' && echo;
             git checkout main;
-            git pull;
+            git status && echo;
+            git pull && echo;
+            
             docker-compose down;
-            docker-compose up -d app pg adminer;
+            docker-compose up -d app pg adminer && echo;
             docker system prune --all --force;
 
