@@ -18,7 +18,7 @@ class DrillBaseSchema(BaseModel):
     length_xD: float | None = 0
     deep_of_drill: float | None = 0
     plate: str | None = None
-    key_: str | None = None
+    key: str | None = None
     company: str | None = None
     is_broken: bool | None = False
     storage: str | None = "Склад"
@@ -39,26 +39,26 @@ class DrillSchema(DrillBaseSchema):
 
     model_config = ConfigDict(from_attributes=True)
 
-    # @model_serializer
-    # def custom_serializer(self) -> dict:
-    #     return {
-    #         "id": self.id,
-    #         "name": self.name,
-    #         "diameter": self.diameter,
-    #         "length_xD": self.length_xD,
-    #         "deep_of_drill": self.deep_of_drill,
-    #         "plate": self.plate,
-    #         "key_": self.key_,
-    #         "company": self.company,
-    #         "is_broken": self.is_broken,
-    #         "storage": self.storage,
-    #         "description": self.description,
-    #         "image_path": self.image_path,
-    #         "create_at": self.create_at,
-    #         "update_at": self.update_at,
-    #         "screws": self.screws,
-    #         "plates": self.plates,
-    #     }
+    @model_serializer
+    def custom_serializer(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "diameter": self.diameter,
+            "length_xD": self.length_xD,
+            "deep_of_drill": self.deep_of_drill,
+            "plate": self.plate,
+            "key": self.key,
+            "company": self.company,
+            "is_broken": self.is_broken,
+            "storage": self.storage,
+            "description": self.description,
+            "image_path": self.image_path,
+            "create_at": self.create_at,
+            "update_at": self.update_at,
+            "screws": self.screws,
+            "plates": self.plates,
+        }
 
 
 class DrillCreateSchema(DrillBaseSchema):
