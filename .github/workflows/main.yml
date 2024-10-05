@@ -39,29 +39,29 @@ jobs:
       - name: Debug SSH
         run: |
           cat ~/.ssh/known_hosts
-
-      - name: Deploy to VPS
-        run: |
-          ssh root@45.9.73.213 "echo 123"
+#
+#      - name: Deploy to VPS
+#        run: |
+#          ssh root@45.9.73.213 "echo 123"
           
       
           
 
-#
-#      - name: Run command on remote server
-#        uses: D3rHase/ssh-command-action@v0.2.2
-#        with:
-##          host: ${{secrets.SSH_HOST}}
-#          host: 45.9.73.213
-##          user: ${{secrets.SSH_USER}}
-#          user: root
-#          private_key: ${{secrets.SSH_PRIVATE_KEY}}
+
+      - name: Run command on remote server
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+#          host: ${{secrets.SSH_HOST}}
+          host: 45.9.73.213
+#          user: ${{secrets.SSH_USER}}
+          user: root
+          private_key: ${{secrets.SSH_PRIVATE_KEY_V1}}
 #          host_fingerprint: ${{ secrets.INPUT_HOST_FINGERPRINT }}
-#          command: |
-#            cd ${{ secrets.PROJECT_FOLDER }};
-#            git checkout main;
-#            git pull;
-#            docker-compose down;
-#            docker-compose up -d;
-#            docker system prune --all --force;
+          command: |
+            cd ${{ secrets.PROJECT_FOLDER }};
+            git checkout main;
+            git pull;
+            docker-compose down;
+            docker-compose up -d app pg adminer;
+            docker system prune --all --force;
 
