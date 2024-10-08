@@ -3,7 +3,7 @@ from tools.drills.api import router as drill_router
 from config import settings
 
 router = APIRouter(
-    prefix=settings.api.prefix,
+    # prefix=settings.api.prefix,
 )
 
 router.include_router(

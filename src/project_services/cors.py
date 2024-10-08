@@ -2,7 +2,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 
 origins = [
-    # "http://localhost:3000",
+    "http://localhost:8003",
     # "https://car-service-18635.web.app",
     # "https://*",
     # "http://*",

@@ -47,7 +47,6 @@ for router in [
 add_cors_middleware(main_app)
 
 add_pagination(main_app)
-# templates = Jinja2Templates(directory="templates")
 
 
 @main_app.get("/")

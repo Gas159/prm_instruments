@@ -29,10 +29,10 @@ services:
     restart: always
     env_file:
       - src/.env
-    environment:
-      POSTGRES_USER: ${FASTAPI__DB__POSTGRES_USER}
-      POSTGRES_PASSWORD: ${FASTAPI__DB__POSTGRES_PASSWORD}
-      POSTGRES_DB: ${FASTAPI__DB__POSTGRES_DB}
+#    environment:
+#      POSTGRES_USER: ${FASTAPI__DB__POSTGRES_USER}
+#      POSTGRES_PASSWORD: ${FASTAPI__DB__POSTGRES_PASSWORD}
+#      POSTGRES_DB: ${FASTAPI__DB__POSTGRES_DB}
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
