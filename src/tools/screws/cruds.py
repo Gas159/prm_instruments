@@ -21,12 +21,12 @@ UPLOAD_DIR = upload_dir
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 
-async def add_screw(  # Изменено на add_screw
+async def add_screw(
     db: AsyncSession,
-    screw: ScrewCreateSchema,  # Изменено на ScrewCreateSchema
-    images: List[UploadFile] | None = None,  # Изменено на List[UploadFile]
+    screw: ScrewCreateSchema,
+    images: List[UploadFile] = None,
 ):
-    screw = ScrewModel(**screw.model_dump())  # Создание экземпляра ScrewModel
+    screw = ScrewModel(**screw.model_dump())
     db.add(screw)
 
     logger.info("Add screw: %s", screw)
@@ -36,19 +36,12 @@ async def add_screw(  # Изменено на add_screw
         await db.refresh(screw)
     except IntegrityError:
         await db.rollback()
-        raise HTTPException(
-            status_code=400, detail="Failed to add screw: Integrity Error"
-        )
+        raise HTTPException(status_code=400, detail="Failed to add screw: Integrity Error")
     except Exception as e:
         await db.rollback()  # Откат для всех других исключений
-        raise HTTPException(
-            status_code=500, detail=f"Internal Server Error: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
     logger.info("Images: %s", images)
-
-    # if not isinstance(images, list):
-    #     images = []  # Если файлы не переданы, инициализируем пустой список
 
     # Проверка и сохранение изображения, если оно есть
     if images:
@@ -62,9 +55,7 @@ async def add_screw(  # Изменено на add_screw
             if image is None:
                 continue
             if not image.content_type.startswith("image/"):
-                raise HTTPException(
-                    status_code=400, detail="Uploaded file is not an image."
-                )
+                raise HTTPException(status_code=400, detail="Uploaded file is not an image.")
 
             # Генерация уникального имени файла
             file_ext = image.filename.split(".")[-1]
@@ -83,9 +74,7 @@ async def add_screw(  # Изменено на add_screw
             except Exception as e:
                 logger.error(f"Error saving image: {str(e)}")
                 await db.rollback()
-                raise HTTPException(
-                    status_code=500, detail="Error saving image."
-                )
+                raise HTTPException(status_code=500, detail="Error saving image.")
 
         # Присвоим список путей изображений объекту модели винта
         logger.debug("image_paths: %s", image_paths)
@@ -95,11 +84,7 @@ async def add_screw(  # Изменено на add_screw
         # Повторный коммит для сохранения пути к файлу
         await db.commit()
         await db.refresh(screw)
-    query = (
-        select(ScrewModel)
-        .where(ScrewModel.id == screw.id)
-        .options(selectinload(ScrewModel.drills))
-    )
+    query = select(ScrewModel).where(ScrewModel.id == screw.id).options(selectinload(ScrewModel.drills))
     result = await db.execute(query)
     screw = result.scalars().first()
     return screw  # Возвращаем экземпляр ScrewModel
@@ -108,9 +93,7 @@ async def add_screw(  # Изменено на add_screw
 async def update_screw_in_db(
     db: AsyncSession, screw_id: int, screw: ScrewUpdateSchema
 ):  # Изменено на update_screw_in_db
-    db_screw = await db.get(
-        ScrewModel, screw_id
-    )  # Получение существующей записи
+    db_screw = await db.get(ScrewModel, screw_id)  # Получение существующей записи
 
     try:
         if db_screw is None:
@@ -131,17 +114,13 @@ async def update_screw_in_db(
 
     except IntegrityError:
         await db.rollback()
-        raise HTTPException(
-            status_code=400, detail="Failed to update screw: Integrity Error"
-        )
+        raise HTTPException(status_code=400, detail="Failed to update screw: Integrity Error")
     except Exception as e:
         await db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
 
-async def delete_screw_from_db(
-    db: AsyncSession, screw_id: int
-):  # Изменено на delete_screw_from_db
+async def delete_screw_from_db(db: AsyncSession, screw_id: int):  # Изменено на delete_screw_from_db
     query = select(ScrewModel).where(ScrewModel.id == screw_id)
     result = await db.execute(query)
     db_screw = result.scalar_one_or_none()
@@ -161,8 +140,6 @@ async def delete_screw_from_db(
     except Exception as e:
         await db.rollback()
         logger.error("Failed to archive and delete screw: %s", str(e))
-        raise HTTPException(
-            status_code=500, detail="Failed to archive and delete screw."
-        )
+        raise HTTPException(status_code=500, detail="Failed to archive and delete screw.")
 
     return db_screw  # Возвращаем удаленный объект
