@@ -30,7 +30,9 @@ main_app.add_exception_handler(422, validation_exception_handler)
 
 # Добавляем путь для статических файлов
 main_app.mount(
-    "/uploaded_images", StaticFiles(directory=UPLOAD_DIR), name="uploaded_images"
+    "/uploaded_images",
+    StaticFiles(directory=UPLOAD_DIR),
+    name="uploaded_images",
 )
 for router in [
     auth_router,

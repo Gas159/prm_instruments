@@ -13,7 +13,9 @@ class ServiceModel(IntPkMixin, Base):
     # comment: Mapped[str] = mapped_column(nullable=True)
     # rate: Mapped[int] = mapped_column(default=0, nullable=True)
 
-    company_id: Mapped[int] = mapped_column(ForeignKey("company.id"), nullable=True)
+    company_id: Mapped[int] = mapped_column(
+        ForeignKey("company.id"), nullable=True
+    )
 
     company: Mapped["CompanyModel"] = relationship(
         "CompanyModel", back_populates="services"

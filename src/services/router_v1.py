@@ -38,7 +38,9 @@ async def get_one_service(
     # session,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> ServiceModel:
-    service = await services_crud.get_service(session=session, service_id=service_id)
+    service = await services_crud.get_service(
+        session=session, service_id=service_id
+    )
     return service
 
 
@@ -80,5 +82,7 @@ async def delete_service(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     service_id: int,
 ) -> ServiceModel:
-    service = await services_crud.delete_service(session=session, service_id=service_id)
+    service = await services_crud.delete_service(
+        session=session, service_id=service_id
+    )
     return service

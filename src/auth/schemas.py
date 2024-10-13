@@ -19,7 +19,9 @@ class UserRead(schemas.BaseUser[int]):
 class UserCreate(schemas.BaseUserCreate):
     # class UserCreate(BaseModel):
     email: EmailStr = Field(
-        examples=["test@example.com"], default="test@example.com", max_length=320
+        examples=["test@example.com"],
+        default="test@example.com",
+        max_length=320,
     )
     password: str = Field(default="123", max_length=128)
     name: str | None = Field(examples=["test"], default="test", max_length=32)

@@ -21,12 +21,12 @@ UPLOAD_DIR = upload_dir
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 
-async def add_plate(  # Изменено на add_plate
+async def add_plate(
     db: AsyncSession,
-    plate: PlateCreateSchema,  # Изменено на PlateCreateSchema
-    images: List[UploadFile] | None = None,  # Изменено на List[UploadFile]
+    plate: PlateCreateSchema,
+    images: List[UploadFile] | None = None,
 ):
-    plate = PlateModel(**plate.model_dump())  # Создание экземпляра PlateModel
+    plate = PlateModel(**plate.model_dump())
     db.add(plate)
 
     logger.info("Add plate: %s", plate)
@@ -40,14 +40,16 @@ async def add_plate(  # Изменено на add_plate
             status_code=400, detail="Failed to add plate: Integrity Error"
         )
     except Exception as e:
-        await db.rollback()  # Откат для всех других исключений
-        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+        await db.rollback()
+        raise HTTPException(
+            status_code=500, detail=f"Internal Server Error: {str(e)}"
+        )
 
     logger.info("Images: %s", images)
 
     # Проверка и сохранение изображения, если оно есть
     if images:
-        plate_dir = upload_dir / "plates" / str(plate.id)  # Изменено на plates
+        plate_dir = upload_dir / "plates" / str(plate.id)
         plate_dir.mkdir(parents=True, exist_ok=True)
 
         image_paths = []
@@ -78,7 +80,9 @@ async def add_plate(  # Изменено на add_plate
             except Exception as e:
                 logger.error(f"Error saving image: {str(e)}")
                 await db.rollback()
-                raise HTTPException(status_code=500, detail="Error saving image.")
+                raise HTTPException(
+                    status_code=500, detail="Error saving image."
+                )
 
         # Присвоим список путей изображений объекту модели пластины
         logger.debug("image_paths: %s", image_paths)
@@ -95,13 +99,15 @@ async def add_plate(  # Изменено на add_plate
     )
     result = await db.execute(query)
     plate = result.scalars().first()
-    return plate  # Возвращаем экземпляр PlateModel
+    return plate
 
 
 async def update_plate_in_db(
     db: AsyncSession, plate_id: int, plate: PlateUpdateSchema
 ):  # Изменено на update_plate_in_db
-    db_plate = await db.get(PlateModel, plate_id)  # Получение существующей записи
+    db_plate = await db.get(
+        PlateModel, plate_id
+    )  # Получение существующей записи
 
     try:
         if db_plate is None:

@@ -78,7 +78,9 @@ async def add_drill(
         )
     except Exception as e:
         await db.rollback()  # Откат для всех других исключений
-        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Internal Server Error: {str(e)}"
+        )
 
     loger.info("Images: %s", images)
 
@@ -118,7 +120,9 @@ async def add_drill(
             except Exception as e:
                 loger.error(f"Error saving image: {str(e)}")
                 await db.rollback()
-                raise HTTPException(status_code=500, detail="Error saving image.")
+                raise HTTPException(
+                    status_code=500, detail="Error saving image."
+                )
 
         # Присвоим список путей изображений объекту модели сверла
         loger.debug("image_paths: %s", image_paths)
@@ -133,7 +137,9 @@ async def add_drill(
     return drill
 
 
-async def update_drill_in_db(db: AsyncSession, drill_id: int, drill: DrillUpdateSchema):
+async def update_drill_in_db(
+    db: AsyncSession, drill_id: int, drill: DrillUpdateSchema
+):
     db_drill = await db.get(DrillModel, drill_id)
 
     try:

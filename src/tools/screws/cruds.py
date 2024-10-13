@@ -41,7 +41,9 @@ async def add_screw(  # Изменено на add_screw
         )
     except Exception as e:
         await db.rollback()  # Откат для всех других исключений
-        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Internal Server Error: {str(e)}"
+        )
 
     logger.info("Images: %s", images)
 
@@ -81,7 +83,9 @@ async def add_screw(  # Изменено на add_screw
             except Exception as e:
                 logger.error(f"Error saving image: {str(e)}")
                 await db.rollback()
-                raise HTTPException(status_code=500, detail="Error saving image.")
+                raise HTTPException(
+                    status_code=500, detail="Error saving image."
+                )
 
         # Присвоим список путей изображений объекту модели винта
         logger.debug("image_paths: %s", image_paths)
@@ -104,7 +108,9 @@ async def add_screw(  # Изменено на add_screw
 async def update_screw_in_db(
     db: AsyncSession, screw_id: int, screw: ScrewUpdateSchema
 ):  # Изменено на update_screw_in_db
-    db_screw = await db.get(ScrewModel, screw_id)  # Получение существующей записи
+    db_screw = await db.get(
+        ScrewModel, screw_id
+    )  # Получение существующей записи
 
     try:
         if db_screw is None:

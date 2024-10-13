@@ -5,7 +5,15 @@ from pygments.lexer import include
 from sqlalchemy import asc, desc
 from sqlalchemy.future import select
 from sqlalchemy.exc import NoResultFound
-from fastapi import FastAPI, Depends, Request, Form, APIRouter, Query, HTTPException
+from fastapi import (
+    FastAPI,
+    Depends,
+    Request,
+    Form,
+    APIRouter,
+    Query,
+    HTTPException,
+)
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,7 +22,13 @@ from typing import List, Optional, Annotated
 from config import settings
 from database import db_helper
 from osnastka.models import ToolModel
-from osnastka.schemas import STool, SToolBase, SToolCreate, SDeleteTool, SToolUpdate
+from osnastka.schemas import (
+    STool,
+    SToolBase,
+    SToolCreate,
+    SDeleteTool,
+    SToolUpdate,
+)
 from osnastka.cruds import (
     get_tools,
     add_tool,
@@ -145,7 +159,9 @@ async def update_tool_status(
     # Получаем инструмент по ID
     tool = await session.get(ToolModel, tool_id)
     if not tool:
-        return JSONResponse(status_code=404, content={"message": "Tool not found"})
+        return JSONResponse(
+            status_code=404, content={"message": "Tool not found"}
+        )
 
     # Обновляем статус
     tool.is_broken = is_broken
@@ -157,7 +173,8 @@ async def update_tool_status(
 # Удаление сверла
 @router.delete("/delete/{tool_id}")
 async def delete_tool_view(
-    tool_id: int, session: Annotated[AsyncSession, Depends(db_helper.session_getter)]
+    tool_id: int,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ):
     await delete_tool(session, tool_id)
     return RedirectResponse(url="/", status_code=303)

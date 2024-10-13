@@ -1,6 +1,11 @@
 from typing import Optional, Annotated
 from fastapi import Depends, Request, Response
-from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions, FastAPIUsers
+from fastapi_users import (
+    BaseUserManager,
+    IntegerIDMixin,
+    exceptions,
+    FastAPIUsers,
+)
 from fastapi_users.authentication import AuthenticationBackend
 
 from auth.auth import cookie_transport, get_jwt_strategy
@@ -62,7 +67,9 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
 
         return created_user
 
-    async def on_after_register(self, user: User, request: Optional[Request] = None):
+    async def on_after_register(
+        self, user: User, request: Optional[Request] = None
+    ):
         print(f"User {user.id} has registered.")
         # send_email_test(
         #     name=user.name,
@@ -88,7 +95,9 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        print(f"Verification requested for user {user.id}. Verification token: {token}")
+        print(
+            f"Verification requested for user {user.id}. Verification token: {token}"
+        )
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):

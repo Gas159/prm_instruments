@@ -1,14 +1,26 @@
 import logging
 from typing import List, Annotated, Optional
 
-from fastapi import Depends, APIRouter, HTTPException, Query, UploadFile, File, Form
+from fastapi import (
+    Depends,
+    APIRouter,
+    HTTPException,
+    Query,
+    UploadFile,
+    File,
+    Form,
+)
 from sqlalchemy import and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 from database import db_helper
-from tools.drills.cruds import add_drill, update_drill_in_db, delete_drill_from_bd
+from tools.drills.cruds import (
+    add_drill,
+    update_drill_in_db,
+    delete_drill_from_bd,
+)
 from tools.drills.models import DrillModel
 from tools.drills.schemas import (
     DrillSchema,
@@ -56,9 +68,7 @@ async def get_all(
 
     logger.debug("Get tools: %s", broken)
 
-    query = select(DrillModel).options(
-        selectinload(DrillModel.plates), selectinload(DrillModel.screws)
-    )
+    query = select(DrillModel).options(selectinload(DrillModel.plates), selectinload(DrillModel.screws))
     filters = []
     if broken is not None:
         logger.debug("Check broken: %s", broken)
@@ -92,11 +102,7 @@ async def create_drill(
     logger.info("Drill: %s %s", type(drill), drill)
     logger.info("Screws_ids: %s %s ", type(screws_ids), screws_ids)
     logger.info("Plates_ids: %s %s ", type(plates_ids), plates_ids)
-    logger.info(
-        "Images: %s %s ",
-        type(images),
-        images,
-    )
+    logger.info("Images: %s %s ", type(images), images)
     result = await add_drill(session, drill, screws_ids, plates_ids, images)
     return result
 
@@ -117,7 +123,8 @@ async def update_drill(
 # Удаление сверла
 @router.delete("/delete/{tool_id}", response_model=DrillSchema)
 async def delete_drill(
-    drill_id: int, session: Annotated[AsyncSession, Depends(db_helper.session_getter)]
+    drill_id: int,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> DrillSchema:
     result = await delete_drill_from_bd(session, drill_id)
     return result

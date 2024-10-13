@@ -14,7 +14,8 @@ from project_services.redis_tools import redis
 
 def model_to_dict(model):
     return {
-        column.name: getattr(model, column.name) for column in model.__table__.columns
+        column.name: getattr(model, column.name)
+        for column in model.__table__.columns
     }
 
 
@@ -61,9 +62,13 @@ async def get_all_companies(
     if cached_data:
         print(f"Loaded data from Redis: ")
         cached_data = json.loads(cached_data)
-        companies = [SCompany(**company) for company in cached_data["companies"]]
+        companies = [
+            SCompany(**company) for company in cached_data["companies"]
+        ]
 
-        return Page.create(companies, total=int(cached_data["total"]), params=params)
+        return Page.create(
+            companies, total=int(cached_data["total"]), params=params
+        )
 
     stmt = (
         select(CompanyModel)

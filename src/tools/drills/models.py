@@ -1,7 +1,15 @@
 from datetime import datetime
 from typing import List
 
-from sqlalchemy import DateTime, func, String, ForeignKey, Table, Integer, Column
+from sqlalchemy import (
+    DateTime,
+    func,
+    String,
+    ForeignKey,
+    Table,
+    Integer,
+    Column,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from project_services.base import Base
@@ -54,8 +62,12 @@ class DrillModel(Base):
 
     # Связь many-to-many с ScrewModel
     screws: Mapped[List["ScrewModel"]] = relationship(
-        "ScrewModel", secondary="drill_screw_association", back_populates="drills"
+        "ScrewModel",
+        secondary="drill_screw_association",
+        back_populates="drills",
     )
     plates: Mapped[List["PlateModel"]] = relationship(
-        "PlateModel", secondary="drill_plate_association", back_populates="drills"
+        "PlateModel",
+        secondary="drill_plate_association",
+        back_populates="drills",
     )

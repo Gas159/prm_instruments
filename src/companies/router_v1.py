@@ -15,7 +15,9 @@ async def get_one_company(
     # session db_helper.session_getter,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> SCompany:
-    company = await companies_crud.get_company(session=session, company_id=company_id)
+    company = await companies_crud.get_company(
+        session=session, company_id=company_id
+    )
     return company
 
 
@@ -24,7 +26,9 @@ async def get_all_companies(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     params: Annotated[Params, Depends()],
 ) -> Page[SCompany]:
-    companies = await companies_crud.get_all_companies(session=session, params=params)
+    companies = await companies_crud.get_all_companies(
+        session=session, params=params
+    )
     return companies
     # stmt = (
     #     select(CompanyModel).options(selectinload(CompanyModel.services))

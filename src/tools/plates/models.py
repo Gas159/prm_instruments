@@ -37,5 +37,7 @@ class PlateModel(Base):
     )
 
     drills: Mapped[List["DrillModel"]] = relationship(
-        "DrillModel", secondary="drill_plate_association", back_populates="plates"
+        "DrillModel",
+        secondary="drill_plate_association",
+        back_populates="plates",
     )

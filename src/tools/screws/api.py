@@ -77,7 +77,9 @@ async def get_all_crews(
 @router.post("/screw/create")
 async def create_screw(  # Изменено на create_screw
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    screw: Annotated[ScrewCreateSchema, Depends()],  # Изменено на ScrewCreateSchema
+    screw: Annotated[
+        ScrewCreateSchema, Depends()
+    ],  # Изменено на ScrewCreateSchema
     images: UploadFile = None,
 ) -> ScrewSchema:  # Изменено на ScrewSchema
     logger.info("Images: %s", images)

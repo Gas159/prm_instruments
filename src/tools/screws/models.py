@@ -28,5 +28,7 @@ class ScrewModel(Base):
     )
 
     drills: Mapped[List["DrillModel"]] = relationship(
-        "DrillModel", secondary="drill_screw_association", back_populates="screws"
+        "DrillModel",
+        secondary="drill_screw_association",
+        back_populates="screws",
     )

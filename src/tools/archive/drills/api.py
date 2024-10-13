@@ -39,7 +39,9 @@ async def get_one(
 async def get_all(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     broken: bool | None = Query(False),
-    diameter: List[float] | None = Query(None),  # Получение списка выбранных диаметров
+    diameter: List[float] | None = Query(
+        None
+    ),  # Получение списка выбранных диаметров
 ) -> List[DrillArchiveModel]:
 
     loger.debug("Get tools: %s", broken)
