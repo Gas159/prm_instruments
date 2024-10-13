@@ -1,5 +1,5 @@
 import logging
-from typing import List, Annotated
+from typing import List, Annotated, Optional
 
 from fastapi import Depends, APIRouter, HTTPException, Query, UploadFile, File, Form
 from sqlalchemy import and_
@@ -84,24 +84,20 @@ async def get_all(
 async def create_drill(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     drill: DrillCreateSchema | str = Form(...),
-    screws_ids: list[str] = None,
-    image_1: UploadFile | str = File(None),
-    image_2: UploadFile | str = File(None),
-    image_3: UploadFile | str = File(None),
-    # screws: List[ScrewSchema] = Depends(get_all_crews),
-    # screw_ids: list = Query(),
-    # images: List[UploadFile] | str = File(None),
-    # images: Annotated[UploadFile, File(...)] = None,
-    # images: List[UploadFile] = File(None, description="Multiple files as UploadFile"),
-    # images: List[UploadFile] | None | str = None,
-    # images:  Annotated[list[bytes], File()]
+    screws_ids: list[str] = Form([]),
+    plates_ids: list[str] = Form([]),
+    images: list[UploadFile] = File([]),
 ) -> DrillSchema:
 
     logger.info("Drill: %s %s", type(drill), drill)
-    logger.info("Screws_ids: %s %s", type(screws_ids), screws_ids)
-    images = [image_1, image_2, image_3]
-    logger.info("Images: %s %s", type(images), images)
-    result = await add_drill(session, drill, screws_ids, images)
+    logger.info("Screws_ids: %s %s ", type(screws_ids), screws_ids)
+    logger.info("Plates_ids: %s %s ", type(plates_ids), plates_ids)
+    logger.info(
+        "Images: %s %s ",
+        type(images),
+        images,
+    )
+    result = await add_drill(session, drill, screws_ids, plates_ids, images)
     return result
 
 

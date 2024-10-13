@@ -3,16 +3,21 @@ import json
 import logging
 import shutil
 from sqlite3 import IntegrityError
+from typing import List
 
 import starlette
-from fastapi import HTTPException
-from sqlalchemy import select
+from fastapi import HTTPException, Form, File, UploadFile
+from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from config import upload_dir
 from tools.archive.drills.models import DrillArchiveModel
-from tools.drills.models import DrillModel
+from tools.drills.models import (
+    DrillModel,
+    drill_screw_association,
+    drill_plate_association,
+)
 from tools.drills.schemas import DrillCreateSchema, DrillUpdateSchema, DrillSchema
 from tools.screws.models import ScrewModel
 
@@ -24,15 +29,10 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 
 async def add_drill(
     db: AsyncSession,
-    drill,
-    screws_ids,
-    images,
-    # images: Annotated[UploadFile, File(...)] = None,
-    # screw_ids: List[int] | None = Form(...),  # Важно: список ID винтов
-    # images: List[UploadFile] = File(None),  # Важно: загрузка файлов
-    # images: List[UploadFile] | None = None,
-    # images: List[UploadFile] | None = None,
-    # images: Annotated[List[UploadFile], File([])] | None = None,
+    drill: DrillCreateSchema | str = Form(...),
+    screws_ids: list[str] = Form([]),
+    plates_ids: list[str] = Form([]),
+    images: List[UploadFile] | None = File([]),
 ) -> DrillSchema:
 
     try:
@@ -42,58 +42,12 @@ async def add_drill(
         except json.JSONDecodeError as e:
             raise HTTPException(status_code=400, detail="Invalid JSON format") from e
 
-        drill = DrillModel(**drill_data)
-
-        if screws_ids and None not in screws_ids and "" not in screws_ids:
-            # screws_ids = [item for item in screws_ids if item is not None and item != ""]
-            logger.info("Screws: %s IDs: %s", screws_ids, type(screws_ids))
-
-            screws_ids = list(
-                int(i)
-                for i in screws_ids[0].split(",")
-                if i.strip().isdigit() and int(i) != 0
-            )
-            logger.info("Screws ids: %s %s", screws_ids, type(screws_ids))
-            screws_query = await db.execute(
-                select(ScrewModel).where(ScrewModel.id.in_(screws_ids))
-            )
-            screws = screws_query.scalars().all()
-
-            logger.info("lenScrews: %s, Len Idis: %s", len(screws), len(screws_ids))
-            if len(screws) != len(screws_ids):
-                raise HTTPException(
-                    status_code=400, detail="Some screws were not found."
-                )
-            drill.screws.extend(screws)
-
-        logger.info("Screws: %s", screws_ids)
-        logger.info("DrillScrews: %s", drill.screws)
-
-        db.add(drill)
-
-        try:
-            await db.commit()
-            await db.refresh(drill)
-
-        except IntegrityError:
-            await db.rollback()
-            raise HTTPException(
-                status_code=400, detail="Failed to add tool: Integrity Error"
-            )
-        except Exception as e:
-            await db.rollback()  # Откат для всех других исключений
-            raise HTTPException(
-                status_code=500, detail=f"Internal Server Error: {str(e)}"
-            )
-
-        # clear images
-        if images:
-            images = [image for image in images if image is not None and image != ""]
-            drill_dir = upload_dir / "drills" / str(drill.id)
+        new_drill = DrillModel(**drill_data)
+        if images and images[0] != "":
+            drill_dir = upload_dir / "drills" / str(new_drill.id)
             drill_dir.mkdir(parents=True, exist_ok=True)
 
             image_paths = []
-            logger.info("im here")
 
             for image in images:
                 if not isinstance(image, starlette.datastructures.UploadFile):
@@ -103,17 +57,7 @@ async def add_drill(
                     raise HTTPException(
                         status_code=400, detail="Uploaded file is not an image."
                     )
-                logger.info("im here")
 
-                # import urllib.parse
-                #
-                # file_first_name_escaped = urllib.parse.quote(file_first_name)
-                # file_ext_escaped = urllib.parse.quote(file_ext)
-
-                # file_name = (
-                #     f"http://45.9.73.213:8003/{file_first_name_escaped}.{file_ext_escaped}"
-                # )
-                # Генерация уникального имени файла
                 file_ext = image.filename.split(".")[-1]
                 file_first_name = image.filename.split(".")[0]
                 file_name = f"{file_first_name}.{file_ext}"
@@ -133,29 +77,85 @@ async def add_drill(
                     await db.rollback()
                     raise HTTPException(status_code=500, detail="Error saving image.")
 
-            # Присвоим список путей изображений объекту модели сверла
             logger.debug("image_paths: %s", image_paths)
-            drill.image_path = ", ".join(image_paths)
-            logger.debug("Drill.image_path: %s", drill.image_path)
+            new_drill.image_path = ", ".join(image_paths)
+            logger.debug("Drill.image_path: %s", new_drill.image_path)
 
-            # Повторный коммит для сохранения пути к файлу
-            await db.commit()
-            await db.refresh(drill)
+        db.add(new_drill)
+        await db.commit()
+        await db.refresh(new_drill)
 
-        query = (
-            select(DrillModel)
-            .where(DrillModel.id == drill.id)
-            .options(selectinload(DrillModel.screws), selectinload(DrillModel.plates))
+        if screws_ids and screws_ids[0] != "":
+            logger.info("Screws: %s IDs: %s", screws_ids, type(screws_ids))
+            screws_ids = list(
+                int(i) for i in screws_ids[0].split(",") if i.strip().isdigit()
+            )
+            logger.info("Screws ids: %s %s", screws_ids, type(screws_ids))
+            try:
+                drill_screw_entries = [
+                    {"drill_id": new_drill.id, "screw_id": screw_id}
+                    for screw_id in screws_ids
+                ]
+                logger.info("Drill_screw_entries: %s", drill_screw_entries)
+
+                await db.execute(
+                    insert(drill_screw_association).values(drill_screw_entries)
+                )
+            except Exception as e:
+                await db.rollback()
+                logger.error("Failed to add screws: %s", str(e))
+                raise HTTPException(
+                    status_code=500, detail=f"Failed to add screws. {str(e)}"
+                )
+
+            logger.info(
+                "Создано сверло: %s, добавлены винты: %s", new_drill.id, screws_ids
+            )
+
+        if plates_ids and plates_ids[0] != "":
+            logger.info("Plates: %s IDs: %s", plates_ids, type(plates_ids))
+            try:
+                plates_ids = list(
+                    int(i) for i in plates_ids[0].split(",") if i.strip().isdigit()
+                )
+                logger.info("Plates ids: %s %s", plates_ids, type(plates_ids))
+                drill_plate_entries = [
+                    {"drill_id": new_drill.id, "plate_id": plate_id}
+                    for plate_id in plates_ids
+                ]
+
+                await db.execute(
+                    insert(drill_plate_association).values(drill_plate_entries)
+                )
+
+            except Exception as e:
+                await db.rollback()
+                logger.error("Failed to add plates: %s", str(e))
+                raise HTTPException(
+                    status_code=500, detail=f"Failed to add plates. {str(e)}"
+                )
+
+        logger.info(
+            "Создано сверло: %s, добавлены винты: %s и пластины: %s",
+            new_drill.id,
+            screws_ids,
+            plates_ids,
         )
-        result = await db.execute(query)
-        drill = result.scalars().first()
+
+        await db.commit()
+
+        await db.refresh(new_drill, attribute_names=["screws", "plates"])
+
+        drill_schema = DrillSchema.model_validate(new_drill)
+
         logger.info("Cruds drill success: %s", drill)
+
+        return drill_schema
 
     except Exception as e:
         logger.error(f"Error from drill save: {str(e)}")
         await db.rollback()
         raise HTTPException(status_code=500, detail="Error from drill save: ")
-    return drill
 
 
 # async def get_tools(
