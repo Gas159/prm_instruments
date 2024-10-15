@@ -5,9 +5,9 @@ from fastapi_users.authentication import JWTStrategy
 cookie_transport = CookieTransport(
     cookie_name="parma_access",
     cookie_max_age=36000,
-    #cookie_secure=False,
+    # cookie_secure=False,
     cookie_httponly=True,
-    #cookie_samesite="none",
+    cookie_samesite="none",
 )
 
 
