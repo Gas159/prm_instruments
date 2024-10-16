@@ -3,7 +3,7 @@ from users.router_v1 import router as user_router
 from config import settings
 
 router = APIRouter(
-    prefix=settings.api.v1.prefix,
+    # prefix=settings.api.v1.prefix,
 )
 
 router.include_router(

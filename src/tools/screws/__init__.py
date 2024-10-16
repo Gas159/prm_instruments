@@ -3,7 +3,7 @@ from tools.screws.api import router as screw_router
 from config import settings
 
 router = APIRouter(
-    prefix=settings.api.prefix,
+    # prefix=settings.api.prefix,
 )
 
 router.include_router(
