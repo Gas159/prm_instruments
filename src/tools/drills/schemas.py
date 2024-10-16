@@ -31,7 +31,6 @@ class DrillSchema(DrillBaseSchema):
     # services: list[Service] = []
     id: int
     image_path: str | None = None
-
     create_at: datetime
     update_at: datetime
     screws: List["ScrewSchema"] | None = None
@@ -66,7 +65,9 @@ class DrillCreateSchema(DrillBaseSchema):
     ...
 
 
-class DrillUpdateSchema(DrillBaseSchema): ...
+class DrillUpdateSchema(DrillBaseSchema):
+    model_config = ConfigDict(from_attributes=True)
+    ...
 
 
 class DrillDeleteSchema(BaseModel):
