@@ -1,5 +1,5 @@
 import logging
-from typing import List, Annotated, Optional
+from typing import List, Annotated
 
 from fastapi import (
     Depends,
@@ -16,27 +16,15 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 from database import db_helper
-from tools.drills.cruds import (
-    add_drill,
-    update_drill_in_db,
-    delete_drill_from_bd,
-)
+from tools.drills.cruds import add_drill, update_drill_in_db, delete_drill_from_bd
 from tools.drills.models import DrillModel
-from tools.drills.schemas import (
-    DrillSchema,
-    DrillCreateSchema,
-    DrillUpdateSchema,
-)
+from tools.drills.schemas import DrillSchema, DrillCreateSchema
 
 router = APIRouter()
-
-
 logger = logging.getLogger(__name__)
 
 
 # Get ONE
-
-
 @router.get("/{tool_id}", response_model=DrillSchema)
 async def get_one(
     tool_id: int,
@@ -53,13 +41,17 @@ async def get_one(
     logger.info("Get tool: %s", tool)
     if not tool:
         raise HTTPException(status_code=404, detail="Tool not found")
-    return tool
+    return DrillSchema.model_validate(tool)
 
 
 # Get ALL
 
 
-@router.get("s", response_model=List[DrillSchema])
+@router.get(
+    "s",
+    response_model=List[DrillSchema],
+    # dependencies=[Depends(role_checker(RoleEnum.NOOB))],
+)
 async def get_all(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     broken: bool | None = Query(False),
@@ -73,7 +65,7 @@ async def get_all(
     if broken is not None:
         logger.debug("Check broken: %s", broken)
         filters.append(DrillModel.is_broken == broken)
-    #
+
     if diameter is not None:
         logger.debug("Check diameter: %s", diameter)
         filters.append(DrillModel.diameter.in_(diameter))
@@ -84,7 +76,8 @@ async def get_all(
 
     result = await session.execute(query.order_by(DrillModel.id.desc()))
     drills = result.scalars().all()
-    return list(drills)
+    validated_drills = [DrillSchema.model_validate(drill) for drill in drills]
+    return validated_drills
 
 
 # Create Drill
@@ -107,21 +100,24 @@ async def create_drill(
     return result
 
 
-@router.put("/update/{tool_id}", response_model=DrillSchema)
+@router.put("/update/{drill_id}", response_model=DrillSchema)
 async def update_drill(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     drill_id: int,
-    drill: DrillUpdateSchema,
-) -> DrillModel:
+    drill: DrillCreateSchema | str = Form(),
+    screws_ids: list[str] = Form([]),
+    plates_ids: list[str] = Form([]),
+    images: list[UploadFile] = File([]),
+) -> DrillSchema:
 
-    logger.info("Update tool: %s", drill)
+    logger.info("Update tool: %s %s %s", type(drill_id), drill_id, drill)
 
-    result = await update_drill_in_db(session, drill_id, drill)
+    result = await update_drill_in_db(session, drill_id, drill, screws_ids, plates_ids, images)
     return result
 
 
 # Удаление сверла
-@router.delete("/delete/{tool_id}", response_model=DrillSchema)
+@router.delete("/delete/{drill_id}", response_model=DrillSchema)
 async def delete_drill(
     drill_id: int,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
