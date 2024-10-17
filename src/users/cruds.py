@@ -3,6 +3,7 @@ from typing import Sequence
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from users.models import UserModel
 from users.schemas import UserCreateSchema
@@ -25,7 +26,7 @@ async def get_user(
 async def get_all_users(
     session: AsyncSession,
 ) -> Sequence[UserModel]:
-    stmt = select(UserModel).order_by(UserModel.id)
+    stmt = select(UserModel).order_by(UserModel.id).options(selectinload(UserModel.roles))
     res = await session.scalars(stmt)
     return res.all()
 

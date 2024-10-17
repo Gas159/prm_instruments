@@ -39,7 +39,7 @@ class UserModel(Base):
 
     roles: Mapped[List["RoleModel"]] = relationship(
         "RoleModel", secondary=user_role_association, back_populates="users"
-    )
+    )  # lazy="joined"
 
 
 # role: Mapped[RoleEnum] = mapped_column(SQLAlchemyEnum(RoleEnum), default=RoleEnum.NOOB, nullable=True)
