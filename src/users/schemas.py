@@ -22,14 +22,24 @@ class RoleCreateSchema(RoleBaseSchema):
 
 class UserBaseSchema(BaseModel):
     name: str
-    second_name: str
+    second_name: str | None
     email: str | None
-    roles: list[RoleBaseSchema] = []
+    roles: list["RoleSchema"] | None = None
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserSchema(UserBaseSchema):
     id: int
-    model_config = ConfigDict(from_attributes=True)
+
+    @model_serializer
+    def custom_serializer(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "second_name": self.second_name,
+            "email": self.email,
+            "roles": self.roles,
+        }
 
 
 class UserCreateSchema(UserBaseSchema):
