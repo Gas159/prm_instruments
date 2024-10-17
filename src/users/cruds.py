@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from users.models import UserModel
-from users.schemas import UserCreate
+from users.schemas import UserCreateSchema
 
 
 async def get_user(
@@ -32,7 +32,7 @@ async def get_all_users(
 
 async def create_user(
     session: AsyncSession,
-    user_create: UserCreate,
+    user_create: UserCreateSchema,
 ) -> UserModel:
     user = UserModel(**user_create.model_dump())
     session.add(user)

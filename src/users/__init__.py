@@ -8,7 +8,7 @@ router = APIRouter(
 
 router.include_router(
     user_router,
-    prefix=settings.api.v1.users,
+    # prefix=settings.api.v1.users,
     tags=["Users"],
     responses={404: {"description": "Not found"}},
 )
