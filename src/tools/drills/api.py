@@ -1,15 +1,7 @@
 import logging
 from typing import List, Annotated
 
-from fastapi import (
-    Depends,
-    APIRouter,
-    HTTPException,
-    Query,
-    UploadFile,
-    File,
-    Form,
-)
+from fastapi import Depends, APIRouter, HTTPException, Query, UploadFile, File, Form
 from sqlalchemy import and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select

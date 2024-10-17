@@ -9,21 +9,21 @@ class Base(DeclarativeBase):
     pass
 
 
-class RoleEnum(str, Enum):
-    NOOB = "Noob"
-    MASTER = "Master"
-    BOSS = "Boss"
+# class RoleEnum(str, Enum):
+#     NOOB = "Noob"
+#     MASTER = "Master"
+#     BOSS = "Boss"
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(default="Kto ti voin?:)")
-    registration_at: Mapped[int] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
-    role: Mapped[RoleEnum] = mapped_column(
-        SQLAlchemyEnum(RoleEnum), default=RoleEnum.NOOB, nullable=True
-    )
+    name: Mapped[str] = mapped_column(default="John")
+    second_name: Mapped[str] = mapped_column(default="Dou", nullable=True)
+    registration_at: Mapped[int] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    # role: Mapped[RoleEnum] = mapped_column(
+    #     SQLAlchemyEnum(RoleEnum), default=RoleEnum.NOOB, nullable=True
+    # )
 
     # second_name: Mapped[str]
 
