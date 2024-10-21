@@ -12,7 +12,7 @@ class UserRead(schemas.BaseUser[int]):
     name: str | None = None
     second_name: str | None = None
     email: EmailStr
-    role: list[RoleSchema] = []
+    roles: list["RoleSchema"] = []
     registration_at: datetime
     is_active: bool = True
     is_superuser: bool = False
@@ -25,7 +25,7 @@ class UserRead(schemas.BaseUser[int]):
             "name": self.name,
             "second_name": self.second_name,
             "email": self.email,
-            "role": self.role,
+            "roles": self.roles,
             "registration_at": self.registration_at,
             "is_active": self.is_active,
             "is_superuser": self.is_superuser,

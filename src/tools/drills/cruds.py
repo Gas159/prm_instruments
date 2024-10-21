@@ -152,11 +152,14 @@ async def update_drill_in_db(
             db_drill.image_path = ", ".join(await save_images(images, drill_dir))
 
         await db.commit()
-        await db.refresh(db_drill, attribute_names=["screws", "plates", "image_path"])
-        # await db.refresh(db_drill)
+        # await db.refresh(db_drill, attribute_names=["screws", "plates"])
+        await db.refresh(db_drill)
         logger.info("Создано сверло: %s, добавлены винты: %s и пластины: %s", db_drill.id, screws_ids, plates_ids)
         logger.info("Update drills: %s", drill)
         return DrillSchema.model_validate(db_drill)
+        # drill_dict = db_drill.__dict__
+        # logger.info("Drill dict: %s", drill_dict)
+        # return DrillSchema.model_validate(drill_dict)
 
     except IntegrityError:
         await db.rollback()

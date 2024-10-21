@@ -53,12 +53,8 @@ class DrillModel(Base):
 
     # Связь many-to-many с ScrewModel
     screws: Mapped[List["ScrewModel"]] = relationship(
-        "ScrewModel",
-        secondary="drill_screw_association",
-        back_populates="drills",
+        "ScrewModel", secondary="drill_screw_association", back_populates="drills", lazy="joined"
     )
     plates: Mapped[List["PlateModel"]] = relationship(
-        "PlateModel",
-        secondary="drill_plate_association",
-        back_populates="drills",
+        "PlateModel", secondary="drill_plate_association", back_populates="drills", lazy="joined"
     )

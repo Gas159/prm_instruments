@@ -34,21 +34,21 @@ class ScrewSchema(ScrewBaseSchema):
 
     model_config = ConfigDict(from_attributes=True)
 
-    @model_serializer
-    def custom_serializer(self):
-        # Возвращаем поля в нужном порядке
-        return {
-            "id": self.id,
-            "type": self.type,
-            "length": self.length,
-            "thread": self.thread,
-            "step_of_thread": self.step_of_thread,
-            "company": self.company,
-            "description": self.description,
-            "image_path": self.image_path,
-            "create_at": self.create_at,
-            "update_at": self.update_at,
-        }
+    # @model_serializer
+    # def custom_serializer(self):
+    #     # Возвращаем поля в нужном порядке
+    #     return {
+    #         "id": self.id,
+    #         "type": self.type,
+    #         "length": self.length,
+    #         "thread": self.thread,
+    #         "step_of_thread": self.step_of_thread,
+    #         "company": self.company,
+    #         "description": self.description,
+    #         "image_path": self.image_path,
+    #         "create_at": self.create_at,
+    #         "update_at": self.update_at,
+    #     }
 
 
 class ScrewCreateSchema(ScrewBaseSchema):
