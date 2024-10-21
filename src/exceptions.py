@@ -12,21 +12,19 @@ async def internal_server_error(request: Request, exc: Exception):
             "request_url": str(request.url),  # Только URL запроса
             "request_method": request.method,
             "detail": str(exc),
-            "traceback": str(exc.__traceback__),
+            # "traceback": str(exc.__traceback__),
             "request": str(request),
             "body": str(request.body),
-            "headers": str(request.headers),
+            # "headers": str(request.headers),
             "cookies": str(request.cookies),
             "query_params": str(request.query_params),
-            "path_params": str(request.path_params),
+            # "path_params": str(request.path_params),
         },
     )
 
 
 # @main_app.exception_handler(RequestValidationError)
-async def validation_exception_handler(
-    request: Request, exc: RequestValidationError
-):
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
     return ORJSONResponse(
         status_code=422,
         content={

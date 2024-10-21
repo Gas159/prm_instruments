@@ -1,7 +1,11 @@
 import logging
 from enum import Enum
+from typing import Annotated
 
 from fastapi import APIRouter, HTTPException
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 from starlette import status
 
 from auth.manager import (
@@ -12,6 +16,9 @@ from auth.models import User
 from auth.schemas import UserRead, UserCreate, UserUpdate
 
 from fastapi import Depends, Response
+
+from database import db_helper
+from users.models import UserModel
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +41,7 @@ router.include_router(
     prefix="/users",
     tags=["users"],
 )
-
+# session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 #
 # router.include_router(
 #     fastapi_users.get_reset_password_router(),
@@ -49,65 +56,49 @@ router.include_router(
 current_active_user = fastapi_users.current_user(active=True)
 
 
+async def current_active_user_with_roles(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: User = Depends(current_active_user),
+):
+    # Используем joinedload для жадной загрузки ролей
+    user_id = user.id
+    logger.info("Current user: %s", user_id)
+    query = select(UserModel).options(joinedload(UserModel.roles)).where(UserModel.id == user_id)
+    user = await session.execute(query)
+    result = user.scalars().first()
+    logger.info("Current user: %s", result.roles)
+    return result
+
+
 @router.get("/current_user")
-def current_user(user: User = Depends(current_active_user)):
-    return f"Hello, {user.email}"
+def current_user(user: UserModel = Depends(current_active_user_with_roles)):
+    logger.info("Checking role:  %s", user.roles)
+
+    return f"Hello, {user.email}, role: {[role.role for role in user.roles]}"
 
 
-class RoleEnum(Enum):
-    NOOB = "noob"
-    MASTER = "master"
-    BOSS = "boss"
+# class RoleEnum(Enum):
+#     NOOB = "noob"
+#     MASTER = "master"
+#     BOSS = "boss"
 
 
-def role_checker(required_role: RoleEnum):
-    def role_check(user: User = Depends(current_active_user)):
-        logger.info(
-            "Checking role: %s against required: %s,  %s == %s",
-            user.role,
-            required_role,
-            user.role.name,
-            required_role.name,
-        )
-        logger.info("Checking role: %s against required: %s", type(user.role), type(required_role))
+def role_checker(required_role: str):
+    def role_check(user: UserModel = Depends(current_active_user_with_roles)):
+        if required_role not in [role.role for role in user.roles]:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
 
-        if isinstance(user.role, str):
-            logger.info("eto string %s", user.role)
+        return True
 
-        if isinstance(user.role, str):
-            try:
-                user.role = RoleEnum[user.role.upper()]
-            except KeyError:
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Неверная роль пользователя: {user.role}"
-                )
-
-        if not isinstance(user.role, RoleEnum):
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Неверный тип роли пользователя1."
-            )
-        if not isinstance(required_role, RoleEnum):
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Неверный тип роли пользователя2."
-            )
-        logger.info(
-            "Checking user.role != req_role: == %s and check user_role != RoleEnum.BOSS: == %s",
-            user.role != required_role,
-            user.role != RoleEnum.BOSS,
-        )
-        if user.role != required_role and user.role != RoleEnum.BOSS:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Доступ запрещен: недостаточно прав.")
-        return user
-
-    return role_check
+    # return role_check
 
 
-@router.get("/current_user_role")
-async def current_user_role(user: User = Depends(current_active_user)):
-    logger.info("Checking role: %s %s", user.role, user.email)
-    # user_role = role_checker(user.role)
-    user_str = user.role.name
-    return {"message": f"Hello {user.email}, you are {user_str}!"}
+# @router.get("/current_user_role")
+# async def current_user_role(user: User = Depends(current_active_user)):
+#     logger.info("Checking role: %s %s", user.role, user.email)
+#     # user_role = role_checker(user.role)
+#     user_str = user.role.name
+#     return {"message": f"Hello {user.email}, you are {user_str}!"}
 
 
 #

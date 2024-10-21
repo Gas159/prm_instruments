@@ -7,13 +7,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
+from auth.app import role_checker
 from database import db_helper
+from loggind_config import setup_logging
 from tools.drills.cruds import add_drill, update_drill_in_db, delete_drill_from_bd
 from tools.drills.models import DrillModel
 from tools.drills.schemas import DrillSchema, DrillCreateSchema
 
-router = APIRouter()
+setup_logging()
 logger = logging.getLogger(__name__)
+
+router = APIRouter()
 
 
 # Get ONE
@@ -42,7 +46,8 @@ async def get_one(
 @router.get(
     "s",
     response_model=List[DrillSchema],
-    # dependencies=[Depends(role_checker(RoleEnum.NOOB))],
+    # dependencies=[Depends(role_checker("admin"))],
+    dependencies=[Depends(lambda: role_checker("admin"))],
 )
 async def get_all(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
