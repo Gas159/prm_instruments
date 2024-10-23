@@ -47,7 +47,7 @@ async def get_one(
     "s",
     response_model=List[DrillSchema],
     # dependencies=[Depends(role_checker("admin"))],
-    dependencies=[Depends(lambda: role_checker("admin"))],
+    # dependencies=[Depends(lambda: role_checker("admin"))],
 )
 async def get_all(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
