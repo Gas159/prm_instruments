@@ -81,7 +81,7 @@ class AuthJWT(BaseModel):
     public_key_path: Path = BASE_DIR / "auth_jwt" / "certs" / "jwt-public.pem"
     # public_key_path: Path = BASE_DIR / "auth_jwt/certs/jwt-public.pem"
     algorithm: str = "RS256"
-    access_token_expires_minutes: int = 15
+    access_token_expires_minutes: int = 3600
     # access_token_expires_minutes: int = 3
 
 
