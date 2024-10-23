@@ -10,17 +10,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import upload_dir
 from database import db_helper
-from tools.archive.drills.cruds import loger
 from tools.archive.drills.models import DrillArchiveModel
-from tools.drills.models import (
-    DrillModel,
-    drill_screw_association,
-    drill_plate_association,
-)
-from tools.drills.schemas import (
-    DrillCreateSchema,
-    DrillSchema,
-)
+from tools.drills.models import DrillModel, drill_screw_association, drill_plate_association
+from tools.drills.schemas import DrillCreateSchema, DrillSchema
 from utils.add_associations import add_associations
 from utils.save_images import save_images
 
