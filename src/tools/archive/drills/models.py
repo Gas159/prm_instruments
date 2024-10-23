@@ -1,10 +1,27 @@
 from datetime import datetime
+from typing import List
 
+from sqlalchemy import DateTime, func, String, Table, Integer, ForeignKey, Column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from sqlalchemy import FLOAT, DateTime, func, String
-from sqlalchemy.orm import Mapped, mapped_column
 from project_services.base import Base
-from project_services.mixins.int_id_pk import IntPkMixin
+from tools.plates.models import PlateModel
+from tools.screws.models import ScrewModel
+
+# # Промежуточная таблица для связи ScrewModel и DrillModel
+# drill_screw_archive_association = Table(
+#     "drill_screw_archive_association",
+#     Base.metadata,
+#     Column("drill_id", Integer, ForeignKey("drill.id"), primary_key=True),
+#     Column("screw_id", Integer, ForeignKey("screw.id"), primary_key=True),
+# )
+#
+# drill_plate_archive_association = Table(
+#     "drill_plate_archive_association",
+#     Base.metadata,
+#     Column("drill_id", Integer, ForeignKey("drill.id"), primary_key=True),
+#     Column("plate_id", Integer, ForeignKey("plate.id"), primary_key=True),
+# )
 
 
 class DrillArchiveModel(Base):
@@ -25,11 +42,18 @@ class DrillArchiveModel(Base):
     # new
     storage: Mapped[str] = mapped_column(default="Cклад", nullable=True)
     description: Mapped[str] = mapped_column(default="?", nullable=True)
-    create_at: Mapped[int] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
-    update_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
-    )
+    create_at: Mapped[int] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    update_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     # services: Mapped[List["ServiceModel"]] = relationship(
     extend_existing = True  # Позволяет обновить существующую таблицу
+
+    # # Связь many-to-many с ScrewModel
+    # # Явное указание primaryjoin и secondaryjoin
+    # screws: Mapped[List["ScrewModel"]] = relationship(
+    #     "ScrewModel", secondary="drill_screw_archive_association", back_populates="drills_archive", lazy="joined"
+    # )
+    #
+    # # Связь many-to-many с PlateModel
+    # plates: Mapped[List["PlateModel"]] = relationship(
+    #     "PlateModel", secondary="drill_plate_archive_association", back_populates="drills_archive", lazy="joined"
+    # )

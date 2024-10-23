@@ -10,7 +10,8 @@ from sqlalchemy import select
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from tools.drills.models import DrillModel, DrillArchiveModel
+from tools.archive.drills.models import DrillArchiveModel
+from tools.drills.models import DrillModel
 from tools.drills.schemas import DrillCreateSchema, DrillUpdateSchema
 
 loger = logging.getLogger(__name__)
@@ -73,14 +74,10 @@ async def add_drill(
 
     except IntegrityError:
         await db.rollback()
-        raise HTTPException(
-            status_code=400, detail="Failed to add tool: Integrity Error"
-        )
+        raise HTTPException(status_code=400, detail="Failed to add tool: Integrity Error")
     except Exception as e:
         await db.rollback()  # Откат для всех других исключений
-        raise HTTPException(
-            status_code=500, detail=f"Internal Server Error: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
     loger.info("Images: %s", images)
 
@@ -99,9 +96,7 @@ async def add_drill(
             if image is None:
                 continue
             if not image.content_type.startswith("image/"):
-                raise HTTPException(
-                    status_code=400, detail="Uploaded file is not an image."
-                )
+                raise HTTPException(status_code=400, detail="Uploaded file is not an image.")
 
             # Генерация уникального имени файла
             file_ext = image.filename.split(".")[-1]
@@ -120,9 +115,7 @@ async def add_drill(
             except Exception as e:
                 loger.error(f"Error saving image: {str(e)}")
                 await db.rollback()
-                raise HTTPException(
-                    status_code=500, detail="Error saving image."
-                )
+                raise HTTPException(status_code=500, detail="Error saving image.")
 
         # Присвоим список путей изображений объекту модели сверла
         loger.debug("image_paths: %s", image_paths)
@@ -137,9 +130,7 @@ async def add_drill(
     return drill
 
 
-async def update_drill_in_db(
-    db: AsyncSession, drill_id: int, drill: DrillUpdateSchema
-):
+async def update_drill_in_db(db: AsyncSession, drill_id: int, drill: DrillUpdateSchema):
     db_drill = await db.get(DrillModel, drill_id)
 
     try:
@@ -181,11 +172,7 @@ async def delete_drill_from_bd(db: AsyncSession, drill_id: int):
     loger.info("Delete drills: %s %s", db_drill, db_drill.__dict__.items())
 
     try:
-        drill_data = {
-            key: value
-            for key, value in db_drill.__dict__.items()
-            if not key.startswith("_")
-        }
+        drill_data = {key: value for key, value in db_drill.__dict__.items() if not key.startswith("_")}
         drill_archive = DrillArchiveModel(**drill_data)
         db.add(drill_archive)
         await db.delete(db_drill)
@@ -196,8 +183,6 @@ async def delete_drill_from_bd(db: AsyncSession, drill_id: int):
     except Exception as e:
         await db.rollback()
         loger.error("Failed to archive and delete drills: %s", str(e))
-        raise HTTPException(
-            status_code=500, detail="Failed to archive and delete drills.g"
-        )
+        raise HTTPException(status_code=500, detail="Failed to archive and delete drills.g")
 
     return db_drill

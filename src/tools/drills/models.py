@@ -1,15 +1,7 @@
 from datetime import datetime
 from typing import List
 
-from sqlalchemy import (
-    DateTime,
-    func,
-    String,
-    ForeignKey,
-    Table,
-    Integer,
-    Column,
-)
+from sqlalchemy import DateTime, func, String, ForeignKey, Table, Integer, Column
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from project_services.base import Base
