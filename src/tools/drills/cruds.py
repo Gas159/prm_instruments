@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import upload_dir
 from database import db_helper
+from tools.archive.drills.cruds import loger
 from tools.archive.drills.models import DrillArchiveModel
 from tools.drills.models import (
     DrillModel,
@@ -171,8 +172,13 @@ async def update_drill_in_db(
 async def delete_drill_from_bd(db: AsyncSession, drill_id: int):
 
     query = select(DrillModel).where(DrillModel.id == drill_id)
+    logger.info("query: %s", query)
     result = await db.execute(query)
-    db_drill = result.scalar_one_or_none()
+    logger.info("result: %s", result)
+
+    # db_drill = result.first()
+    db_drill = result.unique().scalar_one_or_none()
+    logger.info("db_drill: %s %s", type(db_drill), db_drill)
 
     if db_drill is None:
         raise HTTPException(status_code=404, detail="Drill not found")
@@ -180,7 +186,13 @@ async def delete_drill_from_bd(db: AsyncSession, drill_id: int):
     logger.info("Delete drills: %s %s", db_drill, db_drill.__dict__.items())
 
     try:
-        drill_data = {key: value for key, value in db_drill.__dict__.items() if not key.startswith("_")}
+        # Исключаем связь с винтами и пластинами при архивировании сверла
+        drill_data = {
+            key: value
+            for key, value in db_drill.__dict__.items()
+            if not key.startswith("_") and key not in ["screws", "plates"]
+        }
+        # drill_data = {key: value for key, value in db_drill.__dict__.items() if not key.startswith("_")}
         drill_archive = DrillArchiveModel(**drill_data)
         db.add(drill_archive)
         await db.delete(db_drill)

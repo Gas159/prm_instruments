@@ -4,7 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel, ConfigDict
 
 
-class DrillBaseSchema(BaseModel):
+class DrillArchiveBaseSchema(BaseModel):
     name: str = "test"
     diameter: float | None = 0
     length_xD: float | None = 0
@@ -21,7 +21,7 @@ class DrillBaseSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class DrillSchema(DrillBaseSchema):
+class DrillArchiveSchema(DrillArchiveBaseSchema):
     # services: list[Service] = []
     id: int
     image_path: Optional[str] = None
@@ -30,7 +30,7 @@ class DrillSchema(DrillBaseSchema):
     update_at: datetime
 
 
-class DrillCreateSchema(DrillBaseSchema):
+class DrillCreateSchema(DrillArchiveBaseSchema):
     # name: str
     # diameter: float
     # length_xD: float | None = None
@@ -47,7 +47,7 @@ class DrillCreateSchema(DrillBaseSchema):
     model_config = ConfigDict(from_attributes=True)
 
 
-class DrillUpdateSchema(DrillBaseSchema): ...
+class DrillUpdateSchema(DrillArchiveBaseSchema): ...
 
 
 class DrillDeleteSchema(BaseModel):
