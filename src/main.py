@@ -17,6 +17,7 @@ from tools.archive.drills import router as router_drills_archive
 from tools.screws import router as screw_router
 from tools.plates import router as plate_router
 from tools.drills.cruds import UPLOAD_DIR
+from auth_jwt.jwt_auth import router as auth_jwt_router
 
 main_app = FastAPI(
     lifespan=lifespan,
@@ -35,7 +36,8 @@ main_app.mount(
     name="uploaded_images",
 )
 for router in [
-    auth_router,
+    auth_jwt_router,
+    # auth_router,
     users_router,
     router_drills,
     router_drills_archive,

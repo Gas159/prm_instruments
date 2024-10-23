@@ -1,13 +1,12 @@
 import logging
 from pathlib import Path
-
 from pydantic import BaseModel
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-import logging
-
+# import logging
+#
 # Настройка логирования
 logging.basicConfig(
     level=logging.DEBUG,  # Общий уровень логирования
@@ -19,6 +18,9 @@ logging.basicConfig(
 )
 logging.getLogger("multipart").setLevel(logging.INFO)
 
+BASE_DIR = Path(__file__).parent
+
+DB_PATH = BASE_DIR / "database.db"
 
 upload_dir = Path("uploaded_images")
 
@@ -73,6 +75,16 @@ class RedisConfig(BaseModel):
     url: str = "redis://localhost:6379"
 
 
+class AuthJWT(BaseModel):
+    private_key_path: Path = BASE_DIR / "auth_jwt/certs/jwt-private.pem"
+    # private_key_path: Path = BASE_DIR / "auth_jwt" / "certs" / "jwt-private.pem"
+    public_key_path: Path = BASE_DIR / "auth_jwt" / "certs" / "jwt-public.pem"
+    # public_key_path: Path = BASE_DIR / "auth_jwt/certs/jwt-public.pem"
+    algorithm: str = "RS256"
+    access_token_expires_minutes: int = 15
+    # access_token_expires_minutes: int = 3
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -81,10 +93,11 @@ class Settings(BaseSettings):
         env_nested_delimiter="__",
         env_prefix="FASTAPI__",
     )
-    run: RunConfig = RunConfig()
-    api: ApiPrefix = ApiPrefix()
     db: DatabaseConfig
     celery: CeleryConfig
+    auth_jwt: AuthJWT = AuthJWT()
+    run: RunConfig = RunConfig()
+    api: ApiPrefix = ApiPrefix()
     redis: RedisConfig = RedisConfig()
 
 
@@ -92,3 +105,10 @@ settings = Settings()
 print(settings.db.url)
 print(settings.db.echo)
 print(settings.db.echo_pool)
+print(settings.auth_jwt.private_key_path)
+print(BASE_DIR)
+if not settings.auth_jwt.private_key_path.exists():
+    raise FileNotFoundError(f"Private key not found at {settings.auth_jwt.private_key_path}")
+
+if not settings.auth_jwt.public_key_path.exists():
+    raise FileNotFoundError(f"Public key not found at {settings.auth_jwt.public_key_path}")
