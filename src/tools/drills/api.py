@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
-from auth.app import role_checker
+# from auth.app import role_checker
 from database import db_helper
 from loggind_config import setup_logging
 from tools.drills.cruds import add_drill, update_drill_in_db, delete_drill_from_bd

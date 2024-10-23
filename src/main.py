@@ -11,7 +11,7 @@ from project_services.llifespan import lifespan
 
 from users import router as users_router
 
-from auth.app import router as auth_router
+# from auth.app import router as auth_router
 from tools.drills import router as router_drills
 from tools.archive.drills import router as router_drills_archive
 from tools.screws import router as screw_router
