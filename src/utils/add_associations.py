@@ -1,9 +1,17 @@
 import logging
 from fastapi import HTTPException
+from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
 
 logger = logging.getLogger(__name__)
+
+
+async def remove_associations(db: AsyncSession, association_table, drill_id):
+    # Удаляем все ассоциации для сверла
+    delete_stmt = delete(association_table).where(association_table.c.drill_id == drill_id)
+    await db.execute(delete_stmt)
+    await db.commit()
 
 
 # Вспомогательная функция для добавления ассоциаций

@@ -5,7 +5,7 @@ from sqlite3 import IntegrityError
 from typing import List, Annotated
 
 from fastapi import HTTPException, Form, File, UploadFile, Depends
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import upload_dir
@@ -13,7 +13,7 @@ from database import db_helper
 from tools.archive.drills.models import DrillArchiveModel
 from tools.drills.models import DrillModel, drill_screw_association, drill_plate_association
 from tools.drills.schemas import DrillCreateSchema, DrillSchema
-from utils.add_associations import add_associations
+from utils.add_associations import add_associations, remove_associations
 from utils.save_images import save_images
 
 logger = logging.getLogger(__name__)
@@ -131,10 +131,12 @@ async def update_drill_in_db(
 
         if screws_ids and screws_ids[0] != "":
             logger.info("Screws: %s IDs: %s", screws_ids, type(screws_ids))
+            await remove_associations(db, drill_screw_association, drill_id)
             await add_associations(db, drill_screw_association, db_drill.id, screws_ids, "screw_id")
 
         if plates_ids and plates_ids[0] != "":
             logger.info("Plates: %s IDs: %s", plates_ids, type(plates_ids))
+            await remove_associations(db, drill_plate_association, drill_id)
             await add_associations(db, drill_plate_association, db_drill.id, plates_ids, "plate_id")
 
         logger.info("Images: %s", images)
