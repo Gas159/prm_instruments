@@ -1,7 +1,7 @@
 import logging
 
 from fastapi import APIRouter, Depends, Form, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, OAuth2PasswordBearer
 from jwt import InvalidTokenError
 
 from auth_jwt.jwt_utils import hash_password, encode_jwt, validate_password, decode_jwt
@@ -12,7 +12,8 @@ from tools.drills.cruds import logger
 # setup_logging()
 # logger = logging.getLogger(__name__)
 
-http_bearer = HTTPBearer()
+# http_bearer = HTTPBearer()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth_jwt/login")
 
 router = APIRouter(prefix="/auth_jwt", tags=["JWT"])
 
@@ -42,11 +43,12 @@ user_db: dict[str, UserAuthJWTSchema] = {
 
 def get_current_token_payload(
     # token: str = Depends(http_bearer),  # читаем токен из заголовка, возрващает scheme='Bearer' credentials='123
-    credentials: HTTPAuthorizationCredentials = Depends(http_bearer),  # читаем токен из заголовка
+    # credentials: HTTPAuthorizationCredentials = Depends(http_bearer),  # читаем токен из заголовка
+    token: str = Depends(oauth2_scheme),  # читаем токен с помощью OAuth2passwordBearer
 ) -> UserAuthJWTSchema:
 
-    logger.debug("Token: %s", credentials)  # {'scheme': 'Bearer', 'credentials': '123'}
-    token = credentials.credentials
+    # logger.debug("Token: %s", credentials)  # {'scheme': 'Bearer', 'credentials': '123'}
+    # token = credentials.credentials
     logger.debug("Token: %s", token)  # 123 - access token
     try:
         payload = decode_jwt(token=token)
