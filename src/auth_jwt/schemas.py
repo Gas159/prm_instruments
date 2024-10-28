@@ -11,6 +11,7 @@ class UserAuthJWTSchema(BaseModel):
     email: EmailStr | None = None
 
 
-class TokenInfo(BaseModel):
+class TokenInfoSchema(BaseModel):
     access_token: str
-    token_type: str
+    refresh_token: str
+    token_type: str = "Bearer"

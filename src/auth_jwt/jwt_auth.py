@@ -1,21 +1,22 @@
-import logging
-
 from fastapi import APIRouter, Depends, Form, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, HTTPBearer
 from jwt import InvalidTokenError
 
-from auth_jwt.jwt_utils import hash_password, encode_jwt, validate_password, decode_jwt
-from auth_jwt.schemas import UserAuthJWTSchema, TokenInfo
-from loggind_config import setup_logging
+from auth_jwt.helpers import create_access_token, create_refresh_token
+from auth_jwt.jwt_utils import hash_password, validate_password, decode_jwt
+from auth_jwt.schemas import UserAuthJWTSchema, TokenInfoSchema
+
 from tools.drills.cruds import logger
 
-# setup_logging()
-# logger = logging.getLogger(__name__)
 
-# http_bearer = HTTPBearer()
+http_bearer = HTTPBearer(auto_error=False)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth_jwt/login")
 
-router = APIRouter(prefix="/auth_jwt", tags=["JWT"])
+router = APIRouter(
+    prefix="/auth_jwt",
+    tags=["JWT"],
+    dependencies=[Depends(http_bearer)],
+)
 
 
 john = UserAuthJWTSchema(
@@ -92,19 +93,15 @@ def validate_auth_user(
     return user
 
 
-@router.post("/login", response_model=TokenInfo)
+@router.post("/login", response_model=TokenInfoSchema)
 def auth_user_login_jwt(
     user: UserAuthJWTSchema = Depends(validate_auth_user),
 ):
-    jwt_payload = {
-        "id": user.id,
-        "sub": user.username,
-        "username": user.username,
-        "email": user.email,
-        "active": user.active,
-    }
-    token = encode_jwt(jwt_payload)
-    return {"access_token": token, "token_type": "Bearer"}
+
+    access_token = create_access_token(user)
+    refresh_token = create_refresh_token(user)
+    # return {"access_token": token, "token_type": "Bearer"}
+    return TokenInfoSchema(access_token=access_token, refresh_token=refresh_token, token_type="Bearer")
 
 
 @router.get("/users/me")
@@ -112,6 +109,4 @@ def auth_user_check_self_info(
     user: UserAuthJWTSchema = Depends(get_current_active_auth_user),
     payload: dict = Depends(get_current_token_payload),
 ):
-    iat = payload.get("iat")
-    return user, {"logged_in_at": iat, "username": user.username, "email": user.email, "active": user.active}
-    # return user
+    return (user, payload)
