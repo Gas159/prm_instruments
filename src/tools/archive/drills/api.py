@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 # Get ONE
-@router.get("/drill_archive/{tool_id}", response_model=DrillArchiveSchema)
+@router.get("/archive/drill/{tool_id}", response_model=DrillArchiveSchema)
 async def get_one(
     tool_id: int,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
@@ -35,29 +35,29 @@ async def get_one(
 
 
 # Get ALL
-@router.get("/drills_archive", response_model=List[DrillArchiveSchema])
+@router.get("/archive/drills", response_model=List[DrillArchiveSchema])
 async def get_all(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    broken: bool | None = Query(False),
-    diameter: List[float] | None = Query(None),  # Получение списка выбранных диаметров
+    # broken: bool | None = Query(False),
+    # diameter: List[float] | None = Query(None),  # Получение списка выбранных диаметров
 ) -> List[DrillArchiveModel]:
 
-    logger.debug("Get tools: %s", broken)
+    # logger.debug("Get tools: %s", broken)
 
     query = select(DrillArchiveModel)
     # Применение фильтров, если они заданы
-    filters = []
-    if broken is not None:
-        logger.debug("Check broken: %s", broken)
-        filters.append(DrillArchiveModel.is_broken == broken)
+    # filters = []
+    # if broken is not None:
+    #     logger.debug("Check broken: %s", broken)
+    #     filters.append(DrillArchiveModel.is_broken == broken)
+    # #
+    # if diameter is not None:
+    #     logger.debug("Check diameter: %s", diameter)
+    #     filters.append(DrillArchiveModel.diameter.in_(diameter))
     #
-    if diameter is not None:
-        logger.debug("Check diameter: %s", diameter)
-        filters.append(DrillArchiveModel.diameter.in_(diameter))
-
-    # Применение фильтров к запросу
-    if filters:
-        query = query.where(and_(*filters))
+    # # Применение фильтров к запросу
+    # if filters:
+    #     query = query.where(and_(*filters))
 
     result = await session.execute(query)
     drills = result.scalars().all()
