@@ -8,21 +8,19 @@ logger = logging.getLogger(__name__)
 
 
 # Вспомогательная функция для обработки изображений
-async def save_images(images, drill_dir):
+async def save_images(images, dir):
     image_paths = []
     for image in images:
         if not isinstance(image, starlette.datastructures.UploadFile):
             logger.warning("Skipping non-UploadFile object: %s", type(image))
             continue
         if not image.content_type.startswith("image/"):
-            raise HTTPException(
-                status_code=400, detail="Uploaded file is not an image."
-            )
+            raise HTTPException(status_code=400, detail="Uploaded file is not an image.")
 
         file_ext = image.filename.split(".")[-1]
         file_first_name = image.filename.split(".")[0]
         file_name = f"{file_first_name}.{file_ext}"
-        file_path = drill_dir / file_name
+        file_path = dir / file_name
 
         # Сохранение файла на диск
         try:

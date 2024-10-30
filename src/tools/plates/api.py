@@ -1,7 +1,7 @@
 import logging
 from typing import List, Annotated
 
-from fastapi import Depends, APIRouter, HTTPException, UploadFile
+from fastapi import Depends, APIRouter, HTTPException, UploadFile, File, Form, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
@@ -30,11 +30,7 @@ async def get_one_plate(
     plate_id: int,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> PlateModel:
-    query = (
-        select(PlateModel)
-        .options(selectinload(PlateModel.drills))
-        .where(PlateModel.id == plate_id)
-    )
+    query = select(PlateModel).options(selectinload(PlateModel.drills)).where(PlateModel.id == plate_id)
     result = await session.execute(query)
     plate = result.scalars().first()
     logger.info("Get plate: %s", plate)
@@ -57,8 +53,8 @@ async def get_all_plates(
 @router.post("/plate/create", response_model=PlateSchema)
 async def create_plate(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    plate: Annotated[PlateCreateSchema, Depends()],
-    images: UploadFile = None,
+    plate: PlateCreateSchema | str = Form(...),
+    images: list[UploadFile] = File([]),
 ) -> PlateSchema:
     logger.info("Images: %s", images)
 
@@ -70,11 +66,12 @@ async def create_plate(
 async def update_plate(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     plate_id: int,
-    plate: PlateUpdateSchema,
-) -> PlateModel:
+    plate: PlateUpdateSchema | str = Form(),
+    images: list[UploadFile] = File([]),
+) -> PlateSchema:
     logger.info("Update plate: %s", plate)
 
-    result = await update_plate_in_db(session, plate_id, plate)
+    result = await update_plate_in_db(session, plate_id, plate, images)
     return result
 
 

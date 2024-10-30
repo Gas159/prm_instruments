@@ -88,11 +88,6 @@ async def create_drill(
     plates_ids: list[str] = Form([]),
     images: list[UploadFile] = File([]),
 ) -> DrillSchema:
-
-    logger.info("Drill: %s %s", type(drill), drill)
-    logger.info("Screws_ids: %s %s ", type(screws_ids), screws_ids)
-    logger.info("Plates_ids: %s %s ", type(plates_ids), plates_ids)
-    logger.info("Images: %s %s ", type(images), images)
     result = await add_drill(session, drill, screws_ids, plates_ids, images)
     return result
 

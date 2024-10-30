@@ -52,11 +52,11 @@ class ScrewSchema(ScrewBaseSchema):
 
 
 class ScrewCreateSchema(ScrewBaseSchema):
+    pass
 
-    model_config = ConfigDict(from_attributes=True)
 
-
-class ScrewUpdateSchema(ScrewBaseSchema): ...
+class ScrewUpdateSchema(ScrewBaseSchema):
+    pass
 
 
 class ScrewDeleteSchema(BaseModel):
