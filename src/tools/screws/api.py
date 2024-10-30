@@ -1,7 +1,7 @@
 import logging
 from typing import List, Annotated
 
-from fastapi import Depends, APIRouter, HTTPException, UploadFile
+from fastapi import Depends, APIRouter, HTTPException, UploadFile, File, Form, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
@@ -59,25 +59,24 @@ async def get_all_crews(
 @router.post("/screw/create")
 async def create_screw(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    screw: Annotated[ScrewCreateSchema, Depends()],
-    images: UploadFile = None,
+    screw: ScrewCreateSchema | str = Form(...),
+    images: list[UploadFile] = File([]),
 ) -> ScrewSchema:
-
     logger.info("Images: %s", images)
-
     result = await add_screw(session, screw, images)
     return result
 
 
-@router.put("/screw/update/{screw_id}", response_model=ScrewSchema)  # Изменено на screw_id
-async def update_screw(  # Изменено на update_screw
+@router.put("/screw/update/{screw_id}")
+async def update_screw(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    screw_id: int,  # Изменено на screw_id
-    screw: ScrewUpdateSchema,  # Изменено на ScrewUpdateSchema
-) -> ScrewModel:
+    screw_id: int,
+    screw: ScrewUpdateSchema | str = Form(),
+    images: list[UploadFile] = File([]),
+) -> ScrewSchema:
     logger.info("Update screw: %s", screw)
 
-    result = await update_screw_in_db(session, screw_id, screw)  # Изменено на update_screw_in_db
+    result = await update_screw_in_db(session, screw_id, screw, images)  # Изменено на update_screw_in_db
     return result
 
 

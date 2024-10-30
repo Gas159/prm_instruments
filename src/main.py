@@ -17,7 +17,7 @@ from tools.archive.drills import router as router_drills_archive
 from tools.screws import router as screw_router
 from tools.plates import router as plate_router
 from tools.drills.cruds import UPLOAD_DIR
-from auth_jwt.jwt_auth import router as auth_jwt_router
+from auth_jwt.api import router as auth_jwt_router
 
 main_app = FastAPI(
     lifespan=lifespan,

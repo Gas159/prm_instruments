@@ -1,8 +1,15 @@
+from aiofiles.os import access
 from fastapi import APIRouter, Depends, Form, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, HTTPBearer
 from jwt import InvalidTokenError
 
-from auth_jwt.helpers import create_access_token, create_refresh_token
+from auth_jwt.helpers import (
+    create_access_token,
+    create_refresh_token,
+    ACCESS_TOKEN_TYPE,
+    TOKEN_TYPE_FIELD,
+    REFRESH_TOKEN_TYPE,
+)
 from auth_jwt.jwt_utils import hash_password, validate_password, decode_jwt
 from auth_jwt.schemas import UserAuthJWTSchema, TokenInfoSchema
 
@@ -42,12 +49,23 @@ user_db: dict[str, UserAuthJWTSchema] = {
 }
 
 
+def validate_token_type(
+    payload: dict,
+    token_type: str,
+) -> bool:
+    if current_token_type := payload.get(TOKEN_TYPE_FIELD) == token_type:
+        return True
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=f"Token type {current_token_type!r} invalid , expected {token_type!r}",
+    )
+
+
 def get_current_token_payload(
     # token: str = Depends(http_bearer),  # читаем токен из заголовка, возрващает scheme='Bearer' credentials='123
     # credentials: HTTPAuthorizationCredentials = Depends(http_bearer),  # читаем токен из заголовка
     token: str = Depends(oauth2_scheme),  # читаем токен с помощью OAuth2passwordBearer
 ) -> UserAuthJWTSchema:
-
     # logger.debug("Token: %s", credentials)  # {'scheme': 'Bearer', 'credentials': '123'}
     # token = credentials.credentials
     logger.debug("Token: %s", token)  # 123 - access token
@@ -58,13 +76,25 @@ def get_current_token_payload(
     return payload
 
 
-def get_current_auth_user(
-    payload: dict = Depends(get_current_token_payload),
-) -> UserAuthJWTSchema:
+def get_user_by_token_sub(payload: dict) -> UserAuthJWTSchema:
     username: str | None = payload.get("sub")
     if not (user := user_db.get(username)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found, token invalid")
     return user
+
+
+def get_current_auth_user(
+    payload: dict = Depends(get_current_token_payload),
+) -> UserAuthJWTSchema:
+    validate_token_type(payload=payload, token_type=ACCESS_TOKEN_TYPE)
+    return get_user_by_token_sub(payload)
+
+
+def get_current_auth_user_for_refresh(
+    payload: dict = Depends(get_current_token_payload),
+) -> UserAuthJWTSchema:
+    validate_token_type(payload=payload, token_type=REFRESH_TOKEN_TYPE)
+    return get_user_by_token_sub(payload)
 
 
 def get_current_active_auth_user(
@@ -91,22 +121,3 @@ def validate_auth_user(
     if not user.active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
     return user
-
-
-@router.post("/login", response_model=TokenInfoSchema)
-def auth_user_login_jwt(
-    user: UserAuthJWTSchema = Depends(validate_auth_user),
-):
-
-    access_token = create_access_token(user)
-    refresh_token = create_refresh_token(user)
-    # return {"access_token": token, "token_type": "Bearer"}
-    return TokenInfoSchema(access_token=access_token, refresh_token=refresh_token, token_type="Bearer")
-
-
-@router.get("/users/me")
-def auth_user_check_self_info(
-    user: UserAuthJWTSchema = Depends(get_current_active_auth_user),
-    payload: dict = Depends(get_current_token_payload),
-):
-    return (user, payload)

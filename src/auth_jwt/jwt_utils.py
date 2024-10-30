@@ -27,7 +27,6 @@ def encode_jwt(
             "iat": now,
         }
     )
-
     encoded = jwt.encode(to_encode, private_key, algorithm)
     return encoded
 
@@ -52,7 +51,4 @@ def validate_password(
     hashed_password: bytes,
 ) -> bool:
     pwd_bytes: bytes = password.encode()
-    return bcrypt.checkpw(
-        password=pwd_bytes,
-        hashed_password=hashed_password,
-    )
+    return bcrypt.checkpw(password=pwd_bytes, hashed_password=hashed_password)

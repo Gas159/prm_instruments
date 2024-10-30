@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List
 
-from pydantic import BaseModel, ConfigDict, model_serializer
+from pydantic import BaseModel, ConfigDict, model_serializer, Field
 from enum import Enum
 
 
@@ -15,7 +15,7 @@ class MaterialEnum(str, Enum):
 class PlateBaseSchema(BaseModel):
     type: str | None = None
     sub_type: str | None = None
-    material: MaterialEnum | None = None
+    material: MaterialEnum | None = Field(None, description="Available options: 's', 'm', 'p'")
     amount: int | None = None
     min_amount: int | None = None
     company: str | None = None
@@ -33,25 +33,25 @@ class PlateSchema(PlateBaseSchema):
 
     model_config = ConfigDict(from_attributes=True)
 
-    # @model_serializer
-    # def model_serializer(self):
-    #     return {
-    #         "id": self.id,
-    #         "type": self.type,
-    #         "sub_type": self.sub_type,
-    #         "material": self.material,
-    #         "amount": self.amount,
-    #         "min_amount": self.min_amount,
-    #         "company": self.company,
-    #         "image_path": self.image_path,
-    #         "description": self.description,
-    #         "create_at": self.create_at,
-    #         "update_at": self.update_at,
-    #     }
+    @model_serializer
+    def model_serializer(self):
+        return {
+            "id": self.id,
+            "type": self.type,
+            "sub_type": self.sub_type,
+            "material": self.material,
+            "amount": self.amount,
+            "min_amount": self.min_amount,
+            "company": self.company,
+            "image_path": self.image_path,
+            "description": self.description,
+            "create_at": self.create_at,
+            "update_at": self.update_at,
+        }
 
 
 class PlateCreateSchema(PlateBaseSchema):
-    model_config = ConfigDict(from_attributes=True)
+    pass
 
 
 class PlateUpdateSchema(PlateBaseSchema):

@@ -1,3 +1,3 @@
-from config import settings
+from time import time
 
-print(settings.auth_jwt.private_key_path)
+print(time())
