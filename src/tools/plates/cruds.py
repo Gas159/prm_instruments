@@ -35,10 +35,16 @@ async def add_plate(
         plate_data = json.loads(plate)
     except json.JSONDecodeError as e:
         raise HTTPException(status_code=400, detail="invalid JSON format" + str(e))
+
     new_plate = PlateModel(**plate_data)
+
+    db.add(new_plate)
+    await db.commit()
+    await db.refresh(new_plate)
+
     try:
         if images:
-            plate_dir = upload_dir / "drills" / str(new_plate.id)
+            plate_dir = upload_dir / "plates" / str(new_plate.id)
             plate_dir.mkdir(parents=True, exist_ok=True)
             new_plate.image_path = ", ".join(await save_images(images, plate_dir))
 
@@ -93,7 +99,7 @@ async def update_plate_in_db(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-async def delete_plate_from_db(db: AsyncSession, plate_id: int):  # Изменено на delete_plate_from_db
+async def delete_plate_from_db(db: AsyncSession, plate_id: int):
     query = select(PlateModel).where(PlateModel.id == plate_id)
     result = await db.execute(query)
     db_plate = result.scalar_one_or_none()
@@ -115,4 +121,4 @@ async def delete_plate_from_db(db: AsyncSession, plate_id: int):  # Измене
         logger.error("Failed to archive and delete plate: %s", str(e))
         raise HTTPException(status_code=500, detail="Failed to archive and delete plate.")
 
-    return db_plate  # Возвращаем удаленный объект
+    return db_plate
