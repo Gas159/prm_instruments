@@ -1,11 +1,6 @@
 from datetime import timedelta
-
-from celery.backends.database import retry
-
 from auth_jwt.jwt_utils import encode_jwt
 from auth_jwt.schemas import UserAuthJWTSchema
-
-
 from config import settings
 
 TOKEN_TYPE_FIELD = "type"

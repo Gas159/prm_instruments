@@ -1,4 +1,6 @@
 from datetime import datetime, timezone
+
+from jwt import InvalidSignatureError
 from jwt.exceptions import InvalidTokenError
 import bcrypt
 import jwt
@@ -36,7 +38,10 @@ def decode_jwt(
     public_key: str = settings.auth_jwt.public_key_path.read_text(),
     algorithm: str = settings.auth_jwt.algorithm,
 ):
-    decoded = jwt.decode(token, public_key, algorithms=[algorithm])
+    try:
+        decoded = jwt.decode(token, public_key, algorithms=[algorithm])
+    except InvalidSignatureError as e:
+        raise InvalidTokenError(f"invalid signature error: {e}")
     return decoded
 
 
