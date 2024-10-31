@@ -5,9 +5,9 @@ class UserAuthJWTSchema(BaseModel):
     model_config = ConfigDict(strict=True)  # указывает типы данных строго
 
     id: int
-    username: str
+    name: str
     password: bytes
-    active: bool = True
+    is_active: bool = True
     email: EmailStr | None = None
 
 

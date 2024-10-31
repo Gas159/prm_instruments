@@ -28,14 +28,14 @@ class RoleModel(Base):
 
 class UserModel(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(default="John")
+    name: Mapped[str] = mapped_column(default="John", nullable=False)
     second_name: Mapped[str] = mapped_column(default="Dou", nullable=True)
     email: Mapped[str] = mapped_column(String(length=320), unique=True, index=True, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     registration_at: Mapped[int] = mapped_column(DateTime(timezone=True), server_default=func.now())
-    hashed_password: Mapped[str] = mapped_column(String(length=1024), nullable=False)
+    hashed_password: Mapped[bytes] = mapped_column(String(length=1024), nullable=False)
 
     roles: Mapped[List["RoleModel"]] = relationship(
         "RoleModel", secondary=user_role_association, back_populates="users"

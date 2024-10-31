@@ -1,19 +1,23 @@
-from aiofiles.os import access
+import logging
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Form, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, HTTPBearer
 from jwt import InvalidTokenError
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth_jwt.helpers import (
-    create_access_token,
-    create_refresh_token,
     ACCESS_TOKEN_TYPE,
     TOKEN_TYPE_FIELD,
     REFRESH_TOKEN_TYPE,
 )
-from auth_jwt.jwt_utils import hash_password, validate_password, decode_jwt
-from auth_jwt.schemas import UserAuthJWTSchema, TokenInfoSchema
+from auth_jwt.jwt_utils import validate_password, decode_jwt
+from database import db_helper
+from users.models import UserModel
+from users.schemas import UserSchema
 
-from tools.drills.cruds import logger
+logger = logging.getLogger(__name__)
 
 
 http_bearer = HTTPBearer(auto_error=False)
@@ -26,27 +30,27 @@ router = APIRouter(
 )
 
 
-john = UserAuthJWTSchema(
-    id=1,
-    username="john",
-    password=hash_password("qwerty"),
-    active=True,
-    email="j111@1111j.com",
-)
+# john = UserAuthJWTSchema(
+#     id=1,
+#     username="john",
+#     password=hash_password("qwerty"),
+#     active=True,
+#     email="j111@1111j.com",
+# )
+#
+# sam = UserAuthJWTSchema(
+#     id=2,
+#     username="sam",
+#     password=hash_password("qwerty123"),
+#     active=True,
+#     email="s2222@s2222.com",
+# )
 
-sam = UserAuthJWTSchema(
-    id=2,
-    username="sam",
-    password=hash_password("qwerty123"),
-    active=True,
-    email="s2222@s2222.com",
-)
-
-
-user_db: dict[str, UserAuthJWTSchema] = {
-    john.username: john,
-    sam.username: sam,
-}
+#
+# user_db: dict[str, UserAuthJWTSchema] = {
+#     john.username: john,
+#     sam.username: sam,
+# }
 
 
 def validate_token_type(
@@ -66,29 +70,46 @@ def get_current_token_payload(
     # token: str = Depends(http_bearer),  # читаем токен из заголовка, возрващает scheme='Bearer' credentials='123
     # credentials: HTTPAuthorizationCredentials = Depends(http_bearer),  # читаем токен из заголовка
     token: str = Depends(oauth2_scheme),  # читаем токен с помощью OAuth2passwordBearer
-) -> UserAuthJWTSchema:
+) -> UserSchema:
     # logger.debug("Token: %s", credentials)  # {'scheme': 'Bearer', 'credentials': '123'}
     # token = credentials.credentials
-    logger.debug("Token: %s, type: %s", token, token)  # 123 - access token
+    logger.debug("Token: %s, type: %s", type(token), token)  # 123 - access token
     try:
         payload = decode_jwt(token=token)
+        logger.debug("payload: %s", payload)
     except InvalidTokenError as e:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"invalid token error: {e}")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Token error: {e}")
     return payload
 
 
-def get_user_by_token_sub(payload: dict) -> UserAuthJWTSchema:
-    username: str | None = payload.get("sub")
-    if not (user := user_db.get(username)):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found, token invalid")
-    return user
+async def get_user_by_token_from_bd(
+    user_id: int,
+    # session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+) -> UserSchema:
+    async for session in db_helper.session_getter():
+        query = select(UserModel).where(UserModel.id == user_id)
+        result = await session.execute(query)
+        user = result.scalar_one_or_none()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        logger.debug("Get user from DB: %s", user)
+        return UserSchema.model_validate(user)
+
+
+async def get_user_by_token_sub(
+    payload: dict,
+) -> UserSchema:
+    user_id: str | None = payload.get("id")
+    logger.debug("user_id: %s, type %s", user_id, type(user_id))
+    if not user_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User ID missing from token payload")
+    return await get_user_by_token_from_bd(user_id=int(user_id))
 
 
 def get_auth_user_from_token_of_type(token_type: str):  # 1
-    def get_auth_user_from_token(payload: dict = Depends(get_current_token_payload)) -> UserAuthJWTSchema:
-
+    async def get_auth_user_from_token(payload: dict = Depends(get_current_token_payload)):
         validate_token_type(payload=payload, token_type=token_type)
-        return get_user_by_token_sub(payload)
+        return await get_user_by_token_sub(payload=payload)
 
     return get_auth_user_from_token
 
@@ -97,9 +118,9 @@ class UserGetterFromToken:
     def __init__(self, token_type: str):
         self.token_type = token_type
 
-    def __call__(self, payload: dict = Depends(get_current_token_payload)) -> UserAuthJWTSchema:
+    async def __call__(self, payload: dict = Depends(get_current_token_payload)):
         validate_token_type(payload=payload, token_type=self.token_type)
-        return get_user_by_token_sub(payload)
+        return await get_user_by_token_sub(payload=payload)
 
 
 # get_current_auth_user = UserGetterFromToken(ACCESS_TOKEN_TYPE)
@@ -109,26 +130,39 @@ get_current_auth_user_for_refresh = UserGetterFromToken(REFRESH_TOKEN_TYPE)
 
 
 def get_current_active_auth_user(
-    user: UserAuthJWTSchema = Depends(get_current_auth_user),
-) -> UserAuthJWTSchema:
-    if user.active:
+    user: UserSchema = Depends(get_current_auth_user),
+) -> UserSchema:
+    if user.is_active:
         return user
     logger.debug("User is not active: %s", user)
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
 
 
-def validate_auth_user(
-    username: str = Form("john"),
-    password: str = Form("qwerty"),
+async def validate_auth_user(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    # username: str = Form("john"),
+    email: str = Form("test22@example.com"),
+    password: str = Form("123"),
 ):
     unauthed_exc = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Incorrect username or password",
     )
-    if not (user := user_db.get(username)):
+    # if not (user := user_db.get(username)):
+    query = select(UserModel).where(UserModel.email == email)
+    result = await session.execute(query)
+    user_record = result.scalar_one_or_none()
+    # if not (user := user_db.get(email)):
+    if not user_record:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    hashed_password = user_record.hashed_password
+    if isinstance(hashed_password, str):
+        hashed_password = hashed_password.encode("utf-8")
+
+    if not validate_password(password=password, hashed_password=hashed_password):
         raise unauthed_exc
-    if not validate_password(password=password, hashed_password=user.password):
-        raise unauthed_exc
-    if not user.active:
+
+    if not user_record.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
-    return user
+    return user_record
