@@ -32,12 +32,14 @@ async def add_screw(
         raise HTTPException(status_code=400, detail="invalid JSON format" + str(e))
 
     screw = ScrewModel(**screw_data)
+    db.add(screw)
+    await db.commit()
+    await db.refresh(screw)
+
     if images:
         screw_dir = upload_dir / "screws" / str(screw.id)
         screw_dir.mkdir(parents=True, exist_ok=True)
         screw.image_path = ", ".join(await save_images(images, screw_dir))
-
-    db.add(screw)
 
     try:
         await db.commit()
@@ -54,7 +56,7 @@ async def add_screw(
 async def update_screw_in_db(
     db: AsyncSession,
     screw_id: int,
-    screw: ScrewUpdateSchema | str = Form(...),
+    screw: ScrewUpdateSchema | str = Form(),
     images: list[UploadFile] = File([]),
 ) -> ScrewSchema:
     logger.debug("Update screw: %s", screw_id)
@@ -76,7 +78,7 @@ async def update_screw_in_db(
             if value is not None:
                 setattr(db_screw, key, value)
         if images:
-            screw_dir = upload_dir / "screws" / str(screw.id)
+            screw_dir = upload_dir / "screws" / str(db_screw.id)
             screw_dir.mkdir(parents=True, exist_ok=True)
             db_screw.image_path = ", ".join(await save_images(images, screw_dir))
 

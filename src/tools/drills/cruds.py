@@ -38,14 +38,14 @@ async def add_drill(
 
         new_drill = DrillModel(**drill_data)
 
+        db.add(new_drill)
+        await db.commit()
+        await db.refresh(new_drill)
+
         if images:
             drill_dir = upload_dir / "drills" / str(new_drill.id)
             drill_dir.mkdir(parents=True, exist_ok=True)
             new_drill.image_path = ", ".join(await save_images(images, drill_dir))
-
-        db.add(new_drill)
-        await db.commit()
-        await db.refresh(new_drill)
 
         if screws_ids and screws_ids[0] != "":
             logger.info("Screws: %s IDs: %s", screws_ids, type(screws_ids))
