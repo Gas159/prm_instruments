@@ -46,10 +46,11 @@ class ApiPrefix(BaseModel):
 
 # url: str = 'postgresql+asyncpg://gas:123@localhost:5432/shop'
 class DatabaseConfig(BaseModel):
-    url: PostgresDsn
-    postgres_user: str
-    postgres_password: str
-    postgres_db: str
+    url: PostgresDsn = "postgresql+asyncpg://gas:123@pg_parma:5432/test_db"
+    test_url: str = 'postgresql+asyncpg://gas:123@localhost:5433/test_db'
+    postgres_user: str = "user"
+    postgres_password: str = "password"
+    postgres_db: str = "testdb"
     echo: bool = False
     echo_pool: bool = False
     pool_size: int = 50
@@ -67,8 +68,8 @@ class DatabaseConfig(BaseModel):
 class CeleryConfig(BaseModel):
     smtp_host: str = "smtp.gmail.com"
     smtp_port: int = 465
-    smtp_password: str
-    smtp_user: str
+    smtp_password: str = "password"
+    smtp_user: str = "email"
 
 
 class RedisConfig(BaseModel):
@@ -91,12 +92,12 @@ class Settings(BaseSettings):
         env_nested_delimiter="__",
         env_prefix="FASTAPI__",
     )
-    db: DatabaseConfig
-    celery: CeleryConfig
+    db: DatabaseConfig = DatabaseConfig()
+    celery: CeleryConfig = CeleryConfig()
     auth_jwt: AuthJWT = AuthJWT()
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
-    redis: RedisConfig = RedisConfig()
+    # redis: RedisConfig = RedisConfig()
 
 
 settings = Settings()

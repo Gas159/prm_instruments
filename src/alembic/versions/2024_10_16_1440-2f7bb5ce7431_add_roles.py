@@ -41,9 +41,7 @@ def upgrade() -> None:
             ["user.id"],
             name=op.f("fk_user_role_association_user_id_user"),
         ),
-        sa.PrimaryKeyConstraint(
-            "user_id", "role_id", name=op.f("pk_user_role_association")
-        ),
+        sa.PrimaryKeyConstraint("user_id", "role_id", name=op.f("pk_user_role_association")),
     )
     # ### end Alembic commands ###
 

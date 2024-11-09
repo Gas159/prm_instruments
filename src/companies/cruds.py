@@ -13,10 +13,7 @@ from project_services.redis_tools import redis
 
 
 def model_to_dict(model):
-    return {
-        column.name: getattr(model, column.name)
-        for column in model.__table__.columns
-    }
+    return {column.name: getattr(model, column.name) for column in model.__table__.columns}
 
 
 async def get_company(
@@ -31,11 +28,7 @@ async def get_company(
         company_data = json.loads(cached_data.decode("utf-8"))
         return SCompany(**company_data)
 
-    stmt = (
-        select(CompanyModel)
-        .options(selectinload(CompanyModel.services))
-        .where(CompanyModel.id == company_id)
-    )
+    stmt = select(CompanyModel).options(selectinload(CompanyModel.services)).where(CompanyModel.id == company_id)
     company = await session.scalar(stmt)
     # company = company_tuple.first()
     if company is None:
@@ -62,19 +55,11 @@ async def get_all_companies(
     if cached_data:
         print(f"Loaded data from Redis: ")
         cached_data = json.loads(cached_data)
-        companies = [
-            SCompany(**company) for company in cached_data["companies"]
-        ]
+        companies = [SCompany(**company) for company in cached_data["companies"]]
 
-        return Page.create(
-            companies, total=int(cached_data["total"]), params=params
-        )
+        return Page.create(companies, total=int(cached_data["total"]), params=params)
 
-    stmt = (
-        select(CompanyModel)
-        .options(selectinload(CompanyModel.services))
-        .order_by(CompanyModel.id)
-    )
+    stmt = select(CompanyModel).options(selectinload(CompanyModel.services)).order_by(CompanyModel.id)
     result = await paginate(query=stmt, conn=session)
     # print(result, type(result), result.items, type(result.items), sep="\n")
 

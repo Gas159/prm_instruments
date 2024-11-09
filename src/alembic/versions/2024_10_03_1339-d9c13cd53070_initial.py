@@ -142,9 +142,7 @@ def upgrade() -> None:
             ["screw.id"],
             name=op.f("fk_drill_screw_association_screw_id_screw"),
         ),
-        sa.PrimaryKeyConstraint(
-            "drill_id", "screw_id", name=op.f("pk_drill_screw_association")
-        ),
+        sa.PrimaryKeyConstraint("drill_id", "screw_id", name=op.f("pk_drill_screw_association")),
     )
     op.create_table(
         "service",

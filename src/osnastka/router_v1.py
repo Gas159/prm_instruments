@@ -43,9 +43,7 @@ import logging
 
 templates = Jinja2Templates(directory="templates")
 # Настройка логгирования
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 loger = logging.getLogger(__name__)
 
@@ -123,9 +121,7 @@ async def update_tool_view(
         if not tool:
             raise HTTPException(status_code=404, detail="Tool not found")
 
-        return templates.TemplateResponse(
-            "update.html", {"request": request, "tool": tool}
-        )
+        return templates.TemplateResponse("update.html", {"request": request, "tool": tool})
 
     except NoResultFound:
         raise HTTPException(status_code=404, detail="Tool not found")
@@ -159,9 +155,7 @@ async def update_tool_status(
     # Получаем инструмент по ID
     tool = await session.get(ToolModel, tool_id)
     if not tool:
-        return JSONResponse(
-            status_code=404, content={"message": "Tool not found"}
-        )
+        return JSONResponse(status_code=404, content={"message": "Tool not found"})
 
     # Обновляем статус
     tool.is_broken = is_broken
@@ -221,7 +215,5 @@ async def get_tools(
     # Возвращаем как инструменты, так и диаметры
     return {
         "tools": tools,
-        "diameters": await get_diameters(
-            session
-        ),  # Вызываем функцию для получения диаметров
+        "diameters": await get_diameters(session),  # Вызываем функцию для получения диаметров
     }

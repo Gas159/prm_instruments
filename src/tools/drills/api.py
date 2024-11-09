@@ -20,6 +20,11 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
+@router.get("/")
+async def hello_world():
+    return {"msg": "Hello World1"}
+
+
 # Get ONE
 @router.get("/{tool_id}", response_model=DrillSchema)
 async def get_one(

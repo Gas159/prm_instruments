@@ -24,9 +24,7 @@ async def create_service_repository(
     # service_create: CreateService,
 ):
     # service_dict = service_create.model_dump()
-    res = await ServiceRepository().add_one(
-        data=service_create.model_dump(), session=session
-    )
+    res = await ServiceRepository().add_one(data=service_create.model_dump(), session=session)
     return {"id": res}
 
 
@@ -38,9 +36,7 @@ async def get_one_service(
     # session,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> ServiceModel:
-    service = await services_crud.get_service(
-        session=session, service_id=service_id
-    )
+    service = await services_crud.get_service(session=session, service_id=service_id)
     return service
 
 
@@ -58,9 +54,7 @@ async def create_service(
     # service_create: CreateService,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> ServiceBase:
-    service = await services_crud.create_service(
-        session=session, service_create=service_create
-    )
+    service = await services_crud.create_service(session=session, service_create=service_create)
     return service
 
 
@@ -70,9 +64,7 @@ async def update_service(
     service_update: Annotated[ServiceUpdate, Depends()],
     session: AsyncSession = Depends(db_helper.session_getter),
 ) -> ServiceModel:
-    service = await services_crud.update_service(
-        session=session, service_id=service_id, service_update=service_update
-    )
+    service = await services_crud.update_service(session=session, service_id=service_id, service_update=service_update)
 
     return service
 
@@ -82,7 +74,5 @@ async def delete_service(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     service_id: int,
 ) -> ServiceModel:
-    service = await services_crud.delete_service(
-        session=session, service_id=service_id
-    )
+    service = await services_crud.delete_service(session=session, service_id=service_id)
     return service

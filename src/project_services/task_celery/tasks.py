@@ -10,9 +10,7 @@ SMTP_PORT = settings.celery.smtp_port
 SMTP_USER = settings.celery.smtp_user  # email
 SMTP_PASSWORD = settings.celery.smtp_password
 
-celery = Celery(
-    "tasks", broker=settings.redis.url, broker_connection_retry_on_startup=True
-)
+celery = Celery("tasks", broker=settings.redis.url, broker_connection_retry_on_startup=True)
 
 
 def get_email_template(name: str, email_to_send: str, msg: str | None):

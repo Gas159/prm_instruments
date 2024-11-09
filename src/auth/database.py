@@ -8,7 +8,5 @@ from auth.models import User
 from database import db_helper
 
 
-async def get_user_db(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)]
-):
+async def get_user_db(session: Annotated[AsyncSession, Depends(db_helper.session_getter)]):
     yield SQLAlchemyUserDatabase(session, User)

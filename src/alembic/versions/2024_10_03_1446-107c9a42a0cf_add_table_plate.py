@@ -64,9 +64,7 @@ def upgrade() -> None:
             ["plate.id"],
             name=op.f("fk_drill_plate_association_plate_id_plate"),
         ),
-        sa.PrimaryKeyConstraint(
-            "drill_id", "plate_id", name=op.f("pk_drill_plate_association")
-        ),
+        sa.PrimaryKeyConstraint("drill_id", "plate_id", name=op.f("pk_drill_plate_association")),
     )
     # ### end Alembic commands ###
 
