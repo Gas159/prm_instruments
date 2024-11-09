@@ -26,11 +26,7 @@ async def get_service(
 async def get_all_services(
     session: AsyncSession,
 ) -> Page[Service]:
-    stmt = (
-        select(ServiceModel)
-        .options(joinedload(ServiceModel.company))
-        .order_by(ServiceModel.id)
-    )
+    stmt = select(ServiceModel).options(joinedload(ServiceModel.company)).order_by(ServiceModel.id)
     return await paginate(query=stmt, conn=session)
 
 

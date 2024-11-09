@@ -24,10 +24,6 @@ class ToolModel(IntPkMixin, Base):
     image_path: Mapped[str] = mapped_column(String, nullable=True)
     # new
     storage: Mapped[str] = mapped_column(default="Cклад", nullable=True)
-    create_at: Mapped[int] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
-    update_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
-    )
+    create_at: Mapped[int] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    update_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     # services: Mapped[List["ServiceModel"]] = relationship(

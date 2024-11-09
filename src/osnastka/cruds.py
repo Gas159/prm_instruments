@@ -11,9 +11,7 @@ from osnastka.schemas import SToolCreate, SToolUpdate
 from fastapi.responses import RedirectResponse
 import logging
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 loger = logging.getLogger(__name__)
 
@@ -45,9 +43,7 @@ async def get_tools(
 async def get_all_diameters(session: AsyncSession):
     query = select(ToolModel.diameter).distinct()
     result = await session.execute(query)
-    return sorted(
-        [row[0] for row in result.fetchall()], key=lambda x: (x is None, x)
-    )
+    return sorted([row[0] for row in result.fetchall()], key=lambda x: (x is None, x))
 
 
 # return sorted([row[0] for row in result.fetchall() ])

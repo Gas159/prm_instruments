@@ -20,12 +20,8 @@ class ScrewModel(Base):
     image_path: Mapped[str] = mapped_column(default="?", nullable=True)
     description: Mapped[str] = mapped_column(default="?", nullable=True)
 
-    create_at: Mapped[int] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
-    update_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
-    )
+    create_at: Mapped[int] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    update_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     drills: Mapped[List["DrillModel"]] = relationship(
         "DrillModel",
