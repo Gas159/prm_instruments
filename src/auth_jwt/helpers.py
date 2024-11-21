@@ -27,8 +27,8 @@ def create_jwt(
 def create_access_token(user: UserSchema) -> str:
     payload = {
         "id": user.id,
-        "sub": user.name,
-        "username": user.name,
+        "sub": user.first_name,
+        "username": user.last_name,
         "email": user.email,
         "active": user.is_active,
         "type": ACCESS_TOKEN_TYPE,
@@ -43,8 +43,8 @@ def create_access_token(user: UserSchema) -> str:
 def create_refresh_token(user: UserSchema) -> str:
     payload = {
         "id": user.id,
-        "sub": user.name,
-        "username": user.second_name,
+        "sub": user.first_name,
+        "username": user.last_name,
         "email": user.email,
         "active": user.is_active,
         "type": REFRESH_TOKEN_TYPE,

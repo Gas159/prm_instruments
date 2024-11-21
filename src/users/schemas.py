@@ -25,24 +25,28 @@ class RoleCreateSchema(RoleBaseSchema):
 
 
 class UserBaseSchema(BaseModel):
-    name: str
-    second_name: str | None
+    first_name: str
+    last_name: str | None
     email: str | None
     model_config = ConfigDict(from_attributes=True)
 
 
 class UserRegisterSchema(UserBaseSchema):
-    name: str | None = Field(examples=["first"], default="first", max_length=32)
-    second_name: str | None = Field(examples=["second"], default="second", max_length=32)
+    first_name: str | None = Field(examples=["first1"], default="first", max_length=32)
+    last_name: str | None = Field(examples=["second1"], default="second", max_length=32)
     email: EmailStr = Field(examples=["test@example.com"], default="test@example.com", max_length=320)
+    position: str | None = Field(examples=["worker"], default="worker", max_length=32)
+    phone_number: str | None = Field(default=None, max_length=15)
     password: str = Field(default="123", max_length=128)
 
 
 class UserSchema(UserBaseSchema):
     id: int
-    name: str | None = None
-    second_name: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
     email: EmailStr
+    position: str | None = None
+    phone_number: str | None = None
     # roles: list["RoleSchema"] | None = []
     is_active: bool = True
     is_superuser: bool = False
@@ -53,9 +57,11 @@ class UserSchema(UserBaseSchema):
     def custom_serializer(self) -> dict:
         return {
             "id": self.id,
-            "name": self.name,
-            "second_name": self.second_name,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
             "email": self.email,
+            "position": self.position,
+            "phone_number": self.phone_number,
             # "roles": self.roles,
             "registration_at": self.registration_at,
             "is_active": self.is_active,

@@ -8,6 +8,7 @@ import jwt
 from asyncpg.pgproto.pgproto import timedelta
 
 from config import settings
+from users.schemas import UserSchema
 
 
 def encode_jwt(
@@ -16,7 +17,7 @@ def encode_jwt(
     algorithm: str = settings.auth_jwt.algorithm,
     expires_minutes: int = settings.auth_jwt.access_token_expires_minutes,
     expires_timedelta: timedelta | None = None,
-):
+) -> str:
     to_encode = payload.copy()
     now = datetime.now(timezone.utc)
     if expires_timedelta:
@@ -39,7 +40,7 @@ def decode_jwt(
     token: str | bytes,
     public_key: str = settings.auth_jwt.public_key_path.read_text(),
     algorithm: str = settings.auth_jwt.algorithm,
-):
+) -> dict:
     try:
         decoded = jwt.decode(token, public_key, algorithms=[algorithm])
     except InvalidSignatureError as e:

@@ -1,8 +1,8 @@
-"""Initial
+"""initial
 
-Revision ID: d9c13cd53070
-Revises: 
-Create Date: 2024-10-03 13:39:29.573192
+Revision ID: a7baf9692481
+Revises: de41de900529
+Create Date: 2024-11-21 23:23:59.067742
 
 """
 
@@ -13,8 +13,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "d9c13cd53070"
-down_revision: Union[str, None] = None
+revision: str = "a7baf9692481"
+down_revision: Union[str, None] = "de41de900529"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -36,7 +36,6 @@ def upgrade() -> None:
         sa.Column("diameter", sa.Float(), nullable=True),
         sa.Column("length_xD", sa.Float(), nullable=True),
         sa.Column("deep_of_drill", sa.Float(), nullable=True),
-        sa.Column("plate", sa.String(), nullable=True),
         sa.Column("key", sa.String(), nullable=True),
         sa.Column("company", sa.String(), nullable=True),
         sa.Column("is_broken", sa.Boolean(), nullable=True),
@@ -64,8 +63,6 @@ def upgrade() -> None:
         sa.Column("diameter", sa.Float(), nullable=True),
         sa.Column("length_xD", sa.Float(), nullable=True),
         sa.Column("deep_of_drill", sa.Float(), nullable=True),
-        sa.Column("plate", sa.String(), nullable=True),
-        sa.Column("screw", sa.String(), nullable=True),
         sa.Column("key", sa.String(), nullable=True),
         sa.Column("company", sa.String(), nullable=True),
         sa.Column("is_broken", sa.Boolean(), nullable=True),
@@ -85,6 +82,38 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_drill_archive")),
+    )
+    op.create_table(
+        "plate",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("type", sa.String(), nullable=True),
+        sa.Column("sub_type", sa.String(), nullable=True),
+        sa.Column("material", sa.String(), nullable=True),
+        sa.Column("amount", sa.Integer(), nullable=True),
+        sa.Column("min_amount", sa.Integer(), nullable=True),
+        sa.Column("company", sa.String(), nullable=True),
+        sa.Column("image_path", sa.String(), nullable=True),
+        sa.Column("description", sa.String(), nullable=True),
+        sa.Column(
+            "create_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "update_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.PrimaryKeyConstraint("id", name=op.f("pk_plate")),
+    )
+    op.create_table(
+        "role",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("role", sa.String(), nullable=False),
+        sa.PrimaryKeyConstraint("id", name=op.f("pk_role")),
+        sa.UniqueConstraint("role", name=op.f("uq_role_role")),
     )
     op.create_table(
         "screw",
@@ -113,8 +142,14 @@ def upgrade() -> None:
     op.create_table(
         "user",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("name", sa.String(), nullable=False),
+        sa.Column("first_name", sa.String(), nullable=False),
+        sa.Column("last_name", sa.String(), nullable=True),
+        sa.Column("position", sa.String(), nullable=True),
+        sa.Column("phone_number", sa.String(length=15), nullable=True),
         sa.Column("email", sa.String(length=320), nullable=False),
+        sa.Column("is_active", sa.Boolean(), nullable=False),
+        sa.Column("is_verified", sa.Boolean(), nullable=False),
+        sa.Column("is_superuser", sa.Boolean(), nullable=False),
         sa.Column(
             "registration_at",
             sa.DateTime(timezone=True),
@@ -122,12 +157,30 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("hashed_password", sa.String(length=1024), nullable=False),
-        sa.Column("is_active", sa.Boolean(), nullable=False),
-        sa.Column("is_superuser", sa.Boolean(), nullable=False),
-        sa.Column("is_verified", sa.Boolean(), nullable=False),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_user")),
     )
     op.create_index(op.f("ix_user_email"), "user", ["email"], unique=True)
+    op.create_index(
+        op.f("ix_user_phone_number"), "user", ["phone_number"], unique=True
+    )
+    op.create_table(
+        "drill_plate_association",
+        sa.Column("drill_id", sa.Integer(), nullable=False),
+        sa.Column("plate_id", sa.Integer(), nullable=False),
+        sa.ForeignKeyConstraint(
+            ["drill_id"],
+            ["drill.id"],
+            name=op.f("fk_drill_plate_association_drill_id_drill"),
+        ),
+        sa.ForeignKeyConstraint(
+            ["plate_id"],
+            ["plate.id"],
+            name=op.f("fk_drill_plate_association_plate_id_plate"),
+        ),
+        sa.PrimaryKeyConstraint(
+            "drill_id", "plate_id", name=op.f("pk_drill_plate_association")
+        ),
+    )
     op.create_table(
         "drill_screw_association",
         sa.Column("drill_id", sa.Integer(), nullable=False),
@@ -142,7 +195,9 @@ def upgrade() -> None:
             ["screw.id"],
             name=op.f("fk_drill_screw_association_screw_id_screw"),
         ),
-        sa.PrimaryKeyConstraint("drill_id", "screw_id", name=op.f("pk_drill_screw_association")),
+        sa.PrimaryKeyConstraint(
+            "drill_id", "screw_id", name=op.f("pk_drill_screw_association")
+        ),
     )
     op.create_table(
         "service",
@@ -157,16 +212,39 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_service")),
     )
+    op.create_table(
+        "user_role_association",
+        sa.Column("user_id", sa.Integer(), nullable=False),
+        sa.Column("role_id", sa.Integer(), nullable=False),
+        sa.ForeignKeyConstraint(
+            ["role_id"],
+            ["role.id"],
+            name=op.f("fk_user_role_association_role_id_role"),
+        ),
+        sa.ForeignKeyConstraint(
+            ["user_id"],
+            ["user.id"],
+            name=op.f("fk_user_role_association_user_id_user"),
+        ),
+        sa.PrimaryKeyConstraint(
+            "user_id", "role_id", name=op.f("pk_user_role_association")
+        ),
+    )
     # ### end Alembic commands ###
 
 
 def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
+    op.drop_table("user_role_association")
     op.drop_table("service")
     op.drop_table("drill_screw_association")
+    op.drop_table("drill_plate_association")
+    op.drop_index(op.f("ix_user_phone_number"), table_name="user")
     op.drop_index(op.f("ix_user_email"), table_name="user")
     op.drop_table("user")
     op.drop_table("screw")
+    op.drop_table("role")
+    op.drop_table("plate")
     op.drop_table("drill_archive")
     op.drop_table("drill")
     op.drop_table("company")

@@ -47,7 +47,7 @@ class ApiPrefix(BaseModel):
 # url: str = 'postgresql+asyncpg://gas:123@localhost:5432/shop'
 class DatabaseConfig(BaseModel):
     url: PostgresDsn = "postgresql+asyncpg://gas:123@pg_parma:5432/test_db"
-    test_url: str = 'postgresql+asyncpg://gas:123@localhost:5433/test_db'
+    test_url: str = "postgresql+asyncpg://gas:123@localhost:5433/test_db"
     postgres_user: str = "user"
     postgres_password: str = "password"
     postgres_db: str = "testdb"

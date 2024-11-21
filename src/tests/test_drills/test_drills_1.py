@@ -23,7 +23,6 @@ engine = create_async_engine(TEST_DATABASE_URL, future=True, echo=True)
 AsyncSessionLocal = sessionmaker(engine, expire_on_commit=False)
 
 
-
 # @pytest.fixture(scope="module")
 # async def test_db():
 #     # Создаем сессию
@@ -47,7 +46,7 @@ AsyncSessionLocal = sessionmaker(engine, expire_on_commit=False)
 #         await session.commit()
 #         await session.refresh(drill)
 #         yield session  # Возвращает сессию для тестов
-        # await session.run_sync(Base.metadata.drop_all)  # Очищает базу данных после тестов
+# await session.run_sync(Base.metadata.drop_all)  # Очищает базу данных после тестов
 
 # @pytest.mark.asyncio
 # async def test_read_main(test_db):
