@@ -72,8 +72,8 @@ def auth_user_login_jwt(
         key="parma_refresh",
         value=refresh_token,
         httponly=True,
-        samesite="none",
-        secure=True,
+        samesite="lax",
+        secure=False,
         max_age=60 * 60 * 24 * 7,  # 7 days
     )
     return TokenInfoSchema(access_token=access_token, token_type="Bearer")  # refresh_token=refresh_token,

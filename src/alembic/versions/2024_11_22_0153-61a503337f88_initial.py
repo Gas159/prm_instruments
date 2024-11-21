@@ -1,8 +1,8 @@
-"""change fisrt_name and last_name in UserModel
+"""Initial
 
-Revision ID: de41de900529
+Revision ID: 61a503337f88
 Revises: 
-Create Date: 2024-11-21 23:18:35.869166
+Create Date: 2024-11-22 01:53:41.057544
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "de41de900529"
+revision: str = "61a503337f88"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
