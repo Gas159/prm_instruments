@@ -1,12 +1,13 @@
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Form, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, HTTPBearer
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, HTTPBearer, OAuth2PasswordRequestForm
 from jwt import InvalidTokenError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from auth_jwt.cookies import get_token_from_cookies
 from auth_jwt.helpers import (
     ACCESS_TOKEN_TYPE,
     TOKEN_TYPE_FIELD,
@@ -22,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 http_bearer = HTTPBearer(auto_error=False)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth_jwt/login")
+
 
 router = APIRouter(
     prefix="/auth_jwt",
@@ -70,9 +72,21 @@ def get_current_token_payload(
     # token: str = Depends(http_bearer),  # читаем токен из заголовка, возрващает scheme='Bearer' credentials='123
     # credentials: HTTPAuthorizationCredentials = Depends(http_bearer),  # читаем токен из заголовка
     token: str = Depends(oauth2_scheme),  # читаем токен с помощью OAuth2passwordBearer
-) -> UserSchema:
+) -> dict:
     # logger.debug("Token: %s", credentials)  # {'scheme': 'Bearer', 'credentials': '123'}
     # token = credentials.credentials
+    logger.debug("Token: %s, type: %s", type(token), token)  # 123 - access token
+    try:
+        payload = decode_jwt(token=token)
+        logger.debug("payload: %s", payload)
+    except InvalidTokenError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Token error: {e}")
+    return payload
+
+
+def get_current_token_payload_from_cookie(
+    token: str = Depends(get_token_from_cookies),
+) -> dict:
     logger.debug("Token: %s, type: %s", type(token), token)  # 123 - access token
     try:
         payload = decode_jwt(token=token)
@@ -118,7 +132,7 @@ class UserGetterFromToken:
     def __init__(self, token_type: str):
         self.token_type = token_type
 
-    async def __call__(self, payload: dict = Depends(get_current_token_payload)):
+    async def __call__(self, payload: dict = Depends(get_current_token_payload_from_cookie)) -> UserSchema:
         validate_token_type(payload=payload, token_type=self.token_type)
         return await get_user_by_token_sub(payload=payload)
 
@@ -140,19 +154,23 @@ def get_current_active_auth_user(
 
 async def validate_auth_user(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     # username: str = Form("john"),
-    email: str = Form("test22@example.com"),
-    password: str = Form("123"),
-):
+    # form_data: OAuth2PasswordRequestForm = Depends()
+    # email: str = Form(),
+    # password: str = Form(),
+) -> UserSchema:
+    logger.debug("form_data: %s, %s", form_data.username, form_data.password)
+
     unauthed_exc = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Incorrect username or password",
     )
-    # if not (user := user_db.get(username)):
-    query = select(UserModel).where(UserModel.email == email)
+
+    query = select(UserModel).where(UserModel.email == form_data.username)
     result = await session.execute(query)
     user_record = result.scalar_one_or_none()
-    # if not (user := user_db.get(email)):
+
     if not user_record:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
@@ -160,9 +178,12 @@ async def validate_auth_user(
     if isinstance(hashed_password, str):
         hashed_password = hashed_password.encode("utf-8")
 
-    if not validate_password(password=password, hashed_password=hashed_password):
+    if not validate_password(password=form_data.password, hashed_password=hashed_password):
         raise unauthed_exc
 
     if not user_record.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
-    return user_record
+    return UserSchema.model_validate(user_record)
+
+
+# test@exa213mple.com
