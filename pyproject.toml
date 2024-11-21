@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["gas <pankot222@gmail.com>"]
 readme = "README.md"
-package-mode = false
+#package-mode = false
 
 [tool.poetry.dependencies]
 #fastapi = "0.95.1"
