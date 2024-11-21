@@ -32,28 +32,6 @@ router = APIRouter(
 )
 
 
-# john = UserAuthJWTSchema(
-#     id=1,
-#     username="john",
-#     password=hash_password("qwerty"),
-#     active=True,
-#     email="j111@1111j.com",
-# )
-#
-# sam = UserAuthJWTSchema(
-#     id=2,
-#     username="sam",
-#     password=hash_password("qwerty123"),
-#     active=True,
-#     email="s2222@s2222.com",
-# )
-
-#
-# user_db: dict[str, UserAuthJWTSchema] = {
-#     john.username: john,
-#     sam.username: sam,
-# }
-
 
 def validate_token_type(
     payload: dict,
@@ -154,20 +132,17 @@ def get_current_active_auth_user(
 
 async def validate_auth_user(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    login_data: UserLoginSchema
-    # username: str = Form("john"),
-    # login_data: OAuth2PasswordRequestForm = Depends()
-    # email: str = Form(),
-    # password: str = Form(),
+    # login_data: UserLoginSchema
+    login_data: OAuth2PasswordRequestForm = Depends()
 ) -> UserSchema:
-    logger.debug("login_data: %s, %s", login_data.email, login_data.password)
+    logger.debug("login_data: %s, %s", login_data.username, login_data.password)
 
     unauthed_exc = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Incorrect username or password",
     )
 
-    query = select(UserModel).where(UserModel.email == login_data.email)
+    query = select(UserModel).where(UserModel.email == login_data.username)
     result = await session.execute(query)
     user_record = result.scalar_one_or_none()
 

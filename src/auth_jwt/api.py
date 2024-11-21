@@ -77,7 +77,7 @@ def auth_user_login_jwt(
         max_age=60 * 60 * 24 * 7,  # 7 days
     )
     return TokenInfoSchema(access_token=access_token, token_type="Bearer")  # refresh_token=refresh_token,
-    # return {"access_token": access_token, 'refresh_token': 'cookies'}
+
 
 
 @router.post("/refresh", response_model_exclude_none=True)

@@ -29,7 +29,7 @@ class UserBaseSchema(BaseModel):
 
 
 class UserRegisterSchema(UserBaseSchema):
-    first_name: str | None = Field(examples=["John"], default="first", max_length=32)
+    first_name: str | None = Field(examples=["John2"], default="first", max_length=32)
     last_name: str | None = Field(examples=["Dou"], default="second", max_length=32)
     email: EmailStr = Field(examples=["test@example.com"], default="test@example.com", max_length=320)
     position: str | None = Field(examples=["killer"], default="worker", max_length=32)
@@ -38,6 +38,7 @@ class UserRegisterSchema(UserBaseSchema):
 
 
 class UserLoginSchema(UserBaseSchema):
+    grant_type: str
     email: EmailStr = Field(examples=["test@example.com"], default="test@example.com", max_length=320, description='b')
     password: str = Field(default="123", max_length=128)
 

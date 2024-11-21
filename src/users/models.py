@@ -28,7 +28,7 @@ class RoleModel(Base):
 
 class UserModel(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
-    first_name: Mapped[str] = mapped_column(default="John", nullable=False)
+    first_name: Mapped[str] = mapped_column(default="John1", nullable=False)
     last_name: Mapped[str] = mapped_column(default="Dou", nullable=True)
     position: Mapped[str | None] = mapped_column(default="worker", nullable=True)
     phone_number: Mapped[str | None] = mapped_column(
@@ -46,7 +46,7 @@ class UserModel(Base):
         "RoleModel", secondary=user_role_association, back_populates="users"
     )  # lazy="joined"
 
-    hashed_password: Mapped[bytes] = mapped_column(String(length=1024), nullable=False)
+    hashed_password: Mapped[bytes] = mapped_column(String(length=1024), default='123', nullable=False)
 
 
 # role: Mapped[RoleEnum] = mapped_column(SQLAlchemyEnum(RoleEnum), default=RoleEnum.NOOB, nullable=True)
