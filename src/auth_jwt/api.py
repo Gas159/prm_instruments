@@ -16,7 +16,7 @@ from auth_jwt.jwt_utils import hash_password
 from auth_jwt.schemas import TokenInfoSchema
 from database import db_helper
 from users.models import UserModel
-from users.schemas import UserRegisterSchema, UserSchema
+from users.schemas import UserRegisterSchema, UserSchema, UserLoginSchema
 
 logger = logging.getLogger(__name__)
 router = APIRouter(
@@ -40,7 +40,7 @@ async def auth_user_register(
 
     logger.debug("user.phone_number: %s", user.phone_number)
     if user.phone_number:
-        if user.phone_number == "string":
+        if user.phone_number == "911":
             user.phone_number = None
         else:
             query = select(UserModel).where(UserModel.phone_number == user.phone_number)

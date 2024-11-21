@@ -25,19 +25,22 @@ class RoleCreateSchema(RoleBaseSchema):
 
 
 class UserBaseSchema(BaseModel):
-    first_name: str
-    last_name: str | None
-    email: str | None
     model_config = ConfigDict(from_attributes=True)
 
 
 class UserRegisterSchema(UserBaseSchema):
-    first_name: str | None = Field(examples=["first1"], default="first", max_length=32)
-    last_name: str | None = Field(examples=["second1"], default="second", max_length=32)
+    first_name: str | None = Field(examples=["John"], default="first", max_length=32)
+    last_name: str | None = Field(examples=["Dou"], default="second", max_length=32)
     email: EmailStr = Field(examples=["test@example.com"], default="test@example.com", max_length=320)
-    position: str | None = Field(examples=["worker"], default="worker", max_length=32)
-    phone_number: str | None = Field(default=None, max_length=15)
+    position: str | None = Field(examples=["killer"], default="worker", max_length=32)
+    phone_number: str | None = Field(examples=["911"], default=None, max_length=15)
     password: str = Field(default="123", max_length=128)
+
+
+class UserLoginSchema(UserBaseSchema):
+    email: EmailStr = Field(examples=["test@example.com"], default="test@example.com", max_length=320, description='b')
+    password: str = Field(default="123", max_length=128)
+
 
 
 class UserSchema(UserBaseSchema):

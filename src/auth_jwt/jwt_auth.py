@@ -1,7 +1,7 @@
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Form
 from fastapi.security import OAuth2PasswordBearer, HTTPBearer, OAuth2PasswordRequestForm
 from jwt import InvalidTokenError
 from sqlalchemy import select
@@ -16,7 +16,7 @@ from auth_jwt.helpers import (
 from auth_jwt.jwt_utils import validate_password, decode_jwt
 from database import db_helper
 from users.models import UserModel
-from users.schemas import UserSchema
+from users.schemas import UserSchema, UserLoginSchema
 
 logger = logging.getLogger(__name__)
 
@@ -154,20 +154,20 @@ def get_current_active_auth_user(
 
 async def validate_auth_user(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    login_data: UserLoginSchema
     # username: str = Form("john"),
-    # form_data: OAuth2PasswordRequestForm = Depends()
+    # login_data: OAuth2PasswordRequestForm = Depends()
     # email: str = Form(),
     # password: str = Form(),
 ) -> UserSchema:
-    logger.debug("form_data: %s, %s", form_data.username, form_data.password)
+    logger.debug("login_data: %s, %s", login_data.email, login_data.password)
 
     unauthed_exc = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Incorrect username or password",
     )
 
-    query = select(UserModel).where(UserModel.email == form_data.username)
+    query = select(UserModel).where(UserModel.email == login_data.email)
     result = await session.execute(query)
     user_record = result.scalar_one_or_none()
 
@@ -178,7 +178,7 @@ async def validate_auth_user(
     if isinstance(hashed_password, str):
         hashed_password = hashed_password.encode("utf-8")
 
-    if not validate_password(password=form_data.password, hashed_password=hashed_password):
+    if not validate_password(password=login_data.password, hashed_password=hashed_password):
         raise unauthed_exc
 
     if not user_record.is_active:
