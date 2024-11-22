@@ -2,8 +2,6 @@ from datetime import datetime
 
 from pydantic import BaseModel, model_serializer, Field, EmailStr
 from pydantic import ConfigDict
-from sqlalchemy import func, DateTime, Boolean
-from sqlalchemy.orm import mapped_column, Mapped
 
 
 class RoleBaseSchema(BaseModel):
@@ -13,7 +11,6 @@ class RoleBaseSchema(BaseModel):
 
 class RoleSchema(RoleBaseSchema):
     id: int
-    role: str
 
     @model_serializer
     def custom_serializer(self) -> dict:
@@ -39,9 +36,8 @@ class UserRegisterSchema(UserBaseSchema):
 
 class UserLoginSchema(UserBaseSchema):
     grant_type: str
-    email: EmailStr = Field(examples=["test@example.com"], default="test@example.com", max_length=320, description='b')
+    email: EmailStr = Field(examples=["test@example.com"], default="test@example.com", max_length=320, description="b")
     password: str = Field(default="123", max_length=128)
-
 
 
 class UserSchema(UserBaseSchema):
@@ -51,7 +47,7 @@ class UserSchema(UserBaseSchema):
     email: EmailStr
     position: str | None = None
     phone_number: str | None = None
-    # roles: list["RoleSchema"] | None = []
+    roles: list["RoleSchema"] | None = []
     is_active: bool = True
     is_superuser: bool = False
     is_verified: bool = False
@@ -66,11 +62,11 @@ class UserSchema(UserBaseSchema):
             "email": self.email,
             "position": self.position,
             "phone_number": self.phone_number,
-            # "roles": self.roles,
             "registration_at": self.registration_at,
             "is_active": self.is_active,
             "is_superuser": self.is_superuser,
             "is_verified": self.is_verified,
+            "roles": self.roles,
         }
 
 

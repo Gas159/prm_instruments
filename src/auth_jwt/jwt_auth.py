@@ -6,6 +6,7 @@ from fastapi.security import OAuth2PasswordBearer, HTTPBearer, OAuth2PasswordReq
 from jwt import InvalidTokenError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload, joinedload
 
 from auth_jwt.cookies import get_token_from_cookies
 from auth_jwt.helpers import (
@@ -30,7 +31,6 @@ router = APIRouter(
     tags=["JWT"],
     dependencies=[Depends(http_bearer)],
 )
-
 
 
 def validate_token_type(
@@ -79,7 +79,7 @@ async def get_user_by_token_from_bd(
     # session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> UserSchema:
     async for session in db_helper.session_getter():
-        query = select(UserModel).where(UserModel.id == user_id)
+        query = select(UserModel).where(UserModel.id == user_id).options(selectinload(UserModel.roles))
         result = await session.execute(query)
         user = result.scalar_one_or_none()
         if not user:
@@ -133,7 +133,7 @@ def get_current_active_auth_user(
 async def validate_auth_user(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     # login_data: UserLoginSchema
-    login_data: OAuth2PasswordRequestForm = Depends()
+    login_data: OAuth2PasswordRequestForm = Depends(),
 ) -> UserSchema:
     logger.debug("login_data: %s, %s", login_data.username, login_data.password)
 
@@ -142,7 +142,7 @@ async def validate_auth_user(
         detail="Incorrect username or password",
     )
 
-    query = select(UserModel).where(UserModel.email == login_data.username)
+    query = select(UserModel).where(UserModel.email == login_data.username).options(selectinload(UserModel.roles))
     result = await session.execute(query)
     user_record = result.scalar_one_or_none()
 

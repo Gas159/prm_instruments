@@ -126,7 +126,6 @@ async def create_role(
     await session.commit()
     await session.refresh(role)
     role_dict = {"id": role.id, "role": role.role}
-
     return RoleSchema.model_validate(role_dict)
 
 

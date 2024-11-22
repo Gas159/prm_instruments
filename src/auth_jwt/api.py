@@ -4,6 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from auth_jwt.helpers import create_access_token, create_refresh_token
 from auth_jwt.jwt_auth import (
@@ -15,6 +16,7 @@ from auth_jwt.jwt_auth import (
 from auth_jwt.jwt_utils import hash_password
 from auth_jwt.schemas import TokenInfoSchema
 from database import db_helper
+from users.helpers import role_checker
 from users.models import UserModel
 from users.schemas import UserRegisterSchema, UserSchema
 
@@ -58,7 +60,12 @@ async def auth_user_register(
     session.add(new_user)
     await session.commit()
     await session.refresh(new_user)
-    return UserSchema.model_validate(new_user)
+
+    # Предзагрузка связанных данных
+    query = select(UserModel).where(UserModel.id == new_user.id).options(selectinload(UserModel.roles))
+    result = await session.execute(query)
+    new_user_with_roles = result.scalar_one()
+    return UserSchema.model_validate(new_user_with_roles)
 
 
 @router.post("/login", response_model=TokenInfoSchema, response_model_exclude_none=True)
@@ -75,14 +82,15 @@ def auth_user_login_jwt(
         samesite="none",
         secure=True,
         max_age=60 * 60 * 24 * 7,  # 7 days
+        # max_age=45 # 45 seconds
     )
     return TokenInfoSchema(access_token=access_token, token_type="Bearer")  # refresh_token=refresh_token,
+
 
 @router.post("/logout/")
 def logout_user(response: Response):
     response.delete_cookie(key="parma_refresh")
-    return {'message': 'Пользователь успешно вышел из системы'}
-
+    return {"message": "Пользователь успешно вышел из системы"}
 
 
 @router.post("/refresh", response_model_exclude_none=True)
@@ -94,8 +102,7 @@ def auth_refresh_jwt(
     access_token = create_access_token(user)
     # return TokenInfoSchema(access_token=access_token)
     user_data = UserSchema.model_validate(user)
-    return {"access_token": access_token, 'user': user_data}
-
+    return {"access_token": access_token, "user": user_data}
 
 
 @router.get("/users/me", response_model=UserSchema)
@@ -106,10 +113,6 @@ def auth_user_check_self_info(
     return user
 
 
-
-@router.get('/check/read')
-async def check_read(
-
-):
-
-    return {'message': 'You have access to read'}
+@router.get("/check/read")
+async def check_read(_: None = Depends(role_checker(["admin", "user"]))):
+    return {"message": "You have access to read"}
