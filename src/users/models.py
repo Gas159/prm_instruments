@@ -28,7 +28,7 @@ class RoleModel(Base):
 
 class UserModel(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
-    first_name: Mapped[str] = mapped_column(default="John1", nullable=False)
+    first_name: Mapped[str] = mapped_column(default="John", nullable=False)
     last_name: Mapped[str] = mapped_column(default="Dou", nullable=True)
     position: Mapped[str | None] = mapped_column(default="worker", nullable=True)
     phone_number: Mapped[str | None] = mapped_column(

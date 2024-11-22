@@ -16,7 +16,7 @@ from auth_jwt.jwt_utils import hash_password
 from auth_jwt.schemas import TokenInfoSchema
 from database import db_helper
 from users.models import UserModel
-from users.schemas import UserRegisterSchema, UserSchema, UserLoginSchema
+from users.schemas import UserRegisterSchema, UserSchema
 
 logger = logging.getLogger(__name__)
 router = APIRouter(
@@ -78,6 +78,11 @@ def auth_user_login_jwt(
     )
     return TokenInfoSchema(access_token=access_token, token_type="Bearer")  # refresh_token=refresh_token,
 
+@router.post("/logout/")
+def logout_user(response: Response):
+    response.delete_cookie(key="parma_refresh")
+    return {'message': 'Пользователь успешно вышел из системы'}
+
 
 
 @router.post("/refresh", response_model_exclude_none=True)
@@ -99,3 +104,12 @@ def auth_user_check_self_info(
     # payload: dict = Depends(get_current_token_payload),
 ):
     return user
+
+
+
+@router.get('/check/read')
+async def check_read(
+
+):
+
+    return {'message': 'You have access to read'}
