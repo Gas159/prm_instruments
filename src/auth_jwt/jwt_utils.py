@@ -1,15 +1,17 @@
+import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from jwt import InvalidSignatureError
 from jwt.exceptions import InvalidTokenError
 import bcrypt
 import jwt
-from asyncpg.pgproto.pgproto import timedelta
+
+
 
 from config import settings
-from users.schemas import UserSchema
 
+logger = logging.getLogger(__name__)
 
 def encode_jwt(
     payload: dict,
@@ -24,6 +26,8 @@ def encode_jwt(
         expire = now + expires_timedelta
     else:
         expire = now + timedelta(minutes=expires_minutes)
+    logger.debug("expire: %s", expire)
+
 
     to_encode.update(
         {
