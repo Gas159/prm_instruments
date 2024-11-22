@@ -160,9 +160,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id", name=op.f("pk_user")),
     )
     op.create_index(op.f("ix_user_email"), "user", ["email"], unique=True)
-    op.create_index(
-        op.f("ix_user_phone_number"), "user", ["phone_number"], unique=True
-    )
+    op.create_index(op.f("ix_user_phone_number"), "user", ["phone_number"], unique=True)
     op.create_table(
         "drill_plate_association",
         sa.Column("drill_id", sa.Integer(), nullable=False),
@@ -177,9 +175,7 @@ def upgrade() -> None:
             ["plate.id"],
             name=op.f("fk_drill_plate_association_plate_id_plate"),
         ),
-        sa.PrimaryKeyConstraint(
-            "drill_id", "plate_id", name=op.f("pk_drill_plate_association")
-        ),
+        sa.PrimaryKeyConstraint("drill_id", "plate_id", name=op.f("pk_drill_plate_association")),
     )
     op.create_table(
         "drill_screw_association",
@@ -195,9 +191,7 @@ def upgrade() -> None:
             ["screw.id"],
             name=op.f("fk_drill_screw_association_screw_id_screw"),
         ),
-        sa.PrimaryKeyConstraint(
-            "drill_id", "screw_id", name=op.f("pk_drill_screw_association")
-        ),
+        sa.PrimaryKeyConstraint("drill_id", "screw_id", name=op.f("pk_drill_screw_association")),
     )
     op.create_table(
         "service",
@@ -226,9 +220,7 @@ def upgrade() -> None:
             ["user.id"],
             name=op.f("fk_user_role_association_user_id_user"),
         ),
-        sa.PrimaryKeyConstraint(
-            "user_id", "role_id", name=op.f("pk_user_role_association")
-        ),
+        sa.PrimaryKeyConstraint("user_id", "role_id", name=op.f("pk_user_role_association")),
     )
     # ### end Alembic commands ###
 

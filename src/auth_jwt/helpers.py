@@ -1,6 +1,5 @@
 from datetime import timedelta
 from auth_jwt.jwt_utils import encode_jwt
-from auth_jwt.schemas import UserAuthJWTSchema
 from config import settings
 from users.schemas import UserSchema
 
@@ -32,6 +31,7 @@ def create_access_token(user: UserSchema) -> str:
         "email": user.email,
         "active": user.is_active,
         "type": ACCESS_TOKEN_TYPE,
+        "roles": user.roles,
     }
     return create_jwt(
         token_type=ACCESS_TOKEN_TYPE,
@@ -48,9 +48,12 @@ def create_refresh_token(user: UserSchema) -> str:
         "email": user.email,
         "active": user.is_active,
         "type": REFRESH_TOKEN_TYPE,
+        "roles": user.roles,
     }
     return create_jwt(
         token_type=REFRESH_TOKEN_TYPE,
         token_data=payload,
-        expires_timedelta=timedelta(days=settings.auth_jwt.refresh_token_expires_days),
+        # expires_timedelta=timedelta(days=settings.auth_jwt.refresh_token_expires_days),
+        expires_minutes=settings.auth_jwt.refresh_token_expires_minutes,
+
     )

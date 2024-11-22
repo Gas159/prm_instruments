@@ -24,6 +24,6 @@ def add_cors_middleware(app):
             "Access-Control-Allow-Headers",
             "Access-Control-Allow-Origin",
             "Authorization",
-            'Access-Control-Allow-Credentials',
+            "Access-Control-Allow-Credentials",
         ],
     )
