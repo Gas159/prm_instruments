@@ -158,6 +158,9 @@ async def validate_auth_user(
 
     if not user_record.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
+    logger.debug("user_record: %s", user_record)
+    logger.debug("user_record: %s", user_record.__dict__)
+    # return UserSchema.model_validate(user_record)
     return UserSchema.model_validate(user_record)
 
 

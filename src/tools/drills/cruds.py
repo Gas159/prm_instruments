@@ -5,7 +5,7 @@ from sqlite3 import IntegrityError
 from typing import List, Annotated
 
 from fastapi import HTTPException, Form, File, UploadFile, Depends
-from sqlalchemy import select, delete
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import upload_dir
@@ -29,6 +29,7 @@ async def add_drill(
     plates_ids: list[str] = Form([]),
     images: List[UploadFile] = File([]),
 ) -> DrillSchema:
+    logger.debug("Add drill: %s, \n screws: %s, plates: %s, images: %s", drill, screws_ids, plates_ids, images)
     try:
         try:
             drill_data = json.loads(drill)
@@ -41,6 +42,7 @@ async def add_drill(
         db.add(new_drill)
         await db.commit()
         await db.refresh(new_drill)
+        logger.info("Created drill: %s", new_drill)
 
         if images:
             drill_dir = upload_dir / "drills" / str(new_drill.id)
@@ -56,16 +58,16 @@ async def add_drill(
             await add_associations(db, drill_plate_association, new_drill.id, plates_ids, "plate_id")
 
         await db.commit()
-        await db.refresh(new_drill, attribute_names=["screws", "plates"])
+        await db.refresh(new_drill)
+        # await db.refresh(new_drill, attribute_names=["screws", "plates"])
         drill_schema = DrillSchema.model_validate(new_drill)
         logger.info("Создано сверло: %s, добавлены винты: %s и пластины: %s", new_drill.id, screws_ids, plates_ids)
-
         return drill_schema
 
     except Exception as e:
-        logger.error(f"Error from drill save: {str(e)}")
+        logger.info(f"Error from drill save: {str(e)}")
         await db.rollback()
-        raise HTTPException(status_code=500, detail="Error from drill save: ")
+        raise HTTPException(status_code=500, detail=f"Error from drill save: {str(e)}")
 
 
 # async def get_tools(

@@ -48,5 +48,10 @@ class UserModel(Base):
 
     hashed_password: Mapped[bytes] = mapped_column(String(length=1024), default="123", nullable=False)
 
+    @property
+    def role_names(self) -> List[RoleModel]:
+        """Преобразовать объекты RoleModel в список строк."""
+        return [role.role for role in self.roles]
+
 
 # role: Mapped[RoleEnum] = mapped_column(SQLAlchemyEnum(RoleEnum), default=RoleEnum.NOOB, nullable=True)

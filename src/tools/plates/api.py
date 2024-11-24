@@ -18,6 +18,7 @@ from tools.plates.schemas import (
     PlateCreateSchema,
     PlateUpdateSchema,
 )
+from users.helpers import role_checker
 
 router = APIRouter()
 
@@ -50,7 +51,7 @@ async def get_all_plates(
     return list(plates)
 
 
-@router.post("/plate/create", response_model=PlateSchema)
+@router.post("/plate/create", response_model=PlateSchema, dependencies=[Depends(role_checker(["write"]))])
 async def create_plate(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     plate: PlateCreateSchema | str = Form(...),

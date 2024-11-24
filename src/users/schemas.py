@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from pydantic import BaseModel, model_serializer, Field, EmailStr
 from pydantic import ConfigDict
@@ -10,6 +11,8 @@ class RoleBaseSchema(BaseModel):
 
 
 class RoleSchema(RoleBaseSchema):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
 
     @model_serializer
@@ -26,6 +29,8 @@ class UserBaseSchema(BaseModel):
 
 
 class UserRegisterSchema(UserBaseSchema):
+    model_config = ConfigDict(from_attributes=True)
+
     first_name: str | None = Field(examples=["John"], default="first", max_length=32)
     last_name: str | None = Field(examples=["Dou"], default="second", max_length=32)
     email: EmailStr = Field(examples=["test@example.com"], default="test@example.com", max_length=320)
@@ -41,13 +46,15 @@ class UserLoginSchema(UserBaseSchema):
 
 
 class UserSchema(UserBaseSchema):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     first_name: str | None = None
     last_name: str | None = None
     email: EmailStr
     position: str | None = None
     phone_number: str | None = None
-    roles: list["RoleSchema"] | None = []
+    roles: List["RoleSchema"] | None = None
     is_active: bool = True
     is_superuser: bool = False
     is_verified: bool = False

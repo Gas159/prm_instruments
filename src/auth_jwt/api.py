@@ -73,6 +73,7 @@ def auth_user_login_jwt(
     response: Response,
     user: UserSchema = Depends(validate_auth_user),
 ):
+    logger.debug("Заход в  логин. User: %s", user)
     access_token = create_access_token(user)
     refresh_token = create_refresh_token(user)
     response.set_cookie(

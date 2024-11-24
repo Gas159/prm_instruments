@@ -6,12 +6,10 @@ from jwt import InvalidSignatureError
 from jwt.exceptions import InvalidTokenError
 import bcrypt
 import jwt
-
-
-
 from config import settings
 
 logger = logging.getLogger(__name__)
+
 
 def encode_jwt(
     payload: dict,
@@ -28,7 +26,6 @@ def encode_jwt(
         expire = now + timedelta(minutes=expires_minutes)
     logger.debug("expire: %s", expire)
 
-
     to_encode.update(
         {
             "exp": expire,
@@ -36,6 +33,7 @@ def encode_jwt(
             "jti": str(uuid.uuid4()),
         }
     )
+    logger.debug("Final payload for JWT encoding: %s", to_encode)
     encoded = jwt.encode(to_encode, private_key, algorithm)
     return encoded
 

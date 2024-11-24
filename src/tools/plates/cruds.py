@@ -38,10 +38,6 @@ async def add_plate(
 
     new_plate = PlateModel(**plate_data)
 
-    db.add(new_plate)
-    await db.commit()
-    await db.refresh(new_plate)
-
     try:
         if images:
             plate_dir = upload_dir / "plates" / str(new_plate.id)

@@ -8,14 +8,14 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 # import logging
 #
 # Настройка логирования
-logging.basicConfig(
-    level=logging.DEBUG,  # Общий уровень логирования
-    format="%(asctime)s - %(name)s - %(filename)s:%(lineno)d - %(funcName)s() - %(levelname)s - %(process)d - %(threadName)s - %(message)s",
-    handlers=[
-        # logging.FileHandler("app.log"),  # Логи записываются в файл
-        logging.StreamHandler(),  # Логи выводятся на консоль
-    ],
-)
+# logging.basicConfig(
+#     level=logging.DEBUG,  # Общий уровень логирования
+#     format="%(asctime)s - %(name)s - %(filename)s:%(lineno)d - %(funcName)s() - %(levelname)s - %(process)d - %(threadName)s - %(message)s",
+#     handlers=[
+#         # logging.FileHandler("app.log"),  # Логи записываются в файл
+#         logging.StreamHandler(),  # Логи выводятся на консоль
+#     ],
+# )
 logging.getLogger("multipart").setLevel(logging.INFO)
 
 BASE_DIR = Path(__file__).parent
@@ -80,8 +80,8 @@ class AuthJWT(BaseModel):
     private_key_path: Path = BASE_DIR / "auth_jwt/certs/jwt-private.pem"
     public_key_path: Path = BASE_DIR / "auth_jwt" / "certs" / "jwt-public.pem"
     algorithm: str = "RS256"
-    # access_token_expires_minutes: int = 15
-    access_token_expires_minutes: int = 0.25
+    access_token_expires_minutes: int = 15
+    # access_token_expires_minutes: int = 0.25
     refresh_token_expires_minutes: int = 30
     # refresh_token_expires_days: int = 15
 

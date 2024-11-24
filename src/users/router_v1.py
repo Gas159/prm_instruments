@@ -33,6 +33,7 @@ async def get_user(
     logger.info("Get user: %s", user)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    logger.info("Get user: %s", user.__dict__)
     return UserSchema.model_validate(user)
 
 
