@@ -17,8 +17,8 @@ def role_checker(required_roles: list[str]):
         if not [role for role in required_roles if role in user_roles]:
             raise HTTPException(
                 status_code=403,
-                detail=f"""You don't have access to this resource.
-                       Required: {' '.join(required_roles)!r}, current: {', '.join( user_roles)!r}""",
+                detail=f"""You don't have access to this resource. 
+                Required: {', '.join(required_roles)!r}, Current: {', '.join( user_roles)!r}""",
             )
 
     return check_user_role

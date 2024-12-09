@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 # Get ONE
-@router.get("/plate/{plate_id}", response_model=PlateSchema)
+@router.get("/plate/{plate_id}", response_model=PlateSchema, dependencies=[Depends(role_checker(["read", "admin"]))])
 async def get_one_plate(
     plate_id: int,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
@@ -41,7 +41,7 @@ async def get_one_plate(
 
 
 # Get ALL
-@router.get("/plates", response_model=List[PlateSchema])
+@router.get("/plates", response_model=List[PlateSchema], dependencies=[Depends(role_checker(["read", "admin"]))])
 async def get_all_plates(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> List[PlateModel]:
@@ -51,7 +51,7 @@ async def get_all_plates(
     return list(plates)
 
 
-@router.post("/plate/create", response_model=PlateSchema, dependencies=[Depends(role_checker(["write"]))])
+@router.post("/plate/create", response_model=PlateSchema, dependencies=[Depends(role_checker(["create", "admin"]))])
 async def create_plate(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     plate: PlateCreateSchema | str = Form(...),
@@ -63,7 +63,9 @@ async def create_plate(
     return result
 
 
-@router.put("/plate/update/{plate_id}", response_model=PlateSchema)
+@router.put(
+    "/plate/update/{plate_id}", response_model=PlateSchema, dependencies=[Depends(role_checker(["update", "admin"]))]
+)
 async def update_plate(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     plate_id: int,
@@ -76,7 +78,9 @@ async def update_plate(
     return result
 
 
-@router.delete("/plate/delete/{plate_id}", response_model=PlateSchema)
+@router.delete(
+    "/plate/delete/{plate_id}", response_model=PlateSchema, dependencies=[Depends(role_checker(["delete", "admin"]))]
+)
 async def delete_plate(
     plate_id: int,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
