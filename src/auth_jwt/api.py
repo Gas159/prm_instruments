@@ -1,7 +1,7 @@
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, Body
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -117,3 +117,8 @@ def auth_user_check_self_info(
 @router.get("/check/read")
 async def check_read(_: None = Depends(role_checker(["admin", "user"]))):
     return {"message": "You have access to read"}
+
+
+@router.get("/check/write")
+async def check_write(fds: UserSchema):
+    return {"message": "You have access to write"}

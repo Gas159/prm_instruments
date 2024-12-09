@@ -3,7 +3,7 @@ import logging
 from typing import Annotated
 
 
-from fastapi import APIRouter, Depends, Form, HTTPException
+from fastapi import APIRouter, Depends, Form, HTTPException, Body
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -11,7 +11,7 @@ from sqlalchemy.orm import selectinload
 from database import db_helper
 from users import cruds as users_crud
 from users.models import RoleModel, UserModel
-from users.schemas import RoleSchema, UserSchema, RoleCreateSchema
+from users.schemas import RoleSchema, UserSchema, RoleCreateSchema, RoleForUserSchema
 
 router = APIRouter(
     # prefix=settings.api.v1.users,
@@ -65,12 +65,52 @@ async def get_all_users(
     return [UserSchema.model_validate(user) for user in users]
 
 
-# Присвоение роли пользователю
-@router.post("/users/{user_id}/roles/{role_id}/", response_model=UserSchema)
-async def assign_role_to_user(
+@router.get("/roles", response_model=list[RoleSchema])
+async def get_roles(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    user_id: int,
-    role_id: int,
+) -> list[RoleSchema]:
+    query = select(RoleModel).options(selectinload(RoleModel.users))
+    result = await session.execute(query)
+    roles = result.scalars().all()
+    logger.info("Get roles: %s %s", type(roles), roles)
+    return [RoleSchema.model_validate(role) for role in roles]
+    # return roles
+
+
+@router.post("/role", response_model=RoleSchema)
+async def create_role(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    # role: RoleCreateSchema | str = Body(..., alias="role"),
+    role: RoleCreateSchema,
+) -> RoleSchema:
+    # try:
+    #     logger.info("Role: %s %s", type(role), role)
+    #     role_data = json.loads(role)
+    # except json.JSONDecodeError as e:
+    #     raise HTTPException(status_code=400, detail="Invalid JSON format" + str(e))
+    logger.debug("Role: %s", role)
+    result = await session.execute(select(RoleModel).filter_by(role=role.role))
+    existing_role = result.scalars().first()
+
+    if existing_role:
+        raise HTTPException(status_code=400, detail=f"Role '{role.role}' already exists.")
+
+    role = RoleModel(**role.model_dump())
+    session.add(role)
+    await session.commit()
+    await session.refresh(role)
+    role_dict = {"id": role.id, "role": role.role}
+    return RoleSchema.model_validate(role_dict)
+
+
+# Присвоение роли пользователю
+# @router.post("/users/{user_id}/roles/{role_id}/", response_model=UserSchema)
+@router.put("/set_role_for_user/", response_model=UserSchema)
+async def set_role_to_user(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user_id: int = Body(...),
+    role_id: int = Body(...),
+    # ids: RoleForUserSchema,
 ):
     db_user = await session.get(UserModel, user_id, options=[selectinload(UserModel.roles)])
     role_db = await session.execute(select(RoleModel).where(RoleModel.id == role_id))
@@ -93,41 +133,31 @@ async def assign_role_to_user(
     return db_user
 
 
-@router.get("/roles", response_model=list[RoleSchema])
-async def get_roles(
+@router.put("/unset_role_for_user/", response_model=UserSchema)
+async def unset_role_for_user(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-) -> list[RoleSchema]:
-    query = select(RoleModel).options(selectinload(RoleModel.users))
-    result = await session.execute(query)
-    roles = result.scalars().all()
-    logger.info("Get roles: %s %s", type(roles), roles)
-    return [RoleSchema.model_validate(role) for role in roles]
-    # return roles
+    user_id: int = Body(...),
+    role_id: int = Body(...),
+):
+    db_user = await session.get(UserModel, user_id, options=[selectinload(UserModel.roles)])
+    role_db = await session.execute(select(RoleModel).where(RoleModel.id == role_id))
+    role = role_db.scalar_one_or_none()
 
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if not role:
+        raise HTTPException(status_code=404, detail="Role not found")
 
-@router.post("/role", response_model=RoleSchema)
-async def create_role(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    role: RoleCreateSchema | str = Form(...),
-) -> RoleSchema:
-    try:
-        logger.info("Role: %s %s", type(role), role)
-        role_data = json.loads(role)
-    except json.JSONDecodeError as e:
-        raise HTTPException(status_code=400, detail="Invalid JSON format" + str(e))
+    # Проверяем, есть ли уже эта роль у пользователя
+    if not role in db_user.roles:
+        raise HTTPException(status_code=400, detail="User already has this role")
 
-    result = await session.execute(select(RoleModel).filter_by(role=role_data["role"]))
-    existing_role = result.scalars().first()
-
-    if existing_role:
-        raise HTTPException(status_code=400, detail=f"Role '{role_data['role']}' already exists.")
-
-    role = RoleModel(**role_data)
-    session.add(role)
+    db_user.roles.remove(role)
     await session.commit()
-    await session.refresh(role)
-    role_dict = {"id": role.id, "role": role.role}
-    return RoleSchema.model_validate(role_dict)
+    # await session.refresh(db_user, attribute_names=["roles"])
+    await session.refresh(db_user)
+    logger.info(f"Unset role: {role} for  user: {db_user!r}: %s", db_user.roles)
+    return db_user
 
 
 @router.delete("/role/{role_id}", response_model=RoleSchema)

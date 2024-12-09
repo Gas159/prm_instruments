@@ -124,6 +124,7 @@ get_current_auth_user_for_refresh = UserGetterFromToken(REFRESH_TOKEN_TYPE)
 def get_current_active_auth_user(
     user: UserSchema = Depends(get_current_auth_user),
 ) -> UserSchema:
+    logger.debug("I'm in get_current_active_auth_user, User: %s", user)
     if user.is_active:
         return user
     logger.debug("User is not active: %s", user)

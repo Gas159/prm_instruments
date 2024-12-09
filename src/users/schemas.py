@@ -5,6 +5,12 @@ from pydantic import BaseModel, model_serializer, Field, EmailStr
 from pydantic import ConfigDict
 
 
+class RoleForUserSchema(BaseModel):
+    id: int
+    role: int
+    model_config = ConfigDict(from_attributes=True)
+
+
 class RoleBaseSchema(BaseModel):
     role: str
     model_config = ConfigDict(from_attributes=True)
