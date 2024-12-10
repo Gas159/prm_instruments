@@ -6,16 +6,19 @@ from enum import Enum
 
 
 class MaterialEnum(str, Enum):
-    S = "s"
-    M = "m"
-    P = "p"
+    P = "P"
+    M = "M"
+    K = "K"
+    N = "N"
+    S = "S"
+    H = "H"
 
 
 # Базовая схема для пластин
 class PlateBaseSchema(BaseModel):
     type: str | None = None
     sub_type: str | None = None
-    material: MaterialEnum | None = Field(None, description="Available options: 's', 'm', 'p'")
+    material: MaterialEnum | None = Field(None, description="Available options: P, M, K, N, S, H")
     amount: int | None = None
     min_amount: int | None = None
     company: str | None = None

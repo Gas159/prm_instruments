@@ -30,15 +30,16 @@ async def add_plate(
     plate: PlateCreateSchema | str = Form(...),
     images: list[UploadFile] = File([]),
 ) -> PlateSchema:
-
+    logger.debug("plate: %s %s", type(plate), plate)
     try:
-        plate_data = json.loads(plate)
-    except json.JSONDecodeError as e:
-        raise HTTPException(status_code=400, detail="invalid JSON format" + str(e))
+        try:
+            plate_data = json.loads(plate)
+        except json.JSONDecodeError as e:
+            raise HTTPException(status_code=400, detail="invalid JSON format" + str(e))
 
-    new_plate = PlateModel(**plate_data)
+        new_plate = PlateModel(**plate_data)
+        PlateSchema.model_validate(new_plate)
 
-    try:
         if images:
             plate_dir = upload_dir / "plates" / str(new_plate.id)
             plate_dir.mkdir(parents=True, exist_ok=True)

@@ -6,8 +6,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from project_services.base import Base
 
-# Пластины : тип,  субтип, сплав,  материал обр(селект s,m,p) , кол-во,  фирма, мин ост, фото.
-
 
 class MaterialEnum(str, Enum):
     S = "s"
@@ -35,4 +33,5 @@ class PlateModel(Base):
         "DrillModel",
         secondary="drill_plate_association",
         back_populates="plates",
+        cascade="all, delete",
     )
