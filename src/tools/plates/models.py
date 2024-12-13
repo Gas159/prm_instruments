@@ -23,7 +23,7 @@ class PlateModel(Base):
     min_amount: Mapped[int] = mapped_column(default=0, nullable=True)
     company: Mapped[str] = mapped_column(default="?", nullable=True)
 
-    image_path: Mapped[str] = mapped_column(default="?", nullable=True)
+    image_path: Mapped[str] = mapped_column(nullable=True)
     description: Mapped[str] = mapped_column(default="?", nullable=True)
 
     create_at: Mapped[int] = mapped_column(DateTime(timezone=True), server_default=func.now())

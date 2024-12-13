@@ -37,7 +37,7 @@ class DrillModel(Base):
     key: Mapped[str] = mapped_column(default="?", nullable=True)
     company: Mapped[str] = mapped_column(default="?", nullable=True)
     is_broken: Mapped[bool] = mapped_column(default=False, nullable=True)
-    image_path: Mapped[str] = mapped_column(String, nullable=True)
+    image_path: Mapped[str] = mapped_column(nullable=True)
     storage: Mapped[str] = mapped_column(default="Cклад", nullable=True)
     description: Mapped[str] = mapped_column(default="?", nullable=True)
     create_at: Mapped[int] = mapped_column(DateTime(timezone=True), server_default=func.now())
