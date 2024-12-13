@@ -6,6 +6,7 @@ from starlette.staticfiles import StaticFiles
 
 from config import settings
 from exceptions import validation_exception_handler, internal_server_error
+from loggind_config import setup_logging
 from project_services.cors import add_cors_middleware
 from project_services.llifespan import lifespan
 
@@ -18,10 +19,14 @@ from tools.screws import router as screw_router
 from tools.plates import router as plate_router
 from tools.drills.cruds import UPLOAD_DIR
 from auth_jwt.api import router as auth_jwt_router
+from tools.drills_monolit.api import router as drills_monolit_router
 
+# setup_logging()
 main_app = FastAPI(
     lifespan=lifespan,
     default_response_class=ORJSONResponse,  # improve speed work with db
+    title="Student Course API",
+    summary="A sample application showing how to use FastAPI to add a ReST API to a MongoDB collection.",
 )
 # Настройка маршрутов для статических файлов
 main_app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -37,7 +42,7 @@ main_app.mount(
 )
 for router in [
     auth_jwt_router,
-    # auth_router,
+    drills_monolit_router,
     users_router,
     router_drills,
     router_drills_archive,

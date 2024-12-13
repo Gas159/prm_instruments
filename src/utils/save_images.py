@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 # Вспомогательная функция для обработки изображений
-async def save_images(images, dir):
+async def save_images(images, dir) -> list[str]:
     image_paths = []
     for image in images:
         if not isinstance(image, starlette.datastructures.UploadFile):

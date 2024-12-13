@@ -15,6 +15,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 
 from config import settings
 from project_services.base import Base
+from tools.drills_monolit.models import DrillMonolitModel
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

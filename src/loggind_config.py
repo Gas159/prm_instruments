@@ -36,7 +36,7 @@ class ColoredFormatter(logging.Formatter):
 
 
 def setup_logging():
-    logger = logging.getLogger()
+    logger = logging.getLogger("my_logger")
     logger.setLevel(logging.DEBUG)
 
     # Создание обработчика для вывода в терминал
